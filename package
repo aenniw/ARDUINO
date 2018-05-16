@@ -1,0 +1,15 @@
+#!/bin/bash
+
+test -d ./target && \
+    rm -rf ./target
+mkdir ./target
+
+for PROJECT_BIN in ./*/.pioenvs/*/firmware.elf; do
+    PROJECT_NAME=${PROJECT_BIN%${PROJECT_BIN#*/*/}} && \
+        PROJECT_NAME=${PROJECT_NAME%*/} && \
+        PROJECT_NAME=${PROJECT_NAME#./*}
+    BOARD_NAME=${PROJECT_BIN%*/*} && \
+        BOARD_NAME=${BOARD_NAME##*/} && \
+
+    cp ${PROJECT_BIN} ./target/${PROJECT_NAME}-${BOARD_NAME}.elf
+done

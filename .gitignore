@@ -3,6 +3,8 @@ CMakeListsPrivate.txt
 .gcc-flags.json
 .pioenvs
 .piolibdeps
+.vscode
+target
 **/.idea/
 **/cmake-build-debug/
 **/lib/readme.txt

@@ -31,6 +31,16 @@ install:
   - pip install -U platformio
 
 script:
-  - for PROJECT in ./*/platformio.ini; do
-       cd ${PROJECT%*/*} && platformio run && cd ../;
-    done
+  - ./make && ./package
+
+deploy:
+  provider: releases
+  prerelease: true
+  api_key: ${GH_TOKEN}
+  file_glob: true
+  file: target/*
+  skip_cleanup: true
+  on:
+    tags: true
+    branch: master
+
