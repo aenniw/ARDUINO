@@ -4,6 +4,7 @@ test -d ./target && \
     rm -rf ./target
 mkdir ./target
 
+TAG=`git tag -l --points-at HEAD`
 for PROJECT_BIN in ./*/.pioenvs/*/firmware.elf; do
     PROJECT_NAME=${PROJECT_BIN%${PROJECT_BIN#*/*/}} && \
         PROJECT_NAME=${PROJECT_NAME%*/} && \
@@ -11,5 +12,7 @@ for PROJECT_BIN in ./*/.pioenvs/*/firmware.elf; do
     BOARD_NAME=${PROJECT_BIN%*/*} && \
         BOARD_NAME=${BOARD_NAME##*/} && \
 
-    cp ${PROJECT_BIN} ./target/${PROJECT_NAME}-${BOARD_NAME}.elf
+    if echo ${TAG:-${PROJECT_NAME}} | grep -iq $PROJECT_NAME; then
+        cp ${PROJECT_BIN} ./target/${PROJECT_NAME}-${BOARD_NAME}.elf
+    fi
 done
