@@ -1,5 +1,8 @@
-#include <Motor.h>
+#ifdef __EEPROM__
 #include <EEPROM.h>
+#endif
+
+#include <Motor.h>
 #include <Rotary.h>
 #include "Motor.h"
 
@@ -19,8 +22,9 @@ static void encoder_rotate() {
 #ifdef __DEBUG__
     Serial.println(table_data.position);
 #endif
+#ifdef __EEPROM__
     EEPROM.put(EEPROM.begin(), table_data);
-
+#endif
     if (table_data.position <= 0 || table_data.position >= table_data.end_stop) {
         if (table_data.position <= 0 && digitalRead(dir) == LOW) {
             digitalWrite(power, HIGH);

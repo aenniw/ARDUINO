@@ -1,7 +1,8 @@
-#define __DEBUG__
+#ifdef __EEPROM__
+#include <EEPROM.h>
+#endif
 
 #include <Arduino.h>
-#include <EEPROM.h>
 #include <Display.h>
 #include <Motor.h>
 #include <Keypad.h>
@@ -27,7 +28,9 @@ ISR (PCINT1_vect) // handle pin change interrupt for A0 to A5 here
 }
 
 void setup() {
+#ifdef __EEPROM__
     table_data = EEPROM.get(EEPROM.begin(), table_data);
+#endif
 #ifdef __DEBUG__
     Serial.begin(9600);
     Serial.print("Position: ");
