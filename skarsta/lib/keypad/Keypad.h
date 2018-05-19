@@ -5,7 +5,10 @@
 #include <Service.h>
 #include <Motor.h>
 #include <Display.h>
+
+#ifdef __EEPROM__
 #include <EEPROM.h>
+#endif
 
 class Keypad {
 private:
@@ -57,7 +60,9 @@ public:
                 case SEMICALIBRATED:
                     table_data.calibration = CALIBRATED;
                     table_data.end_stop = table_data.position;
+#ifdef __EEPROM__
                     EEPROM.put(EEPROM.begin(), table_data);
+#endif
 #ifdef __DEBUG__
                     Serial.print("Calibration end-stop");
                     Serial.println(table_data.position);
@@ -72,7 +77,9 @@ public:
 #ifdef __DEBUG__
                     Serial.println("Calibration clear.");
 #endif
+#ifdef __EEPROM__
                     EEPROM.put(EEPROM.begin(), table_data);
+#endif
                     break;
             }
         }
