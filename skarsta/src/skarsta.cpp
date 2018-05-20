@@ -14,7 +14,14 @@
 #define DISPLAY_PIN_CLK 4
 #define DISPLAY_PIN_DIO 5
 
-Table_Data table_data;
+Table_Data table_data = {
+        .calibration=UNCALIBRATED,
+        .position=0,
+        .preset_1=0,
+        .preset_2=0,
+        .preset_3=0,
+        .end_stop=~0u
+};
 static Motor *motor;
 static Display *display;
 static Keypad *keypad;
@@ -49,10 +56,12 @@ void setup() {
 
     display = new Display(DISPLAY_PIN_CLK, DISPLAY_PIN_DIO);
     motor = new Motor(ENCODER_PIN_CLK, ENCODER_PIN_DIO, POWER_RELAY, DIRECTION_RELAY);
-    keypad = new Keypad(motor);
+    keypad = new Keypad(motor, display);
 }
 
 void loop() {
     motor->cycle();
     display->cycle();
+    keypad->cycle();
+    delay(CYCLE_DELAY);
 }
