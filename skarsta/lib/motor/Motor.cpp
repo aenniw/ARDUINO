@@ -5,9 +5,13 @@
 #include <Motor.h>
 #include <Rotary.h>
 #include "Motor.h"
+#include "../service/Service.h"
+
+extern Table_Data table_data;
 
 static Rotary *encoder = nullptr;
 static uint8_t power = 0, dir = 0;
+static long next_position = -1;
 
 static void encoder_rotate() {
     unsigned char result = encoder->process();
@@ -25,12 +29,16 @@ static void encoder_rotate() {
 #ifdef __EEPROM__
     EEPROM.put(EEPROM.begin(), table_data);
 #endif
-    if (table_data.position <= 0 || table_data.position >= table_data.end_stop) {
-        if (table_data.position <= 0 && digitalRead(dir) == LOW) {
+    if (table_data.position == 0 || table_data.position >= table_data.end_stop) {
+        if (table_data.position == 0 && digitalRead(dir) == LOW) {
             digitalWrite(power, HIGH);
         } else if (table_data.position >= table_data.end_stop && digitalRead(dir) == HIGH) {
             digitalWrite(power, HIGH);
         }
+    }
+    if (next_position >= 0 && next_position == table_data.position) {
+        digitalWrite(power, HIGH);
+        next_position = -1;
     }
 }
 
@@ -48,6 +56,60 @@ Motor::Motor(uint8_t _pin1, uint8_t _pin2, uint8_t _pin3, uint8_t _pin4) {
     pinMode(power_pin, OUTPUT);
     digitalWrite(dir_pin, LOW);
     digitalWrite(power_pin, HIGH);
+}
+
+void Motor::goto_position(unsigned int pos) {
+    if (table_data.calibration != CALIBRATED || table_data.end_stop < pos) {
+#ifdef __DEBUG__
+        Serial.println("Cannot go to pos.");
+#endif
+        return;
+    }
+    next_position = pos;
+    if (next_position < table_data.position) {
+        dir_ccw();
+    } else {
+        dir_cw();
+    }
+}
+
+void Motor::off() {
+#ifdef __DEBUG__
+    if (!digitalRead(power_pin)) {
+            Serial.println("off");
+        }
+#endif
+    digitalWrite(power_pin, HIGH);
+}
+
+void Motor::dir_cw() {
+    if (table_data.calibration == CALIBRATED && table_data.position >= table_data.end_stop) {
+#ifdef __DEBUG__
+        Serial.println("Cannot cw");
+#endif
+        return;
+    }
+    digitalWrite(dir_pin, HIGH);
+    delay(100);
+    digitalWrite(power_pin, LOW);
+#ifdef __DEBUG__
+    Serial.println("cw");
+#endif
+}
+
+void Motor::dir_ccw() {
+    if (table_data.calibration != UNCALIBRATED && table_data.position <= 0) {
+#ifdef __DEBUG__
+        Serial.println("Cannot ccw");
+#endif
+        return;
+    }
+    digitalWrite(dir_pin, LOW);
+    delay(100);
+    digitalWrite(power_pin, LOW);
+#ifdef __DEBUG__
+    Serial.println("ccw");
+#endif
 }
 
 Motor::~Motor() {
