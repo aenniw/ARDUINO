@@ -19,7 +19,7 @@ void Display::display_fading() {
 
     fadeout_cycle_counter++;
     if (fadeout_cycle_counter >= fade_end_begin) {
-        const uint8_t brightness = 100 - ((fadeout_cycle_counter - fade_end_begin) * fade_step);
+        brightness = 100.0 - ((fadeout_cycle_counter - fade_end_begin) * fade_step);
 #ifdef __DEBUG__
         Serial.print("Backlight: ");
             Serial.print(fade_end_begin);
@@ -28,15 +28,17 @@ void Display::display_fading() {
             Serial.print(" ");
             Serial.print(fadeout_cycle_counter);
             Serial.print(" ");
+            Serial.print(fade_step);
+            Serial.print(" ");
             Serial.println(brightness);
 #endif
-        display->setBacklight(brightness);
+        display->setBacklight((int) brightness);
     }
 }
 
 void Display::display_update() {
+    static unsigned int blink_counter = 0;
     if (table_data.calibration != CALIBRATED) {
-        static unsigned int blink_counter = 0;
         if (table_data.calibration == SEMICALIBRATED) {
             display_print(table_data.position);
         } else if (table_data.calibration == UNCALIBRATED) {
@@ -49,6 +51,9 @@ void Display::display_update() {
         }
         blink_counter++;
         return;
+    } else if (blink_counter % DISPLAY_BLINK_TIMEOUT == 0) {
+        display_light_up();
+        blink_counter++;
     }
 
     if (displayed_counter != table_data.position) {
@@ -63,7 +68,8 @@ void Display::display_update() {
 }
 
 void Display::display_light_up() {
-    display->setBacklight(100);
+    brightness = 100.0;
+    display->setBacklight((int) brightness);
     fadeout_cycle_counter = 0;
 }
 
@@ -73,20 +79,20 @@ void Display::display_print(unsigned int position) {
     display->print(buffer);
 }
 
-void Display::display_print(const char *text, const unsigned int duration_ms) {
+void Display::display_print(const char *text, const unsigned int duration) {
 #ifdef __DEBUG__
     Serial.print("Display: ");
         Serial.println(text);
 #endif
     display->print(text);
-    text_cycle_counter = duration_ms;
+    text_cycle_counter = duration;
     displayed_counter = -1;
 }
 
 void Display::cycle() {
-    if (!text_cycle_counter) {
-        display_update();
+    if (text_cycle_counter <= 0) {
         display_fading();
+        display_update();
     } else {
         text_cycle_counter -= CYCLE_DELAY;
     }

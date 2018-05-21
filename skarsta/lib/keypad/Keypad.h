@@ -26,8 +26,6 @@ private:
 public:
     Keypad(Motor *_motor, Display *_display);
 
-    bool any_button_pressed();
-
     void handle_manual_control();
 
     void handle_goto_control();
