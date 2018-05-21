@@ -4,7 +4,6 @@
 
 #include <Arduino.h>
 #include <Display.h>
-#include <Motor.h>
 #include <Keypad.h>
 
 #define POWER_RELAY 6
@@ -22,22 +21,16 @@ Table_Data table_data = {
         .preset_3=0,
         .end_stop=~0u
 };
-static Motor *motor;
-static Display *display;
-static Keypad *keypad;
-
-ISR (PCINT1_vect) // handle pin change interrupt for A0 to A5 here
-{
-    if (keypad->any_button_pressed()) {
-        display->display_light_up();
-    }
-    keypad->handle_interrupt();
-}
+static Service **services;
+static const uint8_t services_count = 3;
 
 void setup() {
 #ifdef __EEPROM__
     table_data = EEPROM.get(EEPROM.begin(), table_data);
 #endif
+    if (table_data.calibration > CALIBRATED) {
+        table_data.calibration = UNCALIBRATED;
+    }
 #ifdef __DEBUG__
     Serial.begin(9600);
     Serial.print("Position: ");
@@ -54,14 +47,17 @@ void setup() {
     Serial.println(table_data.end_stop);
 #endif
 
-    display = new Display(DISPLAY_PIN_CLK, DISPLAY_PIN_DIO);
-    motor = new Motor(ENCODER_PIN_CLK, ENCODER_PIN_DIO, POWER_RELAY, DIRECTION_RELAY);
-    keypad = new Keypad(motor, display);
+    auto display = new Display(DISPLAY_PIN_CLK, DISPLAY_PIN_DIO);
+    auto motor = new Motor(ENCODER_PIN_CLK, ENCODER_PIN_DIO, POWER_RELAY, DIRECTION_RELAY);
+    services = new Service *[services_count]{
+            (Service *) new Keypad(motor, display),
+            (Service *) motor,
+            (Service *) display};
 }
 
 void loop() {
-    motor->cycle();
-    display->cycle();
-    keypad->cycle();
+    for (uint8_t i = 0; i < services_count; i++) {
+        services[i]->cycle();
+    }
     delay(CYCLE_DELAY);
 }

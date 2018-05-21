@@ -14,8 +14,9 @@ class Display : Service {
 private:
     const unsigned int fade_end_begin = (DISPLAY_FADEOUT_TIMEOUT) / (CYCLE_DELAY);
     const unsigned int fade_end_step = fade_end_begin + (DISPLAY_FADEOUT_DURATION) / (CYCLE_DELAY);
-    const unsigned int fade_step = 100 / (fade_end_step - fade_end_begin);
+    const double fade_step = 100.0 / (fade_end_step - fade_end_begin);
 
+    double brightness = 0;
     long displayed_counter = 0, text_cycle_counter = 0;
     unsigned int fadeout_cycle_counter = 0;
     SevenSegmentTM1637 *display = nullptr;
@@ -30,7 +31,7 @@ public:
 
     void display_print(unsigned int position);
 
-    void display_print(const char *text, unsigned int duration_ms = 1000);
+    void display_print(const char *text, unsigned int duration = 1000);
 
     void cycle() override;
 

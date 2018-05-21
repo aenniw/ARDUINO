@@ -1,6 +1,13 @@
 #include "Keypad.h"
+#include "../../../../../.platformio/packages/framework-arduinoavr/cores/arduino/HardwareSerial.h"
 
 extern Table_Data table_data;
+static Keypad *static_keypad;
+
+ISR (PCINT1_vect) // handle pin change interrupt for A0 to A5 here
+        {
+                static_keypad->handle_interrupt();
+        }
 
 Keypad::Keypad(Motor *_motor, Display *_display) {
     for (uint8_t i = A0; i <= A5; i++) {
@@ -9,20 +16,13 @@ Keypad::Keypad(Motor *_motor, Display *_display) {
     }
     motor = _motor;
     display = _display;
+    static_keypad = this;
 }
 
 void Keypad::pciSetup(byte pin) {
     *digitalPinToPCMSK(pin) |= bit(digitalPinToPCMSKbit(pin));  // enable pin
     PCIFR |= bit(digitalPinToPCICRbit(pin)); // clear any outstanding interrupt
     PCICR |= bit(digitalPinToPCICRbit(pin)); // enable interrupt for the group
-}
-
-bool Keypad::any_button_pressed() {
-    bool anyPressed = false;
-    for (uint8_t i = A0; i <= A5 && !anyPressed; i++) {
-        anyPressed = (bool) digitalRead(i) == LOW;
-    }
-    return anyPressed;
 }
 
 void Keypad::handle_manual_control() {
@@ -47,7 +47,7 @@ void Keypad::handle_goto_control() {
 
     unsigned long interrupt_time = millis();
 
-    if (allHigh && goto_button_pressed >= 0 && interrupt_time - last_goto_interrupt_time > 10) {
+    if (allHigh && goto_button_pressed >= 0) {
         if (interrupt_time - last_goto_interrupt_time < SAVE_BUTTON_TIMEOUT) {
 #ifdef __DEBUG__
             Serial.print("Pos ");
@@ -147,6 +147,7 @@ void Keypad::handle_calibration() {
 
 void Keypad::handle_interrupt() {
     {
+        display->display_light_up();
         handle_goto_control();
         handle_manual_control();
         static unsigned long last_interrupt_time = 0;
