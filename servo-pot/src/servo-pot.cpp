@@ -7,8 +7,8 @@
 
 const static uint8_t SERVO_PINS[] = {9, 8, 7},
         POT_PINS[] = {A0, A1, A2};
-const static uint32_t POT_MIN[] = {0, 156, 250},
-        POT_MAX[] = {667, 667, 667};
+const static uint32_t POT_MIN[] = {0, 0, 0},
+        POT_MAX[] = {699, 699, 699};
 const static uint8_t SERVOS_LEN = sizeof(SERVO_PINS) / sizeof(uint8_t);
 const static uint8_t PINS_LEN = sizeof(POT_PINS) / sizeof(uint8_t);
 
@@ -17,7 +17,7 @@ static Servo **SERVOS = nullptr;
 
 void setup() {
 #ifdef __DEBUG__
-    Serial.begin(115200);
+    Serial.begin(9600);
 #endif
     SERVOS_POS = new int[SERVOS_LEN];
     SERVOS = new Servo *[SERVOS_LEN];
