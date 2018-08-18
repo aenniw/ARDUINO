@@ -3,7 +3,7 @@
 
 #define SERVO_MIN_ANGLE 0
 #define SERVO_MAX_ANGLE 180
-#define SERVO_MIN_CHANGE 3
+#define SERVO_MIN_CHANGE 8
 
 const static uint8_t SERVO_PINS[] = {9, 8, 7},
         POT_PINS[] = {A0, A1, A2};
