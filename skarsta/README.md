@@ -17,7 +17,7 @@ After testing quite a few DC motors from Ebay, Aliexpres and Banggood I stuck wi
 
 ### How-to
 
-- print all parts from [Thingverse](https://TODO) or download them directly from [models](models)
+- print all parts from [Thingverse - TODO ](https://TODO) or download them directly from [models](models)
 - get electronic parts (Total Cost ~25€):
   [Arduino nano](https://www.ebay.com/itm/1PCS-mini-USB-Nano-V3-0-ATmega328P-CH340G-5V-16M-micro-controller-Arduino/191773759569?hash=item2ca69b5851:g:aHAAAOSwLN5WiNjA),
   [Rotary encoder](https://www.ebay.com/itm/1PCS-KY-040-Rotary-Encoder-Module-Brick-Sensor-Development-For-Arduino-CA/141975888668?hash=item210e6c231c:g:6aIAAOSwq5lTmbF7),
@@ -33,7 +33,7 @@ After testing quite a few DC motors from Ebay, Aliexpres and Banggood I stuck wi
   [PSU 12V3A - minimal](https://www.ebay.com/itm/EU-Plug-1A-2A-3A-5A-Power-Supply-Adapter-100V-240V-to-12V-Lighting-Transformer/322850236046?hash=item4b2b5fa68e%3Am%3Amjgjm0i78jYJH9-2bkZdCyg&var=511979243408),
   [PSU 12V5A - recommended](https://www.ebay.com/itm/EU-Plug-1A-2A-3A-5A-Power-Supply-Adapter-100V-240V-to-12V-Lighting-Transformer/322850236046?hash=item4b2b5fa68e%3Am%3Amjgjm0i78jYJH9-2bkZdCyg&var=511979243408),
   [M2 Screws](https://www.ebay.com/itm/Hex-Socket-Bolts-Countersunk-Flat-Head-Screws-M2-M3-M4-M5-M6-Black-Alloy-Steel/183214890165?hash=item2aa8755cb5%3Am%3AmRNLwqyXcB6KXHipo6jIAWA&var=690492992291)
-- Flash Arduino nano with [Firmware]()
+- Flash Arduino nano with [Firmware - TODO]()
 - Cut off 100mm from the end of Skarsta handle which will be used to connect motor to table
 - Assemble all parts together and mount them to table
 
@@ -41,5 +41,5 @@ After testing quite a few DC motors from Ebay, Aliexpres and Banggood I stuck wi
 
 ### Library Credentials
 
-[TM1637](https://github.com/bremme/arduino-tm1637)
+[TM1637](https://github.com/bremme/arduino-tm1637),
 [ENCODER](https://github.com/buxtronix/arduino/tree/master/libraries/Rotary)
