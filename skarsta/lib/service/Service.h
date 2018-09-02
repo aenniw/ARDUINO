@@ -1,20 +1,23 @@
 #ifndef ARDUINO_PROJECTS_ROOT_SERVICE_H
 #define ARDUINO_PROJECTS_ROOT_SERVICE_H
 
-typedef enum {
-    UNCALIBRATED, // nothing calibrated
+typedef enum
+{
+    UNCALIBRATED,   // nothing calibrated
     SEMICALIBRATED, // bottom calibrated
-    CALIBRATED // bottom-top calibrated
+    CALIBRATED      // bottom-top calibrated
 } Calibration;
 
-typedef struct {
+typedef struct
+{
     Calibration calibration;
     unsigned int position, preset_1, preset_2, preset_3, end_stop;
 } Table_Data;
 
-class Service {
-public:
-    virtual void cycle()=0;
+class Service
+{
+  public:
+    virtual void cycle() = 0;
 };
 
 #endif //ARDUINO_PROJECTS_ROOT_SERVICE_H
