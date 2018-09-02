@@ -3,6 +3,7 @@
 
 #include <Arduino.h>
 #include <Service.h>
+#include <Motor.h>
 #include <SevenSegmentTM1637.h>
 
 #define DISPLAY_FADEOUT_TIMEOUT 25000
@@ -10,34 +11,40 @@
 #define DISPLAY_BLINK_TIMEOUT 500
 #define ENCODER_FULL_ROTATION_STEPS (1)
 
-class Display : Service {
+class Display : Service
+{
 private:
-    const unsigned int fade_end_begin = (DISPLAY_FADEOUT_TIMEOUT) / (CYCLE_DELAY);
-    const unsigned int fade_end_step = fade_end_begin + (DISPLAY_FADEOUT_DURATION) / (CYCLE_DELAY);
-    const double fade_step = 100.0 / (fade_end_step - fade_end_begin);
+  const unsigned int fade_end_begin = (DISPLAY_FADEOUT_TIMEOUT) / (CYCLE_DELAY);
+  const unsigned int fade_end_step = fade_end_begin + (DISPLAY_FADEOUT_DURATION) / (CYCLE_DELAY);
+  const double fade_step = 100.0 / (fade_end_step - fade_end_begin);
 
-    double brightness = 0;
-    long displayed_counter = 0, text_cycle_counter = 0;
-    unsigned int fadeout_cycle_counter = 0;
-    SevenSegmentTM1637 *display = nullptr;
+  double brightness = 0;
+  long displayed_counter = 0, text_cycle_counter = 0;
+  unsigned int fadeout_cycle_counter = 0;
+  SevenSegmentTM1637 *display = nullptr;
+  Motor *motor = nullptr;
 
-    void display_fading();
+  void display_blink();
 
-    void display_update();
+  void display_fading();
+
+  void display_update();
+
 public:
-    Display(uint8_t _pin1, uint8_t _pin2);
+  Display(uint8_t _pin1, uint8_t _pin2, Motor *motor);
 
-    void display_light_up();
+  void display_light_up();
 
-    void display_print(unsigned int position);
+  void display_print(unsigned int position);
 
-    void display_print(const char *text, unsigned int duration = 1000);
+  void display_print(const char *text, unsigned int duration = 1000);
 
-    void cycle() override;
+  void cycle() override;
 
-    ~Display() {
-        delete display;
-    }
+  ~Display()
+  {
+    delete display;
+  }
 };
 
 #endif //ARDUINO_PROJECTS_ROOT_DISPLAY_H

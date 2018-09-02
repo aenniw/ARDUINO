@@ -12,29 +12,30 @@
 
 #define SAVE_BUTTON_TIMEOUT 1500
 
-class Keypad : Service {
+class Keypad : Service
+{
 private:
-    bool manual_control_active = false;
-    int goto_button_pressed = -1;
-    unsigned long last_goto_interrupt_time = millis();
+  bool manual_control_active = false;
+  int goto_button_pressed = -1;
+  unsigned long last_goto_interrupt_time = millis();
 
-    Motor *motor;
-    Display *display;
+  Motor *motor;
+  Display *display;
 
-    void pciSetup(byte pin);
+  void pciSetup(byte pin);
 
 public:
-    Keypad(Motor *_motor, Display *_display);
+  Keypad(Motor *_motor, Display *_display);
 
-    void handle_manual_control();
+  void handle_manual_control();
 
-    void handle_goto_control();
+  void handle_goto_control();
 
-    void handle_calibration();
+  void handle_calibration();
 
-    void handle_interrupt();
+  void handle_interrupt();
 
-    void cycle() override;
+  void cycle() override;
 };
 
 #endif //ARDUINO_PROJECTS_ROOT_KEYPAD_H

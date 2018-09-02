@@ -14,21 +14,22 @@
 #define DISPLAY_PIN_DIO 5
 
 Table_Data table_data = {
-        .calibration=UNCALIBRATED,
-        .position=0,
-        .preset_1=0,
-        .preset_2=0,
-        .preset_3=0,
-        .end_stop=~0u
-};
+    .calibration = UNCALIBRATED,
+    .position = 0,
+    .preset_1 = 0,
+    .preset_2 = 0,
+    .preset_3 = 0,
+    .end_stop = ~0u};
 static Service **services;
 static const uint8_t services_count = 3;
 
-void setup() {
+void setup()
+{
 #ifdef __EEPROM__
     table_data = EEPROM.get(EEPROM.begin(), table_data);
 #endif
-    if (table_data.calibration > CALIBRATED) {
+    if (table_data.calibration > CALIBRATED)
+    {
         table_data.calibration = UNCALIBRATED;
     }
 #ifdef __DEBUG__
@@ -47,16 +48,17 @@ void setup() {
     Serial.println(table_data.end_stop);
 #endif
 
-    auto display = new Display(DISPLAY_PIN_CLK, DISPLAY_PIN_DIO);
     auto motor = new Motor(ENCODER_PIN_CLK, ENCODER_PIN_DIO, POWER_RELAY, DIRECTION_RELAY);
-    services = new Service *[services_count]{
-            (Service *) new Keypad(motor, display),
-            (Service *) motor,
-            (Service *) display};
+    auto display = new Display(DISPLAY_PIN_CLK, DISPLAY_PIN_DIO, motor);
+    services = new Service *[services_count] { (Service *)new Keypad(motor, display),
+                                                   (Service *)motor,
+                                                   (Service *)display };
 }
 
-void loop() {
-    for (uint8_t i = 0; i < services_count; i++) {
+void loop()
+{
+    for (uint8_t i = 0; i < services_count; i++)
+    {
         services[i]->cycle();
     }
     delay(CYCLE_DELAY);
