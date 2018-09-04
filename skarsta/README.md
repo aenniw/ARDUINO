@@ -37,6 +37,10 @@ After testing quite a few DC motors from Ebay, Aliexpres and Banggood I stuck wi
 - Cut off 100mm from the end of Skarsta handle which will be used to connect motor to table
 - Assemble all parts together and mount them to table
 
+### Wiring
+
+- TODO
+
 ### References
 
 ![](https://cdn.thingiverse.com/renders/84/36/45/45/12/885c656599cac7bea0320a0cf7080532_preview_featured.jpg)
