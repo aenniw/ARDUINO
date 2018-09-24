@@ -86,6 +86,7 @@ void Keypad::handle_goto_control()
         }
         else
         {
+            bool changed = false;
 #ifdef __DEBUG__
             Serial.print("Pos ");
             Serial.print(goto_button_pressed);
@@ -94,12 +95,15 @@ void Keypad::handle_goto_control()
             switch (goto_button_pressed)
             {
             case 0:
+                changed = table_data.preset_1 != table_data.position;
                 table_data.preset_1 = table_data.position;
                 break;
             case 1:
+                changed = table_data.preset_2 != table_data.position;
                 table_data.preset_2 = table_data.position;
                 break;
             case 2:
+                changed = table_data.preset_3 != table_data.position;
                 table_data.preset_3 = table_data.position;
                 break;
             default:
@@ -108,10 +112,13 @@ void Keypad::handle_goto_control()
 #endif
                 break;
             }
+            if (changed)
+            {
 #ifdef __EEPROM__
-            EEPROM.put(EEPROM.begin(), table_data);
+                EEPROM.put(EEPROM.begin(), table_data);
 #endif
-            display->display_print(" SET");
+                display->display_print(" SET", 1000);
+            }
         }
         goto_button_pressed = -1;
     }

@@ -6,19 +6,19 @@
 #include <Display.h>
 #include <Keypad.h>
 
-#define POWER_RELAY 6
-#define DIRECTION_RELAY 7
 #define ENCODER_PIN_CLK 2
 #define ENCODER_PIN_DIO 3
 #define DISPLAY_PIN_CLK 4
 #define DISPLAY_PIN_DIO 5
+#define DIRECTION_RELAY 6
+#define POWER_RELAY 7
 
 Table_Data table_data = {
     .calibration = UNCALIBRATED,
-    .position = 0,
-    .preset_1 = 0,
-    .preset_2 = 0,
-    .preset_3 = 0,
+    .position = 0u,
+    .preset_1 = 0u,
+    .preset_2 = 0u,
+    .preset_3 = 0u,
     .end_stop = ~0u};
 static Service **services;
 static const uint8_t services_count = 3;
