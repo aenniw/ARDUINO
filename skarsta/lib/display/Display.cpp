@@ -102,6 +102,7 @@ void Display::display_print(unsigned int position)
 {
     char buffer[5] = {'\0'};
     sprintf(buffer, "%04d", position);
+    display->clear();
     display->print(buffer);
     displayed_counter = position;
 }
@@ -112,6 +113,7 @@ void Display::display_print(const char *text, const unsigned int duration)
     Serial.print("Display: ");
     Serial.println(text);
 #endif
+    display->clear();
     display->print(text);
     text_cycle_counter = duration;
     displayed_counter = -1;
