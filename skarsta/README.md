@@ -38,6 +38,7 @@ After testing quite a few DC motors from Ebay, Aliexpress and Banggood, I stuck 
 - print all parts from [Thingverse](https://www.thingiverse.com/thing:3081839) or download them directly from [models](models)
   - all parts were printed in 0.2 mm layer height but 0.3 should be ok for [case-top.stl](models/case-top.stl)
   - all parts except for [buttons.stl](models/buttons.stl), [encoder-pulley.stl](models/encoder-pulley.stl), [motor-pulley.stl](models/motor-pulley.stl), [keypad-connector.stl](models/keypad-connector.stl) and [table-frame-tie.stl](models/table-frame-tie.stl) were printed with supports, but it should work without them...
+    - [panel-cover-bridge.stl](models/panel-cover-bridge.stl) has a tweak for printing without support, but you need clear the first layer on the holes
   - [motor-pulley.stl](models/motor-pulley.stl) should be printed with thicker walls or with 100% infill, also print few of these as this part will get permanently damaged when accidentally hit min/max height of table
   - based on your printer accuracy, may be needed pre-drilling of screw holes
 - get electronic parts (Total Cost ~25€):
