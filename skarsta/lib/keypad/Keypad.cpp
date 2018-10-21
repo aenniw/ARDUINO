@@ -1,22 +1,29 @@
 #include "Keypad.h"
 
-extern Table_Data table_data;
-static Keypad *static_keypad;
+static Keypad *static_keypad = nullptr;
 
 ISR(PCINT1_vect) // handle pin change interrupt for A0 to A5 here
 {
-    static_keypad->handle_interrupt();
+    if (static_keypad)
+        static_keypad->handle_interrupt();
 }
 
 Keypad::Keypad(Motor *_motor, Display *_display)
 {
+#ifdef __EEPROM__
+    for (int i = 0; i < 3; i++)
+        EEPROM.get(ADDRESS_PRESETS[i], presets[i]);
+#endif
+
+    motor = _motor;
+    display = _display;
+
     for (uint8_t i = A0; i <= A5; i++)
     {
         digitalWrite(i, HIGH); // set pull-up
         pciSetup(i);           // set interrupt
     }
-    motor = _motor;
-    display = _display;
+    // Needs to be last as interupt setup may triger isr
     static_keypad = this;
 }
 
@@ -27,174 +34,153 @@ void Keypad::pciSetup(byte pin)
     PCICR |= bit(digitalPinToPCICRbit(pin));                   // enable interrupt for the group
 }
 
-void Keypad::handle_manual_control()
+bool Keypad::handle_manual_control(bool down, bool up)
 {
-    if (digitalRead(A0) == LOW)
+    static bool local_control = false;
+
+    if (down)
     {
-        motor->dir_ccw();
-        manual_control_active = true;
+        motor->set_state(CCW);
     }
-    else if (digitalRead(A1) == LOW)
+    else if (up)
     {
-        motor->dir_cw();
-        manual_control_active = true;
+        motor->set_state(CW);
     }
-    else if (manual_control_active && digitalRead(A0) && digitalRead(A1))
+    else if (local_control && !down && !up)
     {
-        motor->off();
-        manual_control_active = false;
+        motor->set_state(OFF);
+        local_control = down || up;
+        return true;
     }
+    local_control = down || up;
+    return local_control;
 }
 
-void Keypad::handle_goto_control()
+bool Keypad::handle_goto_control(bool p_1, bool p_2, bool p_3)
 {
-    if (table_data.calibration != CALIBRATED)
-    {
-        return;
-    }
-    bool states[] = {(bool)digitalRead(A2), (bool)digitalRead(A3), (bool)digitalRead(A4)},
-         allHigh = states[0] && states[1] && states[2];
+    static int8_t goto_button_pressed = -1;
+    static long last_goto_interrupt_time = millis();
+    unsigned long interrupt_time = millis(),
+                  interrupt_diff = ABSD(interrupt_time, last_goto_interrupt_time);
 
-    unsigned long interrupt_time = millis();
+    bool none_pressed = !p_1 && !p_2 && !p_3;
+    tst_ = !none_pressed;
 
-    if (allHigh && goto_button_pressed >= 0)
+    if (none_pressed && goto_button_pressed >= 0)
     {
-        if (interrupt_time - last_goto_interrupt_time < SAVE_BUTTON_TIMEOUT)
+        if (interrupt_diff < SAVE_BUTTON_TIMEOUT)
         {
-#ifdef __DEBUG__
-            Serial.print("Pos ");
-            Serial.print(goto_button_pressed);
-            Serial.println(" goto.");
-#endif
-            switch (goto_button_pressed)
-            {
-            case 0:
-                motor->goto_position(table_data.preset_1);
-                break;
-            case 1:
-                motor->goto_position(table_data.preset_2);
-                break;
-            case 2:
-                motor->goto_position(table_data.preset_3);
-                break;
-            default:
-#ifdef __DEBUG__
-                Serial.println("Unknown button pressed");
-#endif
-                break;
-            }
+            motor->set_position(presets[goto_button_pressed]);
         }
         else
         {
-            bool changed = false;
-#ifdef __DEBUG__
-            Serial.print("Pos ");
-            Serial.print(goto_button_pressed);
-            Serial.println(" set.");
-#endif
-            switch (goto_button_pressed)
-            {
-            case 0:
-                changed = table_data.preset_1 != table_data.position;
-                table_data.preset_1 = table_data.position;
-                break;
-            case 1:
-                changed = table_data.preset_2 != table_data.position;
-                table_data.preset_2 = table_data.position;
-                break;
-            case 2:
-                changed = table_data.preset_3 != table_data.position;
-                table_data.preset_3 = table_data.position;
-                break;
-            default:
-#ifdef __DEBUG__
-                Serial.println("Unknown button pressed");
-#endif
-                break;
-            }
-            if (changed)
-            {
+            presets[goto_button_pressed] = motor->get_position();
 #ifdef __EEPROM__
-                EEPROM.put(EEPROM.begin(), table_data);
+            EEPROM.update(ADDRESS_PRESETS[goto_button_pressed], presets[goto_button_pressed]);
 #endif
-                display->display_print(" SET", 1000);
-            }
         }
         goto_button_pressed = -1;
     }
     else
     {
-        for (uint8_t i = 0; i < 3; i++)
-        {
-            if (!states[i])
-                goto_button_pressed = i;
-        }
+        if (goto_button_pressed < 0)
+            last_goto_interrupt_time = interrupt_time;
+        if (p_1)
+            goto_button_pressed = 0;
+        if (p_2)
+            goto_button_pressed = 1;
+        if (p_3)
+            goto_button_pressed = 2;
     }
-    last_goto_interrupt_time = interrupt_time;
+
+    return !none_pressed;
 }
 
-void Keypad::handle_calibration()
+bool Keypad::handle_calibration(bool b)
 {
-    if (digitalRead(A5) == LOW)
+    if (!b)
+        return false;
+
+    switch (motor->get_mode())
     {
-        switch (table_data.calibration)
+    case UNCALIBRATED:
+        motor->set_mode(SEMICALIBRATED);
+        motor->reset_position();
+        break;
+    case SEMICALIBRATED:
+        motor->set_mode(CALIBRATED);
+        motor->set_end_stop(motor->get_position());
+        display->set_blink(false);
+        break;
+    default:
+        for (int i = 0; i < 3; i++)
         {
-        case UNCALIBRATED:
-            table_data.calibration = SEMICALIBRATED;
-            table_data.position = 0;
-#ifdef __DEBUG__
-            Serial.println("Calibration set start.");
-#endif
-            break;
-        case SEMICALIBRATED:
-            table_data.calibration = CALIBRATED;
-            table_data.end_stop = table_data.position;
+            presets[i] = 0u;
 #ifdef __EEPROM__
-            EEPROM.put(EEPROM.begin(), table_data);
+            EEPROM.update(ADDRESS_PRESETS[i], presets[i]);
 #endif
-#ifdef __DEBUG__
-            Serial.print("Calibration end-stop ");
-            Serial.println(table_data.position);
-#endif
-            break;
-        default:
-            table_data.calibration = UNCALIBRATED;
-            table_data.end_stop = ~0u;
-            table_data.preset_1 = 0;
-            table_data.preset_2 = 0;
-            table_data.preset_3 = 0;
-#ifdef __DEBUG__
-            Serial.println("Calibration clear.");
-#endif
-#ifdef __EEPROM__
-            EEPROM.put(EEPROM.begin(), table_data);
-#endif
-            break;
         }
+        motor->set_mode(UNCALIBRATED);
+        motor->set_end_stop(~0u);
+        display->set_blink(true);
+        motor->reset_position();
+        break;
     }
+
+    return true;
 }
 
 void Keypad::handle_interrupt()
 {
+    static unsigned long last_interrupt_time = 0;
+    unsigned long interrupt_time = millis(),
+                  interrupt_diff = ABSD(interrupt_time, last_interrupt_time);
+    last_interrupt_time = interrupt_time;
+
+    if (handle_manual_control(digitalRead(A0) == LOW,
+                              digitalRead(A1) == LOW))
+        return;
+
+    if (motor->get_mode() == CALIBRATED &&
+        handle_goto_control(digitalRead(A2) == LOW,
+                            digitalRead(A3) == LOW,
+                            digitalRead(A4) == LOW))
+        return;
+
+    if (interrupt_diff > 200)
     {
-        display->display_light_up();
-        handle_goto_control();
-        handle_manual_control();
-        static unsigned long last_interrupt_time = 0;
-        unsigned long interrupt_time = millis();
-        // If interrupts come faster than 200ms, assume it's a bounce and ignore
-        if (interrupt_time - last_interrupt_time > 200)
-        {
-            handle_calibration();
-        }
-        last_interrupt_time = interrupt_time;
-    };
+        handle_calibration(digitalRead(A5) == LOW);
+    }
 }
 
 void Keypad::cycle()
 {
-    if (goto_button_pressed >= 0 && millis() - last_goto_interrupt_time >= SAVE_BUTTON_TIMEOUT)
+    static unsigned int pos_watch = motor->get_position();
+    static unsigned long time_watch = 0;
+    if (tst_ && time_watch == 0)
     {
-        display->display_print(" SET");
+        time_watch = millis();
     }
+    if (!tst_)
+    {
+        time_watch = 0;
+    }
+
+    if (time_watch > 0 && ABSD(millis(), time_watch) > SAVE_BUTTON_TIMEOUT)
+    {
+        display->display_print("-set");
+        return;
+    }
+    if (pos_watch != motor->get_position())
+    {
+        pos_watch = motor->get_position();
+        display->set_blink(false);
+    }
+    else if (motor->get_mode() == SEMICALIBRATED)
+        display->set_blink(true);
+
+    if (motor->get_mode() != UNCALIBRATED)
+        display->display_print(motor->get_position());
+    else if (motor->get_mode() == UNCALIBRATED)
+        display->display_print(DISPLAY_NONE);
 }

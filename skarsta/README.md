@@ -151,5 +151,5 @@ After testing quite a few DC motors from Ebay, Aliexpress and Banggood, I stuck 
 
 ### Library Credentials
 
-[TM1637](https://github.com/bremme/arduino-tm1637),
 [ENCODER](https://github.com/buxtronix/arduino/tree/master/libraries/Rotary)
+[TM1637](https://github.com/Seeed-Studio/Grove_4Digital_Display)

@@ -1,133 +1,86 @@
 #include "Display.h"
 
-#define MAX(x, y) ((x) >= (y) ? (x) : (y))
-extern Table_Data table_data;
+static int8_t codes_numbers[] = {0x3f, 0x06, 0x5b, 0x4f, 0x66,
+                                 0x6d, 0x7d, 0x07, 0x7f, 0x6f};
 
-Display::Display(uint8_t _pin1, uint8_t _pin2, Motor *motor)
+static int8_t get_code_n(uint8_t n)
 {
-    this->motor = motor;
-    display = new SevenSegmentTM1637(_pin1, _pin2);
-    display->begin();
-    display_light_up();
+    return n > 9 ? 0x00 : codes_numbers[n];
+}
 
-    if (table_data.calibration != CALIBRATED)
+static int8_t get_code_c(char c)
+{
+    if (c >= 'A' && c <= 'Z')
     {
-        display->print("----");
+        c = c + 32;
+    }
+    switch (c)
+    {
+    case '-':
+        return B01000000;
+    case 's':
+        return B01101101;
+    case 'e':
+        return B01111001;
+    case 't':
+        return B01111000;
+    default:
+        return 0x00;
     }
 }
 
-void Display::display_fading()
+Display::Display(uint8_t _pin1, uint8_t _pin2)
 {
-    if (fadeout_cycle_counter >= fade_end_step)
-        return;
-
-    fadeout_cycle_counter++;
-    if (fadeout_cycle_counter >= fade_end_begin)
-    {
-        brightness = 100.0 - ((fadeout_cycle_counter - fade_end_begin) * fade_step);
-#ifdef __DEBUG__
-        Serial.print("Backlight: ");
-        Serial.print(fade_end_begin);
-        Serial.print(" ");
-        Serial.print(fade_end_step);
-        Serial.print(" ");
-        Serial.print(fadeout_cycle_counter);
-        Serial.print(" ");
-        Serial.print(fade_step);
-        Serial.print(" ");
-        Serial.println(brightness);
-#endif
-        display->setBacklight((int)brightness);
-    }
+    display = new TM1637(_pin1, _pin2);
+    display->set();
 }
 
-void Display::display_blink()
+void Display::set_blink(bool state)
 {
-    static unsigned int blink_counter = 0;
-
-    if (motor->get_state() == OFF)
-    {
-
-        if (blink_counter % DISPLAY_BLINK_TIMEOUT == 0)
-        {
-            display_light_up();
-        }
-        else if (blink_counter % DISPLAY_BLINK_TIMEOUT == DISPLAY_BLINK_TIMEOUT * 0.5)
-        {
-            display->setBacklight(0);
-        }
-    }
-
-    blink_counter++;
-}
-
-void Display::display_update()
-{
-
-    if (table_data.calibration != CALIBRATED)
-    {
-        display_blink();
-        // Display current position with min capped to 0
-        if (table_data.calibration == SEMICALIBRATED)
-        {
-            display_print(table_data.position);
-        }
-        // Display that table is uncalibrated
-        else if (table_data.calibration == UNCALIBRATED)
-        {
-            display->print("----");
-        }
-        return;
-    }
-
-    if (displayed_counter != table_data.position)
-    {
-#ifdef __DEBUG__
-        Serial.print("Position: ");
-        Serial.println(table_data.position);
-#endif
-        display_print(MAX(table_data.position - (table_data.position % ENCODER_FULL_ROTATION_STEPS), 0) /
-                      ENCODER_FULL_ROTATION_STEPS);
-    }
-}
-
-void Display::display_light_up()
-{
-    brightness = 100.0;
-    display->setBacklight((int)brightness);
-    fadeout_cycle_counter = 0;
+    this->blink = state;
+    this->dirty = true;
 }
 
 void Display::display_print(unsigned int position)
 {
-    char buffer[5] = {'\0'};
-    sprintf(buffer, "%04d", position);
-    display->clear();
-    display->print(buffer);
-    displayed_counter = position;
+    disp_buffer[3] = get_code_n(position % 10);
+    disp_buffer[2] = get_code_n((position % 100) / 10);
+    disp_buffer[1] = get_code_n((position / 100) % 10);
+    disp_buffer[0] = get_code_n(position / 1000);
+    dirty = true;
 }
 
-void Display::display_print(const char *text, const unsigned int duration)
+void Display::display_print(const char *text)
 {
-#ifdef __DEBUG__
-    Serial.print("Display: ");
-    Serial.println(text);
-#endif
-    display->clear();
-    display->print(text);
-    text_cycle_counter = duration;
-    displayed_counter = -1;
+    const uint8_t len = strlen(text);
+    disp_buffer[0] = len > 0 ? get_code_c(text[0]) : 0x00;
+    disp_buffer[1] = len > 1 ? get_code_c(text[1]) : 0x00;
+    disp_buffer[2] = len > 2 ? get_code_c(text[2]) : 0x00;
+    disp_buffer[3] = len > 3 ? get_code_c(text[3]) : 0x00;
+    dirty = true;
 }
 
 void Display::cycle()
 {
-    if (text_cycle_counter <= 0)
+    static unsigned long last_tick = millis();
+
+    if (!blink && dirty)
     {
-        display_fading();
-        display_update();
+        display->display(disp_buffer, true);
+        dirty = false;
     }
-    else
+
+    if (blink && ABSD(millis(), last_tick) >= 500)
     {
-        text_cycle_counter -= CYCLE_DELAY;
+        if (!clear)
+        {
+            display->clearDisplay();
+        }
+        else
+        {
+            display->display(disp_buffer, true);
+        }
+        clear = !clear;
+        last_tick = millis();
     }
 }

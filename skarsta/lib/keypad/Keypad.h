@@ -12,26 +12,32 @@
 
 #define SAVE_BUTTON_TIMEOUT 1500
 
+#ifdef __EEPROM__
+const size_t ADDRESS_PRESETS[3] = {
+    (ADDRESS_MODE + sizeof(unsigned int)),
+    (ADDRESS_MODE + 2 * sizeof(unsigned int)),
+    (ADDRESS_MODE + 3 * sizeof(unsigned int))};
+#endif
+
 class Keypad : Service
 {
 private:
-  bool manual_control_active = false;
-  int goto_button_pressed = -1;
-  unsigned long last_goto_interrupt_time = millis();
-
+  unsigned int presets[3] = {0u};
   Motor *motor;
   Display *display;
+  bool tst_ = false;
 
+protected:
   void pciSetup(byte pin);
+
+  bool handle_manual_control(bool down, bool up);
+
+  bool handle_goto_control(bool p_1, bool p_2, bool p_3);
+
+  bool handle_calibration(bool b);
 
 public:
   Keypad(Motor *_motor, Display *_display);
-
-  void handle_manual_control();
-
-  void handle_goto_control();
-
-  void handle_calibration();
 
   void handle_interrupt();
 
