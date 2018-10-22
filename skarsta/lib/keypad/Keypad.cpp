@@ -41,10 +41,16 @@ bool Keypad::handle_manual_control(bool down, bool up)
     if (down)
     {
         motor->set_state(CCW);
+#ifdef __DEBUG__
+        Serial.println("kp ccw");
+#endif
     }
     else if (up)
     {
         motor->set_state(CW);
+#ifdef __DEBUG__
+        Serial.println("kp cw");
+#endif
     }
     else if (local_control && !down && !up)
     {
@@ -59,18 +65,23 @@ bool Keypad::handle_manual_control(bool down, bool up)
 bool Keypad::handle_goto_control(bool p_1, bool p_2, bool p_3)
 {
     static int8_t goto_button_pressed = -1;
-    static long last_goto_interrupt_time = millis();
-    unsigned long interrupt_time = millis(),
-                  interrupt_diff = ABSD(interrupt_time, last_goto_interrupt_time);
+    static unsigned long last_tick = millis();
+    unsigned long now = millis(), diff = get_period(last_tick, now);
 
     bool none_pressed = !p_1 && !p_2 && !p_3;
     tst_ = !none_pressed;
 
     if (none_pressed && goto_button_pressed >= 0)
     {
-        if (interrupt_diff < SAVE_BUTTON_TIMEOUT)
+        if (diff < SAVE_BUTTON_TIMEOUT)
         {
             motor->set_position(presets[goto_button_pressed]);
+#ifdef __DEBUG__
+            Serial.print("kp goto pos: ");
+            Serial.print(goto_button_pressed + 1);
+            Serial.print(",");
+            Serial.println(presets[goto_button_pressed]);
+#endif
         }
         else
         {
@@ -78,13 +89,19 @@ bool Keypad::handle_goto_control(bool p_1, bool p_2, bool p_3)
 #ifdef __EEPROM__
             EEPROM.update(ADDRESS_PRESETS[goto_button_pressed], presets[goto_button_pressed]);
 #endif
+#ifdef __DEBUG__
+            Serial.print("kp set pos: ");
+            Serial.print(goto_button_pressed + 1);
+            Serial.print(",");
+            Serial.println(presets[goto_button_pressed]);
+#endif
         }
         goto_button_pressed = -1;
     }
     else
     {
         if (goto_button_pressed < 0)
-            last_goto_interrupt_time = interrupt_time;
+            last_tick = now;
         if (p_1)
             goto_button_pressed = 0;
         if (p_2)
@@ -132,10 +149,9 @@ bool Keypad::handle_calibration(bool b)
 
 void Keypad::handle_interrupt()
 {
-    static unsigned long last_interrupt_time = 0;
-    unsigned long interrupt_time = millis(),
-                  interrupt_diff = ABSD(interrupt_time, last_interrupt_time);
-    last_interrupt_time = interrupt_time;
+    static unsigned long last_tick = 0;
+    unsigned long now = millis(), diff = get_period(last_tick, now);
+    last_tick = now;
 
     if (handle_manual_control(digitalRead(A0) == LOW,
                               digitalRead(A1) == LOW))
@@ -147,7 +163,7 @@ void Keypad::handle_interrupt()
                             digitalRead(A4) == LOW))
         return;
 
-    if (interrupt_diff > 200)
+    if (diff > 200)
     {
         handle_calibration(digitalRead(A5) == LOW);
     }
@@ -166,7 +182,8 @@ void Keypad::cycle()
         time_watch = 0;
     }
 
-    if (time_watch > 0 && ABSD(millis(), time_watch) > SAVE_BUTTON_TIMEOUT)
+    if (time_watch > 0 &&
+        get_period(time_watch, millis()) > SAVE_BUTTON_TIMEOUT + DISPLAY_TRIGER_DELAY)
     {
         display->display_print("-set");
         return;
@@ -182,5 +199,8 @@ void Keypad::cycle()
     if (motor->get_mode() != UNCALIBRATED)
         display->display_print(motor->get_position());
     else if (motor->get_mode() == UNCALIBRATED)
+    {
+        display->set_blink(true);
         display->display_print(DISPLAY_NONE);
+    }
 }

@@ -1,8 +1,6 @@
 #ifndef ARDUINO_PROJECTS_ROOT_SERVICE_H
 #define ARDUINO_PROJECTS_ROOT_SERVICE_H
 
-#define ABSD(a, b) ((a > b) ? (a - b) : (b - a))
-
 #define DISPLAY_NONE "----"
 
 class Service
@@ -10,5 +8,7 @@ class Service
 public:
   virtual void cycle() = 0;
 };
+
+unsigned long get_period(const unsigned long last, const unsigned long next);
 
 #endif //ARDUINO_PROJECTS_ROOT_SERVICE_H

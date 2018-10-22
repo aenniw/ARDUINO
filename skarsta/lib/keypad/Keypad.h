@@ -11,6 +11,7 @@
 #endif
 
 #define SAVE_BUTTON_TIMEOUT 1500
+#define DISPLAY_TRIGER_DELAY 100
 
 #ifdef __EEPROM__
 const size_t ADDRESS_PRESETS[3] = {
