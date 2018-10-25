@@ -5,13 +5,21 @@
 #include <Service.h>
 #include <Motor.h>
 #include <Display.h>
+#include <Buttons.h>
 
 #ifdef __EEPROM__
 #include <EEPROM.h>
 #endif
 
+#define BUTTON_DOWN A0
+#define BUTTON_UP A1
+#define BUTTON_P0 A2
+#define BUTTON_P1 A3
+#define BUTTON_P2 A4
+#define BUTTON_RST A5
+
 #define SAVE_BUTTON_TIMEOUT 1500
-#define DISPLAY_TRIGER_DELAY 100
+#define RST_BUTTON_TIMEOUT 1500
 
 #ifdef __EEPROM__
 const size_t ADDRESS_PRESETS[3] = {
@@ -22,27 +30,20 @@ const size_t ADDRESS_PRESETS[3] = {
 
 class Keypad : Service
 {
-private:
-  unsigned int presets[3] = {0u};
-  Motor *motor;
-  Display *display;
-  bool tst_ = false;
+  private:
+    ToggleButton *down = nullptr, *up = nullptr;
+    TimedButton *preset_buttons[3] = {nullptr}, *rst = nullptr;
 
-protected:
-  void pciSetup(byte pin);
+  public:
+    Keypad(Motor *_motor, Display *_display);
 
-  bool handle_manual_control(bool down, bool up);
+    void set_preset(uint8_t i);
 
-  bool handle_goto_control(bool p_1, bool p_2, bool p_3);
+    void goto_preset(uint8_t i);
 
-  bool handle_calibration(bool b);
+    void cycle() override;
 
-public:
-  Keypad(Motor *_motor, Display *_display);
-
-  void handle_interrupt();
-
-  void cycle() override;
+    ~Keypad();
 };
 
 #endif //ARDUINO_PROJECTS_ROOT_KEYPAD_H
