@@ -13,6 +13,7 @@ static Service **services;
 static const uint8_t services_count = 3;
 
 #ifdef __EEPROM__
+
 bool eeprom_valid()
 {
     for (unsigned int i = ADDRESS_MODE + 4 * sizeof(unsigned int); i < EEPROM.length(); ++i)
@@ -31,8 +32,9 @@ void eeprom_reset()
     Serial.println("reset eeprom");
 #endif
     for (unsigned int i = 0; i < EEPROM.length(); ++i)
-        EEPROM.update(i, 0);
+        updateEEPROM(i, 0);
 }
+
 #endif
 
 void setup()
@@ -45,6 +47,7 @@ void setup()
         eeprom_reset();
 #endif
 
+    delay(1000);
     auto motor = new Motor(ENCODER_PIN_CLK, ENCODER_PIN_DIO, POWER_RELAY, DIRECTION_RELAY);
     auto display = new Display(DISPLAY_PIN_CLK, DISPLAY_PIN_DIO);
     services = new Service *[services_count] { (Service *)new Keypad(motor, display),

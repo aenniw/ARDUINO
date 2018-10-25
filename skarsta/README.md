@@ -4,7 +4,7 @@
 
 ## Introduction
 
-Quite some time ago, I have bought one of [Skarsta](https://www.ikea.com/us/en/catalog/products/S29084966/) tables. As its electric alternative [Bekant](https://www.ikea.com/us/en/catalog/products/S59022528/) seemed to me overpriced and it doesn't have many presets for custom positions.
+Quite some time ago, I have bought one of [Skarsta](https://www.ikea.com/us/en/catalog/products/S29084966/) tables. As its electric alternative [Bekant](https://www.ikea.com/us/en/catalog/products/S59022528/) seemed to me overpriced and it doesn't have many preset_values for custom positions.
 Design of the case and its mechanical parts (mainly motor and encoder) was updated multiple times during this time.
 First version was powered by [FIXA Screwdriver](https://www.ikea.com/us/en/catalog/products/60196103/). This was great, as I was reusing all of its electronics. However, it has drawbacks, as it could not handle heavier loads of stuff on the table and PSU that was supplied, could be used only for recharging, which resulted to dead batteries sooner than expected.
 After testing quite a few DC motors from Ebay, Aliexpress and Banggood, I stuck with [DC-12V-180RPM Motor](https://www.banggood.com/DC-12V-180RPM-Geared-Motor-High-Torque-Gear-Reducer-Motor-p-1068573.html?p=7W02096203810201609O&stayold=1&curwarehouse=CN), that satisfies my needs at the moment. But basically, you can use any motor that you have... All you have to do is update case sizing for that motor. Other electronics can remain the same...
@@ -26,12 +26,12 @@ After testing quite a few DC motors from Ebay, Aliexpress and Banggood, I stuck 
 </details>
 
 - While display is flashing with dashes, set table to lowest position
-- Press "tilde" button to confirm lowest position and afterwards set table to highest position
-- Press "tilde" button once more to confirm max position
+- Press "tilde" button for 3s or until message '-rst' shows to confirm lowest position and afterwards set table to highest position
+- Press "tilde" button for 3s or until message '-rst' shows once more to confirm max position
 - Afterwards you can use table with min/max soft. limits and custom positions
 - To set new position just press one of 1, 2, 3 buttons until display shows "set" message
 - To "goto" preset position just press 1, 2, 3 buttons
-- To reset min/max bounds and custom positions, press "tilde" once it was calibrated
+- To reset min/max bounds and custom positions, press "tilde" once more as previously it was calibrated
 
 ### How-to
 
@@ -51,7 +51,7 @@ After testing quite a few DC motors from Ebay, Aliexpress and Banggood, I stuck 
   [Power connector](https://www.ebay.com/itm/10pcs-DC-005-Power-Supply-Jack-Socket-Female-PCB-Mount-Connector-5-5mm-x-2-1mm/263403309838?hash=item3d540f8b0e:g:tMgAAOSwc2FaQFNw),
   [Step-Down module](https://www.ebay.com/itm/1PCS-DC-DC-LM2596-power-Supply-Buck-Converter-step-down-module-NEW-CA/142147326064?hash=item2118a41070:g:L1kAAOSwvzRXzOBg),
   [Display](https://www.ebay.com/itm/0-56-TM1637-4Bit-Digital-LED-7-Segment-Clock-Tube-Display-For-Arduino-White/172971714554?hash=item2845eae7fa:g:ISAAAOSweZJaOkDh),
-  [Display buttons](https://www.ebay.com/itm/20Set-Momentary-Tactile-Push-Button-Touch-Micro-Switch-4P-PCB-Caps12x12x7-3mm-XW/113218977191?hash=item1a5c607da7:g:ay4AAOSwkVxa8RE4),
+  [Display buttons](https://www.ebay.com/itm/20Set-Momentary-Tactile-Push-TimedButton-Touch-Micro-Switch-4P-PCB-Caps12x12x7-3mm-XW/113218977191?hash=item1a5c607da7:g:ay4AAOSwkVxa8RE4),
   [12V motor](https://www.banggood.com/DC-12V-180RPM-Geared-Motor-High-Torque-Gear-Reducer-Motor-p-1068573.html?p=7W02096203810201609O&stayold=1&curwarehouse=CN),
   [PSU 12V3A - minimal](https://www.meanwell-web.com/en-gb/ac-dc-industrial-desktop-adaptor-output-12vdc-at-gst36e12--p1j),
   [PSU 12V5A - recommended](https://www.meanwell-web.com/en-gb/ac-dc-industrial-desktop-adaptor-with-3-pin-iec320-gs60a12--p1j),
@@ -154,3 +154,4 @@ After testing quite a few DC motors from Ebay, Aliexpress and Banggood, I stuck 
 
 [ENCODER](https://github.com/buxtronix/arduino/tree/master/libraries/Rotary)
 [TM1637](https://github.com/Seeed-Studio/Grove_4Digital_Display)
+[InterruptLib](https://github.com/GreyGnome/PinChangeInt)

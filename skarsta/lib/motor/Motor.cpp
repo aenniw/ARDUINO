@@ -1,5 +1,7 @@
 #ifdef __EEPROM__
+
 #include <EEPROM.h>
+
 #endif
 
 #include <Motor.h>
@@ -14,11 +16,18 @@ Motor::Motor(uint8_t _pin1, uint8_t _pin2, uint8_t _pin3, uint8_t _pin4)
     this->dir_pin = _pin4;
 
 #ifdef __EEPROM__
-
     EEPROM.get(ADDRESS_POSITION, position);
     EEPROM.get(ADDRESS_END_STOP, end_stop);
     EEPROM.get(ADDRESS_MODE, mode);
+#endif
 
+#ifdef __DEBUG__
+    Serial.print("m pos: ");
+    Serial.println(position);
+    Serial.print("m end_pos: ");
+    Serial.println(end_stop);
+    Serial.print("m mode:");
+    Serial.println(mode);
 #endif
 
     encoder = new Rotary(_pin1, _pin2);
@@ -37,25 +46,28 @@ Motor::Motor(uint8_t _pin1, uint8_t _pin2, uint8_t _pin3, uint8_t _pin4)
 
 void Motor::off()
 {
+#ifdef __EEPROM__
+    if (mode != UNCALIBRATED)
+        updateEEPROM(ADDRESS_POSITION, position);
+#endif
     if (state == OFF)
     {
-        next_state = state;
         return;
     }
 
-#ifdef __DEBUG__
-    Serial.println("m off");
-#endif
     digitalWrite(power_pin, HIGH);
+#ifdef __DEBUG__
+    Serial.print("m off ");
+    Serial.print(end_stop);
+    Serial.println();
+#endif
     state = OFF;
-    next_state = state;
 }
 
 void Motor::dir_cw()
 {
     if (state == CW || (position >= end_stop && mode == CALIBRATED))
     {
-        next_state = state;
         return;
     }
 
@@ -66,14 +78,12 @@ void Motor::dir_cw()
     delay(DIRECTION_CHANGE_DELAY);
     digitalWrite(power_pin, LOW);
     state = CW;
-    next_state = state;
 }
 
 void Motor::dir_ccw()
 {
     if (state == CCW || (position <= 0 && mode != UNCALIBRATED))
     {
-        next_state = state;
         return;
     }
 
@@ -84,7 +94,6 @@ void Motor::dir_ccw()
     delay(DIRECTION_CHANGE_DELAY);
     digitalWrite(power_pin, LOW);
     state = CCW;
-    next_state = state;
 }
 
 unsigned int Motor::get_position()
@@ -96,7 +105,7 @@ void Motor::reset_position()
 {
     this->position = 0u;
 #ifdef __EEPROM__
-    EEPROM.update(ADDRESS_POSITION, position);
+    updateEEPROM(ADDRESS_POSITION, position);
 #endif
 #ifdef __DEBUG__
     Serial.println("m rst");
@@ -112,11 +121,11 @@ void Motor::set_position(unsigned int pos)
     next_position = pos;
     if (next_position < position)
     {
-        this->set_state(CCW);
+        this->dir_ccw();
     }
     else
     {
-        this->set_state(CW);
+        this->dir_cw();
     }
 #ifdef __DEBUG__
     Serial.print("m pos:");
@@ -142,7 +151,7 @@ void Motor::update_position(const unsigned char result)
 
 #ifdef __EEPROM__
     if (state == OFF)
-        EEPROM.update(ADDRESS_POSITION, position);
+        updateEEPROM(ADDRESS_POSITION, position);
 #endif
 
     if (position == 0 || position >= end_stop)
@@ -165,15 +174,6 @@ MotorState Motor::get_state()
     return this->state;
 }
 
-void Motor::set_state(MotorState state)
-{
-    this->next_state = state;
-#ifdef __DEBUG__
-    Serial.print("m state: ");
-    Serial.println(state);
-#endif
-}
-
 MotorMode Motor::get_mode()
 {
     return this->mode;
@@ -183,7 +183,7 @@ void Motor::set_mode(MotorMode mode)
 {
     this->mode = mode;
 #ifdef __EEPROM__
-    EEPROM.update(ADDRESS_MODE, this->mode);
+    updateEEPROM(ADDRESS_MODE, this->mode);
 #endif
 #ifdef __DEBUG__
     Serial.print("m mode: ");
@@ -195,32 +195,15 @@ void Motor::set_end_stop(unsigned int end_stop)
 {
     this->end_stop = end_stop;
 #ifdef __EEPROM__
-    EEPROM.update(ADDRESS_END_STOP, this->end_stop);
+    updateEEPROM(ADDRESS_END_STOP, this->end_stop);
 #endif
 #ifdef __DEBUG__
-    Serial.print("m estop:");
+    Serial.print("m end_pos: ");
     Serial.println(end_stop);
 #endif
 }
 
-void Motor::cycle()
-{
-    if (next_state != state)
-    {
-        switch (next_state)
-        {
-        case OFF:
-            this->off();
-            break;
-        case CCW:
-            this->dir_ccw();
-            break;
-        case CW:
-            this->dir_cw();
-            break;
-        }
-    }
-};
+void Motor::cycle(){};
 
 Motor::~Motor()
 {

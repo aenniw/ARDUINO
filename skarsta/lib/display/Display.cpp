@@ -12,7 +12,7 @@ static int8_t get_code_c(char c)
 {
     if (c >= 'A' && c <= 'Z')
     {
-        c = c + 32;
+        c = static_cast<char>(c + 32);
     }
     switch (c)
     {
