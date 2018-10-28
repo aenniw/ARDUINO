@@ -33,6 +33,8 @@ class Keypad : Service
   private:
     ToggleButton *down = nullptr, *up = nullptr;
     TimedButton *preset_buttons[3] = {nullptr}, *rst = nullptr;
+protected:
+    bool stop_motor();
 
   public:
     Keypad(Motor *_motor, Display *_display);

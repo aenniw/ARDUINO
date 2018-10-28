@@ -5,7 +5,7 @@ static Motor *motor = nullptr;
 static Display *display = nullptr;
 unsigned int preset_values[3] = {0u};
 
-#define PRESET_BUTTON(pin, p) new TimedButton(pin, SAVE_BUTTON_TIMEOUT, []() { keypad->goto_preset(p); }, []() { keypad->set_preset(p); })
+#define PRESET_BUTTON(pin, p) new TimedButton(pin, SAVE_BUTTON_TIMEOUT, []() { if (!keypad->stop_motor()) keypad->goto_preset(p); }, []() { keypad->set_preset(p); })
 #define SET_PRESET_BUTTON(pin, p) preset_buttons[p] = PRESET_BUTTON(pin, p)
 
 Keypad::Keypad(Motor *_motor, Display *_display)
@@ -29,14 +29,14 @@ Keypad::Keypad(Motor *_motor, Display *_display)
 #endif
     }
     // up/down
-    down = new ToggleButton(BUTTON_DOWN, []() { motor->dir_ccw(); }, []() { motor->off(); });
-    up = new ToggleButton(BUTTON_UP, []() { motor->dir_cw(); }, []() { motor->off(); });
+    down = new ToggleButton(BUTTON_DOWN, []() { if (!keypad->stop_motor()) motor->dir_ccw(); }, []() { motor->off(); });
+    up = new ToggleButton(BUTTON_UP, []() { if (!keypad->stop_motor()) motor->dir_cw(); }, []() { motor->off(); });
     // presets
     SET_PRESET_BUTTON(BUTTON_P0, 0);
     SET_PRESET_BUTTON(BUTTON_P1, 1);
     SET_PRESET_BUTTON(BUTTON_P2, 2);
     // calibration
-    rst = new TimedButton(BUTTON_RST, RST_BUTTON_TIMEOUT, []() {}, []() {
+    rst = new TimedButton(BUTTON_RST, RST_BUTTON_TIMEOUT, []() { keypad->stop_motor(); }, []() {
         switch (motor->get_mode()) {
             case UNCALIBRATED:
                 motor->set_mode(SEMICALIBRATED);
@@ -137,4 +137,11 @@ Keypad::~Keypad()
     delete rst;
     for (auto &preset_button : preset_buttons)
         delete preset_button;
+}
+
+bool Keypad::stop_motor() {
+    if (motor->get_state() == OFF)
+        return false;
+    motor->off();
+    return true;
 }

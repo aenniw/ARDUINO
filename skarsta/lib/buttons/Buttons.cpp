@@ -81,9 +81,10 @@ void TimedButton::isr()
         msg_time = millis();
         last_state = true;
         return;
-    }
-    else if (!last_state)
+    } else if (!last_state) {
+        button_state = false;
         return;
+    }
 
     if (is_short())
     {
