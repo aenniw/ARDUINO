@@ -50,11 +50,6 @@ void Motor::off()
     if (mode != UNCALIBRATED)
         updateEEPROM(ADDRESS_POSITION, position);
 #endif
-    if (state == OFF)
-    {
-        return;
-    }
-
     digitalWrite(power_pin, HIGH);
 #ifdef __DEBUG__
     Serial.print("m off ");
@@ -66,7 +61,7 @@ void Motor::off()
 
 void Motor::dir_cw()
 {
-    if (state == CW || (position >= end_stop && mode == CALIBRATED))
+    if (position >= end_stop && mode == CALIBRATED)
     {
         return;
     }
@@ -74,15 +69,15 @@ void Motor::dir_cw()
 #ifdef __DEBUG__
     Serial.println("m cw");
 #endif
+    digitalWrite(power_pin, HIGH);
     digitalWrite(dir_pin, HIGH);
-    delay(DIRECTION_CHANGE_DELAY);
     digitalWrite(power_pin, LOW);
     state = CW;
 }
 
 void Motor::dir_ccw()
 {
-    if (state == CCW || (position <= 0 && mode != UNCALIBRATED))
+    if (position <= 0 && mode != UNCALIBRATED)
     {
         return;
     }
@@ -90,8 +85,8 @@ void Motor::dir_ccw()
 #ifdef __DEBUG__
     Serial.println("m ccw");
 #endif
+    digitalWrite(power_pin, HIGH);
     digitalWrite(dir_pin, LOW);
-    delay(DIRECTION_CHANGE_DELAY);
     digitalWrite(power_pin, LOW);
     state = CCW;
 }
