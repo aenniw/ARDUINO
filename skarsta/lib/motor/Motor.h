@@ -4,8 +4,6 @@
 #include <Arduino.h>
 #include <Service.h>
 
-#define DIRECTION_CHANGE_DELAY 200
-
 typedef enum
 {
   CCW,
@@ -25,6 +23,8 @@ typedef enum
 #define ADDRESS_END_STOP (ADDRESS_POSITION + sizeof(unsigned int))
 #define ADDRESS_MODE (ADDRESS_END_STOP + sizeof(MotorMode))
 #endif
+
+#define MINIMUM_POS_CHANGE 8
 
 class Motor : Service
 {

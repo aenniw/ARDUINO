@@ -10,6 +10,10 @@
 static Motor *motor = nullptr;
 static Rotary *encoder = nullptr;
 
+static unsigned int position_abs(unsigned int a, unsigned int b) {
+    return a >= b ? a - b : b - a;
+}
+
 Motor::Motor(uint8_t _pin1, uint8_t _pin2, uint8_t _pin3, uint8_t _pin4)
 {
     this->power_pin = _pin3;
@@ -109,7 +113,7 @@ void Motor::reset_position()
 
 void Motor::set_position(unsigned int pos)
 {
-    if (mode != CALIBRATED)
+    if (mode != CALIBRATED || position_abs(pos, position) < MINIMUM_POS_CHANGE)
     {
         return;
     }
