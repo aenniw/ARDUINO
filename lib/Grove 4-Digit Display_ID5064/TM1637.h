@@ -42,9 +42,9 @@
 #define POINT_ON 1
 #define POINT_OFF 0
 /**************definitions for brightness***********************/
-#define BRIGHT_LOW 0
-#define BRIGHT_MEDIUM 2
-#define BRIGHT_HIGH 7
+#define BRIGHT_LOW 1
+#define BRIGHT_MEDIUM 3
+#define BRIGHT_HIGH 8
 
 class TM1637
 {

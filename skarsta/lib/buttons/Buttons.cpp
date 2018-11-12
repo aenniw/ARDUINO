@@ -38,12 +38,13 @@ ToggleButton::ToggleButton(uint8_t button, void (*on)(), void (*off)())
     registerIsr(button, this);
 }
 
-TimedButton::TimedButton(uint8_t button, unsigned int delay, void (*short_press)(), void (*long_press)())
+TimedButton::TimedButton(uint8_t button, unsigned int delay, void (*short_press)(), void (*long_press)(), void (*on)())
 {
     this->button = button;
     this->delay = delay;
     this->long_press = long_press;
     this->short_press = short_press;
+    this->on = on;
     registerIsr(button, this);
 }
 
@@ -78,6 +79,7 @@ void TimedButton::isr()
     button_state = digitalRead(button) == LOW;
     if (button_state)
     {
+        if (this->on) this->on();
         msg_time = millis();
         last_state = true;
         return;

@@ -36,12 +36,17 @@ private:
   unsigned int delay;
   uint8_t button;
 
+    void (*on)();
+
   void (*short_press)();
 
   void (*long_press)();
 
 public:
-  TimedButton(uint8_t button, unsigned int delay, void (*short_press)(), void (*long_press)());
+    TimedButton(uint8_t button, unsigned int delay, void (*short_press)(), void (*long_press)())
+            : TimedButton(button, delay, short_press, long_press, nullptr) {}
+
+    TimedButton(uint8_t button, unsigned int delay, void (*short_press)(), void (*long_press)(), void (*on)());
 
   bool get_state();
 
