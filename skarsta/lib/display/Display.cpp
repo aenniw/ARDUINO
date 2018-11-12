@@ -34,7 +34,7 @@ static int8_t get_code_c(char c)
 Display::Display(uint8_t _pin1, uint8_t _pin2)
 {
     display = new TM1637(_pin1, _pin2);
-    display->set();
+    display->set(brightness);
 }
 
 void Display::set_blink(bool state)
@@ -51,7 +51,7 @@ void Display::set_blink(bool state)
     blink = state;
 }
 
-void Display::display_print(unsigned int position)
+void Display::print(unsigned int position)
 {
     int8_t buffer[4] = {
         get_code_n(position / 1000),
@@ -73,7 +73,7 @@ void Display::display_print(unsigned int position)
 #endif
 }
 
-void Display::display_print(const char *text)
+void Display::print(const char *text)
 {
     const uint8_t len = strlen(text);
     int8_t buffer[4] = {
@@ -96,24 +96,40 @@ void Display::display_print(const char *text)
 #endif
 }
 
+void Display::set_brightness(uint8_t b)
+{
+    if (brightness == b)
+        return;
+    brightness = b;
+#ifdef __DEBUG__
+    Serial.print("brightness: ");
+    Serial.println(b);
+#endif
+    display->set(b);
+}
+
+void Display::light_up() {
+    if (!this->blink)
+        this->dirty = true;
+}
+
 void Display::cycle()
 {
     static unsigned long last_tick = millis();
+    unsigned long now = millis(), diff = get_period(last_tick, now);
 
     if (dirty)
     {
+        this->set_brightness(BRIGHT_HIGH);
         display->display(disp_buffer, true);
         dirty = false;
-
+        last_tick = now;
 #ifdef __DEBUG__
         Serial.println("redraw");
 #endif
     }
     else if (blink)
     {
-        unsigned long now = millis(),
-                      diff = get_period(last_tick, now);
-
         if (diff >= 500)
         {
 #ifdef __DEBUG__
@@ -131,10 +147,19 @@ void Display::cycle()
             }
             else
             {
+                this->set_brightness(BRIGHT_HIGH);
                 display->display(disp_buffer, true);
             }
             clear = !clear;
             last_tick = now;
         }
+    }
+    else if (brightness != 0 && diff >= FADE_TIMEOUT)
+    {
+        this->set_brightness((uint8_t)(8 - ((diff - FADE_TIMEOUT) / 10000)));
+        if (brightness != 0)
+            display->display(disp_buffer, true);
+        else
+            display->clearDisplay();
     }
 }

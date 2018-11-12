@@ -5,8 +5,8 @@ static Motor *motor = nullptr;
 static Display *display = nullptr;
 unsigned int preset_values[3] = {0u};
 
-#define PRESET_BUTTON(pin, p) new TimedButton(pin, SAVE_BUTTON_TIMEOUT, []() { if (!keypad->stop_motor()) keypad->goto_preset(p); }, []() { keypad->set_preset(p); })
-#define SET_PRESET_BUTTON(pin, p) preset_buttons[p] = PRESET_BUTTON(pin, p)
+#define PRESET_BUTTON(pin, p, on) new TimedButton(pin, SAVE_BUTTON_TIMEOUT, []() { if (!keypad->stop_motor()) keypad->goto_preset(p); }, []() { keypad->set_preset(p); },on)
+#define SET_PRESET_BUTTON(pin, p, on) preset_buttons[p] = PRESET_BUTTON(pin, p,on)
 
 Keypad::Keypad(Motor *_motor, Display *_display)
 {
@@ -31,10 +31,12 @@ Keypad::Keypad(Motor *_motor, Display *_display)
     // up/down
     down = new ToggleButton(BUTTON_DOWN, []() { if (!keypad->stop_motor()) motor->dir_ccw(); }, []() { motor->off(); });
     up = new ToggleButton(BUTTON_UP, []() { if (!keypad->stop_motor()) motor->dir_cw(); }, []() { motor->off(); });
+    // display light-up callback
+    auto light_up = []() { display->light_up(); };
     // presets
-    SET_PRESET_BUTTON(BUTTON_P0, 0);
-    SET_PRESET_BUTTON(BUTTON_P1, 1);
-    SET_PRESET_BUTTON(BUTTON_P2, 2);
+    SET_PRESET_BUTTON(BUTTON_P0, 0, light_up);
+    SET_PRESET_BUTTON(BUTTON_P1, 1, light_up);
+    SET_PRESET_BUTTON(BUTTON_P2, 2, light_up);
     // calibration
     rst = new TimedButton(BUTTON_RST, RST_BUTTON_TIMEOUT, []() { keypad->stop_motor(); }, []() {
         switch (motor->get_mode()) {
@@ -59,7 +61,8 @@ Keypad::Keypad(Motor *_motor, Display *_display)
                 display->set_blink(true);
                 motor->reset_position();
                 break;
-        } });
+        }
+    }, light_up);
 }
 
 void Keypad::cycle()
@@ -69,7 +72,7 @@ void Keypad::cycle()
     if (rst->get_state() && !rst->is_short())
     {
         display->set_blink(false);
-        display->display_print("-rst");
+        display->print("-rst");
         return;
     }
     for (auto &preset_button : preset_buttons)
@@ -77,7 +80,7 @@ void Keypad::cycle()
         if (preset_button->get_state() && !preset_button->is_short())
         {
             display->set_blink(false);
-            display->display_print("-set");
+            display->print("-set");
             return;
         }
     }
@@ -91,11 +94,11 @@ void Keypad::cycle()
         display->set_blink(true);
 
     if (motor->get_mode() != UNCALIBRATED)
-        display->display_print(motor->get_position());
+        display->print(motor->get_position());
     else if (motor->get_mode() == UNCALIBRATED)
     {
         display->set_blink(true);
-        display->display_print(DISPLAY_NONE);
+        display->print(DISPLAY_NONE);
     }
 }
 
@@ -139,7 +142,8 @@ Keypad::~Keypad()
         delete preset_button;
 }
 
-bool Keypad::stop_motor() {
+bool Keypad::stop_motor()
+{
     if (motor->get_state() == OFF)
         return false;
     motor->off();

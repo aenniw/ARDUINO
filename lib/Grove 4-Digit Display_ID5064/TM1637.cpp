@@ -148,7 +148,7 @@ void TM1637::set(uint8_t brightness, uint8_t SetData, uint8_t SetAddr)
 {
   Cmd_SetData = SetData;
   Cmd_SetAddr = SetAddr;
-  Cmd_DispCtrl = 0x88 + brightness; //Set the brightness and it takes effect the next time it displays.
+  Cmd_DispCtrl = 0x87 + brightness; //Set the brightness and it takes effect the next time it displays.
 }
 
 //Whether to light the clock point ":".
