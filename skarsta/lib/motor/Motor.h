@@ -33,14 +33,21 @@ private:
   MotorMode mode = UNCALIBRATED;
 
   long next_position = -1;
-  uint8_t power_pin, dir_pin = 0;
   MotorState state = OFF;
 
 protected:
   void update_position(unsigned char result);
 
+  void initPin(uint8_t pin, uint8_t val = LOW);
+
+  virtual void _off() = 0;
+
+  virtual void _dir_cw() = 0;
+
+  virtual void _dir_ccw() = 0;
+
 public:
-  Motor(uint8_t _pin1, uint8_t _pin2, uint8_t _pin3, uint8_t _pin4);
+  Motor(uint8_t _pin1, uint8_t _pin2);
 
   void off();
 

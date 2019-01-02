@@ -14,11 +14,8 @@ static unsigned int position_abs(unsigned int a, unsigned int b) {
     return a >= b ? a - b : b - a;
 }
 
-Motor::Motor(uint8_t _pin1, uint8_t _pin2, uint8_t _pin3, uint8_t _pin4)
+Motor::Motor(uint8_t _pin1, uint8_t _pin2)
 {
-    this->power_pin = _pin3;
-    this->dir_pin = _pin4;
-
 #ifdef __EEPROM__
     EEPROM.get(ADDRESS_POSITION, position);
     EEPROM.get(ADDRESS_END_STOP, end_stop);
@@ -42,10 +39,6 @@ Motor::Motor(uint8_t _pin1, uint8_t _pin2, uint8_t _pin3, uint8_t _pin4)
     };
     attachInterrupt((uint8_t)digitalPinToInterrupt(_pin1), interrupt_routine, CHANGE); // set interrupt
     attachInterrupt((uint8_t)digitalPinToInterrupt(_pin2), interrupt_routine, CHANGE); // set interrupt
-    pinMode(this->dir_pin, OUTPUT);
-    pinMode(this->power_pin, OUTPUT);
-    digitalWrite(this->dir_pin, LOW);
-    digitalWrite(this->power_pin, HIGH);
 }
 
 void Motor::off()
@@ -54,7 +47,7 @@ void Motor::off()
     if (mode != UNCALIBRATED)
         updateEEPROM(ADDRESS_POSITION, position);
 #endif
-    digitalWrite(power_pin, HIGH);
+    _off();
 #ifdef __DEBUG__
     Serial.print("m off ");
     Serial.print(end_stop);
@@ -73,9 +66,7 @@ void Motor::dir_cw()
 #ifdef __DEBUG__
     Serial.println("m cw");
 #endif
-    digitalWrite(power_pin, HIGH);
-    digitalWrite(dir_pin, HIGH);
-    digitalWrite(power_pin, LOW);
+    _dir_cw();
     state = CW;
 }
 
@@ -89,9 +80,7 @@ void Motor::dir_ccw()
 #ifdef __DEBUG__
     Serial.println("m ccw");
 #endif
-    digitalWrite(power_pin, HIGH);
-    digitalWrite(dir_pin, LOW);
-    digitalWrite(power_pin, LOW);
+    _dir_ccw();
     state = CCW;
 }
 
@@ -200,6 +189,11 @@ void Motor::set_end_stop(unsigned int end_stop)
     Serial.print("m end_pos: ");
     Serial.println(end_stop);
 #endif
+}
+
+void Motor::initPin(uint8_t pin, uint8_t val) {
+    pinMode(pin, OUTPUT);
+    digitalWrite(pin, val);
 }
 
 void Motor::cycle(){};
