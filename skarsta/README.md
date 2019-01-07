@@ -55,8 +55,8 @@ After testing quite a few DC motors from Ebay, Aliexpress and Banggood, I stuck 
   [Display buttons](https://www.ebay.com/itm/20Set-Momentary-Tactile-Push-TimedButton-Touch-Micro-Switch-4P-PCB-Caps12x12x7-3mm-XW/113218977191?hash=item1a5c607da7:g:ay4AAOSwkVxa8RE4),
   [12V motor](https://www.banggood.com/DC-12V-180RPM-Geared-Motor-High-Torque-Gear-Reducer-Motor-p-1068573.html?p=7W02096203810201609O&stayold=1&curwarehouse=CN),
   [PSU 12V3A - minimal](https://www.meanwell-web.com/en-gb/ac-dc-industrial-desktop-adaptor-output-12vdc-at-gst36e12--p1j),
-  [PSU 12V5A - recommended](https://www.meanwell-web.com/en-gb/ac-dc-industrial-desktop-adaptor-with-3-pin-iec320-gs60a12--p1j),
-  [M2 Screws](https://www.ebay.com/itm/Hex-Socket-Bolts-Countersunk-Flat-Head-Screws-M2-M3-M4-M5-M6-Black-Alloy-Steel/183214890165?hash=item2aa8755cb5%3Am%3AmRNLwqyXcB6KXHipo6jIAWA&var=690492992291)
+  [PSU 12V5A - recommended](https://www.meanwell-web.com/en-gb/ac-dc-industrial-desktop-adaptor-with-3-pin-iec320-gs60a12--p1j) (or any other kind os power source like ATX-PSU etc. that can deliver at least 12V),
+  [Screws](https://www.ebay.com/itm/Hex-Socket-Bolts-Countersunk-Flat-Head-Screws-M2-M3-M4-M5-M6-Black-Alloy-Steel/183214890165?hash=item2aa8755cb5%3Am%3AmRNLwqyXcB6KXHipo6jIAWA&var=690492992291) M4-16mm for control panel and M3-20mm for motor box (may differ due to printer accuracy)
 - Build & Flash Arduino-Nano via platformio
 - Cut off 100mm from the end of Skarsta handle or use [Hex-Key 6mm](https://www.ebay.com/itm/1-5mm-24mm-ALLEN-BALL-POINT-END-LONG-ARM-HEX-KEY-WRENCH-METRIC-ALLEN-KEY/182563068986) which will be used to connect motor to table
 
