@@ -37,8 +37,9 @@ After testing quite a few DC motors from Ebay, Aliexpress and Banggood, I stuck 
 
 - print all parts from [Thingverse](https://www.thingiverse.com/thing:3081839) or download them directly from [models](models)
   - all parts were printed in 0.2 mm layer height but 0.3 should be ok for [case-top.stl](models/case-top.stl)
-  - all parts except for [buttons.stl](models/buttons.stl), [encoder-pulley.stl](models/encoder-pulley.stl), [motor-pulley.stl](models/motor-pulley.stl), [keypad-connector.stl](models/keypad-connector.stl) and [table-frame-tie.stl](models/table-frame-tie.stl) were printed with supports, but it should work without them...
-    - [panel-cover-bridge.stl](models/panel-cover-bridge.stl) has a tweak for printing without support, but you need clear the first layer on the holes
+  - all parts except for [buttons.stl](models/buttons.stl), [encoder-pulley.stl](models/encoder-pulley.stl), [keypad-connector.stl](models/keypad-connector.stl) and [table-frame-tie.stl](models/table-frame-tie.stl) were printed with supports, but it should work without them...
+  - [motor-pulley.stl](models/motor-pulley.stl) needs to be printed with PLA with 100% infill or you can buy one of [Shaft-Coupling 6-7mm](https://www.ebay.com/itm/2-3-4-5-6-7-8mm-Aluminum-Flexible-Shaft-Coupling-Rigid-Coupler-Motor-Connector/291882575832?ssPageName=STRK%3AMEBIDX%3AIT&var=590884618019&_trksid=p2057872.m2749.l2649) and combine it with [GT2_Skarsta_shaft.stl](https://www.thingiverse.com/download:5633328) so that it can handle more torque. **Shaft-Coupling 6-7mm** and **GT2_Skarsta_shaft.stl** can be attached together with [Super-glue](https://www.banggood.com/Suleve-M243-50mL-Threadlocker-Screw-Lock-Glue-Multipe-Surface-Medium-Strength-Anaerobic-Adhesive-p-1214087.html?p=8H180110948532015010&custlinkid=17674&cur_warehouse=CN)
+  - [panel-cover-bridge.stl](models/panel-cover-bridge.stl) has a tweak for printing without support, but you need clear the first layer on the holes
   - [motor-pulley.stl](models/motor-pulley.stl) should be printed with thicker walls or with 100% infill, also print few of these as this part will get permanently damaged when accidentally hit min/max height of table
   - based on your printer accuracy, may be needed pre-drilling of screw holes
 - get electronic parts:
@@ -155,3 +156,7 @@ After testing quite a few DC motors from Ebay, Aliexpress and Banggood, I stuck 
 [ENCODER](https://github.com/buxtronix/arduino/tree/master/libraries/Rotary)
 [TM1637](https://github.com/Seeed-Studio/Grove_4Digital_Display)
 [InterruptLib](https://github.com/GreyGnome/PinChangeInt)
+
+### Thanks to
+
+[iLLiac4](https://github.com/iLLiac4), See his mods on [Thingiverse](https://www.thingiverse.com/thing:3227567)
