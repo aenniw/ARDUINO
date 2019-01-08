@@ -1,41 +1,51 @@
 #include "MotorBridge.h"
 
 void MotorBridge::_off() {
-    setSpeed(0);
+    this->speed = 0;
+    analogWrite(r_pwm, 0);
+    analogWrite(l_pwm, 0);
 }
 
 void MotorBridge::_dir_cw() {
-    _off();
-    digitalWrite(r_enable, HIGH);
-    digitalWrite(l_enable, HIGH);
-    setSpeed(INITIAL_SPEED);
+    setSpeed(CW, MIN_SPEED);
 }
 
 void MotorBridge::_dir_ccw() {
-    _off();
-    digitalWrite(r_enable, LOW);
-    digitalWrite(l_enable, LOW);
-    setSpeed(INITIAL_SPEED);
+    setSpeed(CCW, MIN_SPEED);
 }
 
-void MotorBridge::setSpeed(uint8_t speed) {
-    if (get_state() == OFF) return;
+void MotorBridge::setSpeed(MotorState state, uint8_t speed) {
+    if (state == OFF) {
+#ifdef __DEBUG__
+        Serial.print("m speed - off ");
+        Serial.print(speed);
+        Serial.println();
+#endif
+        return;
+    }
     this->speed = speed;
+
 #ifdef __DEBUG__
     Serial.print("m speed ");
     Serial.print(speed);
     Serial.println();
 #endif
-    digitalWrite(r_pwm, this->speed);
-    digitalWrite(l_pwm, this->speed);
+
+    if (state == CCW) {
+        analogWrite(l_pwm, 0);
+        analogWrite(r_pwm, this->speed);
+    } else if (state == CW) {
+        analogWrite(r_pwm, 0);
+        analogWrite(l_pwm, this->speed);
+    }
 }
 
 void MotorBridge::cycle() {
     static unsigned long last_tick = millis();
     unsigned long now = millis(), diff = get_period(last_tick, now);
 
-    if (diff >= 125 && speed < 255) {
-        setSpeed(speed + 5 % 256);
+    if (diff >= SPEED_STEP_DURATION && speed < MAX_SPEED && speed >= MIN_SPEED) {
+        setSpeed(get_state(), speed + 5 % (MAX_SPEED + 1));
         last_tick = now;
     }
 }
