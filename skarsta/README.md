@@ -36,27 +36,29 @@ After testing quite a few DC motors from Ebay, Aliexpress and Banggood, I stuck 
 ### How-to
 
 - print all parts from [Thingverse](https://www.thingiverse.com/thing:3081839) or download them directly from [models](models)
-  - all parts were printed in 0.2 mm layer height but 0.3 should be ok for [case-non-modular.stl](models/case-non-modular.stl), for modular parts [case-modular-aio.stl](models/case-modular-aio.stl), [case-modular-cover.stl](models/case-modular-cover.stl) and [case-modular-frame.stl](models/case-modular-frame.stl) 0.2 mm clearance is used so layer height 0.2 mm or lower is recommended
+  - **_RELAY VERSION_** - all parts were printed in 0.2 mm layer height but 0.3 should be ok for [case-non-modular.stl](models/relay/case-non-modular.stl), for modular parts [case-modular-aio.stl](models/relay/case-modular-aio.stl), [case-modular-cover.stl](models/relay/case-modular-cover.stl) and [case-modular-frame.stl](models/relay/case-modular-frame.stl) 0.2 mm clearance is used so layer height 0.2 mm or lower is recommended
+  - **_H-BRIDGE VERSION_** - all parts were printed in 0.2 mm layer height but 0.3 should be ok for [case-non-modular.stl](models/h-bridge/case-non-modular.stl), for modular parts [case-modular-aio.stl](models/h-bridge/case-modular-aio.stl), [case-modular-cover.stl](models/h-bridge/case-modular-cover.stl) and [case-modular-frame.stl](models/h-bridge/case-modular-frame.stl) 0.2 mm clearance is used so layer height 0.2 mm or lower is recommended
   - all parts except for [buttons.stl](models/buttons.stl), [encoder-pulley.stl](models/encoder-pulley.stl), [keypad-connector.stl](models/keypad-connector.stl) and [table-frame-tie.stl](models/table-frame-tie.stl) were printed with supports, but it should work without them...
   - [motor-pulley.stl](models/motor-pulley.stl) needs to be printed with PLA with 100% infill or you can buy one of [Shaft-Coupling 6-7mm](https://www.ebay.com/itm/2-3-4-5-6-7-8mm-Aluminum-Flexible-Shaft-Coupling-Rigid-Coupler-Motor-Connector/291882575832?ssPageName=STRK%3AMEBIDX%3AIT&var=590884618019&_trksid=p2057872.m2749.l2649) and combine it with [GT2_Skarsta_shaft.stl](https://www.thingiverse.com/download:5633328) so that it can handle more torque. **Shaft-Coupling 6-7mm** and **GT2_Skarsta_shaft.stl** can be attached together with [Super-glue](https://www.banggood.com/Suleve-M243-50mL-Threadlocker-Screw-Lock-Glue-Multipe-Surface-Medium-Strength-Anaerobic-Adhesive-p-1214087.html?p=8H180110948532015010&custlinkid=17674&cur_warehouse=CN)
   - [panel-cover-bridge.stl](models/panel-cover-bridge.stl) has a tweak for printing without support, but you need clear the first layer on the holes
   - [motor-pulley.stl](models/motor-pulley.stl) should be printed with thicker walls or with 100% infill, also print few of these as this part will get permanently damaged when accidentally hit min/max height of table
   - based on your printer accuracy, may be needed pre-drilling of screw holes
 - get electronic parts:
-  [Arduino-Nano](https://www.ebay.com/itm/1PCS-mini-USB-Nano-V3-0-ATmega328P-CH340G-5V-16M-micro-controller-Arduino/191773759569?hash=item2ca69b5851:g:aHAAAOSwLN5WiNjA),
-  [Rotary encoder](https://www.ebay.com/itm/1PCS-KY-040-Rotary-Encoder-Module-Brick-Sensor-Development-For-Arduino-CA/141975888668?hash=item210e6c231c:g:6aIAAOSwq5lTmbF7),
-  [Relay 1ch](https://www.ebay.com/itm/1-2-5-10PCS-5V-One-1-Channel-Relay-Module-Board-Shield-For-Arduino-PIC-AVR-ARM-M/302126861988?hash=item46582a0ea4%3Am%3AmO-uqxnlvpXMQXX-eRxgBwA&var=600944064917),
-  [Relay 2ch](https://www.ebay.com/itm/5V-Two-2-Channel-Relay-Module-With-optocoupler-For-PIC-AVR-DSP-ARM-Arduino-NEW/281683101414?epid=734905713&hash=item41959f06e6:g:uBQAAOSwhOxVSLJu),
-  [GT2 160mm belt](https://www.ebay.com/itm/2GT-3D-Printer-Belt-Closed-Loop-Rubber-GT2-Timing-Belt-Length-110mm-852mm/132454520950?hash=item1ed6e79876%3Am%3Am1bUMmOd4qzqWTbtUS6QyGQ&var=431798850623),
-  [Power Switch](https://www.ebay.com/itm/10Pcs-12V-2-Pin-Car-Boat-Round-Dot-Light-ON-OFF-Rocker-Toggle-Switch-Tool-Black/382170389677?hash=item58fb215cad:g:D~QAAOSwHb9ZcAnX),
-  [Power connector](https://www.ebay.com/itm/10pcs-DC-005-Power-Supply-Jack-Socket-Female-PCB-Mount-Connector-5-5mm-x-2-1mm/263403309838?hash=item3d540f8b0e:g:tMgAAOSwc2FaQFNw),
-  [Step-Down module](https://www.ebay.com/itm/1PCS-DC-DC-LM2596-power-Supply-Buck-Converter-step-down-module-NEW-CA/142147326064?hash=item2118a41070:g:L1kAAOSwvzRXzOBg),
-  [Display](https://www.ebay.com/itm/0-56-TM1637-4Bit-Digital-LED-7-Segment-Clock-Tube-Display-For-Arduino-White/172971714554?hash=item2845eae7fa:g:ISAAAOSweZJaOkDh),
-  [Display buttons](https://www.ebay.com/itm/20Set-Momentary-Tactile-Push-TimedButton-Touch-Micro-Switch-4P-PCB-Caps12x12x7-3mm-XW/113218977191?hash=item1a5c607da7:g:ay4AAOSwkVxa8RE4),
-  [12V motor](https://www.banggood.com/DC-12V-180RPM-Geared-Motor-High-Torque-Gear-Reducer-Motor-p-1068573.html?p=7W02096203810201609O&stayold=1&curwarehouse=CN),
-  [PSU 12V3A - minimal](https://www.meanwell-web.com/en-gb/ac-dc-industrial-desktop-adaptor-output-12vdc-at-gst36e12--p1j),
-  [PSU 12V5A - recommended](https://www.meanwell-web.com/en-gb/ac-dc-industrial-desktop-adaptor-with-3-pin-iec320-gs60a12--p1j) (or any other kind os power source like ATX-PSU etc. that can deliver at least 12V),
-  [Screws](https://www.ebay.com/itm/Hex-Socket-Bolts-Countersunk-Flat-Head-Screws-M2-M3-M4-M5-M6-Black-Alloy-Steel/183214890165?hash=item2aa8755cb5%3Am%3AmRNLwqyXcB6KXHipo6jIAWA&var=690492992291) M4-16mm for control panel and M3-20mm for motor box (may differ due to printer accuracy)
+  - [Arduino-Nano](https://www.ebay.com/itm/1PCS-mini-USB-Nano-V3-0-ATmega328P-CH340G-5V-16M-micro-controller-Arduino/191773759569?hash=item2ca69b5851:g:aHAAAOSwLN5WiNjA)
+  - [Rotary encoder](https://www.ebay.com/itm/1PCS-KY-040-Rotary-Encoder-Module-Brick-Sensor-Development-For-Arduino-CA/141975888668?hash=item210e6c231c:g:6aIAAOSwq5lTmbF7)
+  - **_RELAY VERSION_** - [Relay 1ch](https://www.ebay.com/itm/1-2-5-10PCS-5V-One-1-Channel-Relay-Module-Board-Shield-For-Arduino-PIC-AVR-ARM-M/302126861988?hash=item46582a0ea4%3Am%3AmO-uqxnlvpXMQXX-eRxgBwA&var=600944064917)
+  - **_RELAY VERSION_** - [Relay 2ch](https://www.ebay.com/itm/5V-Two-2-Channel-Relay-Module-With-optocoupler-For-PIC-AVR-DSP-ARM-Arduino-NEW/281683101414?epid=734905713&hash=item41959f06e6:g:uBQAAOSwhOxVSLJu)
+  - **_H-BRIDGE VERSION_** - [H-Bridge](https://www.ebay.com/p/Double-Bts7960b-DC-43a-Stepper-Motor-Driver-H-bridge-PWM-for-Arduino-Smart-Car/1062875951)
+  - [GT2 160mm belt](https://www.ebay.com/itm/2GT-3D-Printer-Belt-Closed-Loop-Rubber-GT2-Timing-Belt-Length-110mm-852mm/132454520950?hash=item1ed6e79876%3Am%3Am1bUMmOd4qzqWTbtUS6QyGQ&var=431798850623)
+  - [Power Switch](https://www.ebay.com/itm/10Pcs-12V-2-Pin-Car-Boat-Round-Dot-Light-ON-OFF-Rocker-Toggle-Switch-Tool-Black/382170389677?hash=item58fb215cad:g:D~QAAOSwHb9ZcAnX)
+  - [Power connector](https://www.ebay.com/itm/10pcs-DC-005-Power-Supply-Jack-Socket-Female-PCB-Mount-Connector-5-5mm-x-2-1mm/263403309838?hash=item3d540f8b0e:g:tMgAAOSwc2FaQFNw)
+  - [Step-Down module](https://www.ebay.com/itm/1PCS-DC-DC-LM2596-power-Supply-Buck-Converter-step-down-module-NEW-CA/142147326064?hash=item2118a41070:g:L1kAAOSwvzRXzOBg)
+  - [Display](https://www.ebay.com/itm/0-56-TM1637-4Bit-Digital-LED-7-Segment-Clock-Tube-Display-For-Arduino-White/172971714554?hash=item2845eae7fa:g:ISAAAOSweZJaOkDh)
+  - [Display buttons](https://www.ebay.com/itm/20Set-Momentary-Tactile-Push-TimedButton-Touch-Micro-Switch-4P-PCB-Caps12x12x7-3mm-XW/113218977191?hash=item1a5c607da7:g:ay4AAOSwkVxa8RE4)
+  - [12V motor](https://www.banggood.com/DC-12V-180RPM-Geared-Motor-High-Torque-Gear-Reducer-Motor-p-1068573.html?p=7W02096203810201609O&stayold=1&curwarehouse=CN)
+  - [PSU 12V3A - minimal](https://www.meanwell-web.com/en-gb/ac-dc-industrial-desktop-adaptor-output-12vdc-at-gst36e12--p1j)
+  - [PSU 12V5A - recommended](https://www.meanwell-web.com/en-gb/ac-dc-industrial-desktop-adaptor-with-3-pin-iec320-gs60a12--p1j) (or any other kind os power source like ATX-PSU etc. that can deliver at least 12V)
+  - [Screws](https://www.ebay.com/itm/Hex-Socket-Bolts-Countersunk-Flat-Head-Screws-M2-M3-M4-M5-M6-Black-Alloy-Steel/183214890165?hash=item2aa8755cb5%3Am%3AmRNLwqyXcB6KXHipo6jIAWA&var=690492992291) M4-16mm for control panel and M3-20mm for motor box (may differ due to printer accuracy)
 - Build & Flash Arduino-Nano via platformio
 - Cut off 100mm from the end of Skarsta handle or use [Hex-Key 6mm](https://www.ebay.com/itm/1-5mm-24mm-ALLEN-BALL-POINT-END-LONG-ARM-HEX-KEY-WRENCH-METRIC-ALLEN-KEY/182563068986) which will be used to connect motor to table
 
@@ -64,9 +66,15 @@ After testing quite a few DC motors from Ebay, Aliexpress and Banggood, I stuck 
 
 ##### Wiring
 
-![](./img/wiring.png)
+###### **_RELAY VERSION_**
 
-##### Motor case
+![](./img/wiring-relay.png)
+
+###### **_H-BRIDGE VERSION_**
+
+![](./img/wiring-h-bridge.png)
+
+##### **_RELAY VERSION_** Motor case
 
 - Add Arduino-Nano to case, insert it into notches a slowly push usb connector down. It should be quite tight fit
   <details>
@@ -113,6 +121,10 @@ After testing quite a few DC motors from Ebay, Aliexpress and Banggood, I stuck 
     <summary>Mounted motor case</summary>
     <a href="https://drive.google.com/uc?export=view&id=1Mlf-zk6XFL4rruclsFIqbEq0DQg2OCfx"><img src="https://drive.google.com/uc?export=view&id=1Mlf-zk6XFL4rruclsFIqbEq0DQg2OCfx" style="width: 500px; max-width: 100%; height: auto" title="Click for the larger version." /></a>
   </details>
+
+##### **_H-BRIDGE VERSION_** Motor case
+
+- WIP
 
 ##### Display + Keypad case
 
