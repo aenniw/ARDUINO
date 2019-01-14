@@ -21,6 +21,8 @@ protected:
 
     void setSpeed(MotorState state, uint8_t speed);
 
+    void enable();
+
 public:
     MotorBridge(uint8_t _pin1, uint8_t _pin2,
                 uint8_t _pin3, uint8_t _pin4,
@@ -29,9 +31,7 @@ public:
         initPin((l_enable = _pin4));
         initPin((r_pwm = _pin5));
         initPin((l_pwm = _pin6));
-
-        digitalWrite(r_enable, HIGH);
-        digitalWrite(l_enable, HIGH);
+        this->enable();
     };
 
     void cycle() override;
