@@ -110,7 +110,7 @@ After testing quite a few DC motors from Ebay, Aliexpress and Banggood, I stuck 
     <a href="https://drive.google.com/uc?export=view&id=1q8UN07lRM9irNA-o0cjjysNviAEeggWU"><img src="https://drive.google.com/uc?export=view&id=1q8UN07lRM9irNA-o0cjjysNviAEeggWU" style="width: 500px; max-width: 100%; height: auto" title="Click for the larger version." /></a>
   </details>
 - Wire up rest of the electronics as shown in the wiring diagram
-- Fix dupont cables for display + keypad with super/hot glue into cable connector part and afterwards fix it with super/hot glue to case
+- Fix dupont cables for display + keypad with super/hot glue into cable connector part and afterwards fix it with super/hot glue to case if needed
   <details>
     <summary>Finished motor case</summary>
     <a href="https://drive.google.com/uc?export=view&id=19tCSOthFfihupELphLvazGWEjptixe2d"><img src="https://drive.google.com/uc?export=view&id=19tCSOthFfihupELphLvazGWEjptixe2d" style="width: 500px; max-width: 100%; height: auto" title="Click for the larger version." /></a>
@@ -124,7 +124,33 @@ After testing quite a few DC motors from Ebay, Aliexpress and Banggood, I stuck 
 
 ##### **_H-BRIDGE VERSION_** Motor case
 
-- WIP
+- Add Arduino-Nano, buck converter and h-bridge to case cover plate and fix them with screws, if needed use [screw-spacer.stl](models/h-bridge/screw-spacer.stl) for buck converter
+- Wire all components on case cover plate together based on wiring diagram (optionally 2 [Female 8-pin sockets](https://www.ebay.com/itm/10pcs-8-Pin-Female-Tall-Stackable-Header-Connector-Socket-For-Arduino-Shield-ZY/253903399521?hash=item3b1dd26a61:g:iKYAAOSwqVJaxCg2:rk:4:pf:1&frcectupt=true) can be inserted cover plate slot for _GND_ and _V5_)
+  <details>
+    <summary>Mounted case cover plate</summary>
+  <a href="https://drive.google.com/uc?export=view&id=1YWug2k6Anf5VfqV33lh-GuqVLCNM8rbB"><img src="https://drive.google.com/uc?export=view&id=1YWug2k6Anf5VfqV33lh-GuqVLCNM8rbB" style="width: 500px; max-width: 100%; height: auto" title="Click for the larger version." /></a>
+  </details>
+- Add motor, PSU switch, PSU and keypad connector to case frame
+- Add Rotary encoder next to motor and fix it with screws or nut
+- Insert nut & screw into motor pulley and secure it on motor shaft
+- Add timing belt with encoder pulley onto encoder, readjust encoder position if belt is loosen or too tight
+  <details>
+    <summary>Mounted case frame</summary>
+  <a href="https://drive.google.com/uc?export=view&id=1Caumk2_G1FUvc5cQmAM8cCj6xImWTPGc"><img src="https://drive.google.com/uc?export=view&id=1Caumk2_G1FUvc5cQmAM8cCj6xImWTPGc" style="width: 500px; max-width: 100%; height: auto" title="Click for the larger version." /></a>
+  </details>
+- Wire up rest of the electronics as shown in the wiring diagram
+- Fix dupont cables for display + keypad with super/hot glue into cable connector part and afterwards fix it with super/hot glue to case if needed
+  <details>
+    <summary>Case top view</summary>
+  <a href="https://drive.google.com/uc?export=view&id=1CnfOpbx6Frux5znjWxagWpygVWQ5PAPc"><img src="https://drive.google.com/uc?export=view&id=1CnfOpbx6Frux5znjWxagWpygVWQ5PAPc" style="width: 500px; max-width: 100%; height: auto" title="Click for the larger version." /></a>
+  </details>
+- Insert 3 screws to case where cover plate overlaps frame and afterwards secure cover plate with [screw-hollow.stl](models/h-bridge/screw-hollow.stl) these will hold case parts together and prevent screws from falling out while you can still tight them through inner hole
+  <details>
+    <summary>Case bottom view</summary>
+  <a href="https://drive.google.com/uc?export=view&id=1pt37iSBKFuvvMNw2Ou8L7yq4VtgisVa5"><img src="https://drive.google.com/uc?export=view&id=1pt37iSBKFuvvMNw2Ou8L7yq4VtgisVa5" style="width: 500px; max-width: 100%; height: auto" title="Click for the larger version." /></a>
+  </details>
+- Add hexagonal rod and slowly insert it into table, if needed adjust hole for rod hole with original lever
+- Fix mounted motor case with 7 screws to table
 
 ##### Display + Keypad case
 
