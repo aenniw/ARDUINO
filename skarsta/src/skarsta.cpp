@@ -3,7 +3,9 @@
 #include <Keypad.h>
 
 #ifdef __H_BRIDGE_MOTOR__
+
 #include <MotorBridge.h>
+
 #else
 #include <MotorRelay.h>
 #endif
@@ -26,20 +28,16 @@ static const uint8_t services_count = 3;
 
 #ifdef __EEPROM__
 
-bool eeprom_valid()
-{
-    for (unsigned int i = ADDRESS_MODE + 4 * sizeof(unsigned int); i < EEPROM.length(); ++i)
-    {
-        if (EEPROM[i] != 0)
-        {
+bool eeprom_valid() {
+    for (unsigned int i = ADDRESS_MODE + 4 * sizeof(unsigned int); i < EEPROM.length(); ++i) {
+        if (EEPROM[i] != 0) {
             return false;
         }
     }
     return true;
 }
 
-void eeprom_reset()
-{
+void eeprom_reset() {
 #ifdef __DEBUG__
     Serial.println("reset eeprom");
 #endif
@@ -49,8 +47,7 @@ void eeprom_reset()
 
 #endif
 
-void setup()
-{
+void setup() {
 #ifdef __DEBUG__
     Serial.begin(9600);
 #endif
@@ -66,19 +63,17 @@ void setup()
     auto motor = new MotorRelay(ENCODER_PIN_CLK, ENCODER_PIN_DIO, POWER_RELAY, DIRECTION_RELAY);
 #endif
     auto display = new Display(DISPLAY_PIN_CLK, DISPLAY_PIN_DIO);
-    services = new Service *[services_count] { (Service *)new Keypad(motor, display),
-                                                   (Service *)motor,
-                                                   (Service *)display };
+    services = new Service *[services_count]{(Service *) new Keypad(motor, display),
+                                             (Service *) motor,
+                                             (Service *) display};
 
 #ifdef __DEBUG__
     Serial.println("starting");
 #endif
 }
 
-void loop()
-{
-    for (uint8_t i = 0; i < services_count; i++)
-    {
+void loop() {
+    for (uint8_t i = 0; i < services_count; i++) {
         services[i]->cycle();
     }
 }

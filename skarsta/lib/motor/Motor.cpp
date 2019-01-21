@@ -14,8 +14,7 @@ static unsigned int position_abs(unsigned int a, unsigned int b) {
     return a >= b ? a - b : b - a;
 }
 
-Motor::Motor(uint8_t _pin1, uint8_t _pin2)
-{
+Motor::Motor(uint8_t _pin1, uint8_t _pin2) {
 #ifdef __EEPROM__
     EEPROM.get(ADDRESS_POSITION, position);
     EEPROM.get(ADDRESS_END_STOP, end_stop);
@@ -37,12 +36,11 @@ Motor::Motor(uint8_t _pin1, uint8_t _pin2)
     auto interrupt_routine = []() {
         motor->update_position(encoder->process());
     };
-    attachInterrupt((uint8_t)digitalPinToInterrupt(_pin1), interrupt_routine, CHANGE); // set interrupt
-    attachInterrupt((uint8_t)digitalPinToInterrupt(_pin2), interrupt_routine, CHANGE); // set interrupt
+    attachInterrupt((uint8_t) digitalPinToInterrupt(_pin1), interrupt_routine, CHANGE); // set interrupt
+    attachInterrupt((uint8_t) digitalPinToInterrupt(_pin2), interrupt_routine, CHANGE); // set interrupt
 }
 
-void Motor::off()
-{
+void Motor::off() {
 #ifdef __EEPROM__
     if (mode != UNCALIBRATED)
         updateEEPROM(ADDRESS_POSITION, position);
@@ -56,10 +54,8 @@ void Motor::off()
     state = OFF;
 }
 
-void Motor::dir_cw()
-{
-    if (position >= end_stop && mode == CALIBRATED)
-    {
+void Motor::dir_cw() {
+    if (position >= end_stop && mode == CALIBRATED) {
         return;
     }
 
@@ -70,10 +66,8 @@ void Motor::dir_cw()
     state = CW;
 }
 
-void Motor::dir_ccw()
-{
-    if (position <= 0 && mode != UNCALIBRATED)
-    {
+void Motor::dir_ccw() {
+    if (position <= 0 && mode != UNCALIBRATED) {
         return;
     }
 
@@ -84,13 +78,11 @@ void Motor::dir_ccw()
     state = CCW;
 }
 
-unsigned int Motor::get_position()
-{
+unsigned int Motor::get_position() {
     return position;
 }
 
-void Motor::reset_position()
-{
+void Motor::reset_position() {
     this->position = 0u;
 #ifdef __EEPROM__
     updateEEPROM(ADDRESS_POSITION, position);
@@ -100,19 +92,14 @@ void Motor::reset_position()
 #endif
 }
 
-void Motor::set_position(unsigned int pos)
-{
-    if (mode != CALIBRATED || position_abs(pos, position) < MINIMUM_POS_CHANGE)
-    {
+void Motor::set_position(unsigned int pos) {
+    if (mode != CALIBRATED || position_abs(pos, position) < MINIMUM_POS_CHANGE) {
         return;
     }
     next_position = pos;
-    if (next_position < position)
-    {
+    if (next_position < position) {
         this->dir_ccw();
-    }
-    else
-    {
+    } else {
         this->dir_cw();
     }
 #ifdef __DEBUG__
@@ -121,19 +108,14 @@ void Motor::set_position(unsigned int pos)
 #endif
 }
 
-void Motor::update_position(const unsigned char result)
-{
-    if (mode == UNCALIBRATED)
-    {
+void Motor::update_position(const unsigned char result) {
+    if (mode == UNCALIBRATED) {
         return;
     }
 
-    if (result == DIR_CW)
-    {
+    if (result == DIR_CW) {
         position++;
-    }
-    else if (result == DIR_CCW && position != 0)
-    {
+    } else if (result == DIR_CCW && position != 0) {
         position--;
     }
 
@@ -142,33 +124,27 @@ void Motor::update_position(const unsigned char result)
         updateEEPROM(ADDRESS_POSITION, position);
 #endif
 
-    if (position == 0 || position >= end_stop)
-    {
+    if (position == 0 || position >= end_stop) {
         if ((position == 0 && get_state() == CCW) ||
-            (position >= end_stop && get_state() == CW))
-        {
+            (position >= end_stop && get_state() == CW)) {
             off();
         }
     }
-    if (next_position >= 0 && next_position == position)
-    {
+    if (next_position >= 0 && next_position == position) {
         off();
         next_position = -1;
     }
 }
 
-MotorState Motor::get_state()
-{
+MotorState Motor::get_state() {
     return this->state;
 }
 
-MotorMode Motor::get_mode()
-{
+MotorMode Motor::get_mode() {
     return this->mode;
 }
 
-void Motor::set_mode(MotorMode mode)
-{
+void Motor::set_mode(MotorMode mode) {
     this->mode = mode;
 #ifdef __EEPROM__
     updateEEPROM(ADDRESS_MODE, this->mode);
@@ -179,8 +155,7 @@ void Motor::set_mode(MotorMode mode)
 #endif
 }
 
-void Motor::set_end_stop(unsigned int end_stop)
-{
+void Motor::set_end_stop(unsigned int end_stop) {
     this->end_stop = end_stop;
 #ifdef __EEPROM__
     updateEEPROM(ADDRESS_END_STOP, this->end_stop);
@@ -196,9 +171,8 @@ void Motor::initPin(uint8_t pin, uint8_t val) {
     digitalWrite(pin, val);
 }
 
-void Motor::cycle(){};
+void Motor::cycle() {};
 
-Motor::~Motor()
-{
+Motor::~Motor() {
     delete encoder;
 }
