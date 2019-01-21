@@ -4,18 +4,16 @@
 #include <Arduino.h>
 #include <Service.h>
 
-typedef enum
-{
-  CCW,
-  CW,
-  OFF
+typedef enum {
+    CCW,
+    CW,
+    OFF
 } MotorState;
 
-typedef enum
-{
-  UNCALIBRATED,   // nothing calibrated
-  SEMICALIBRATED, // bottom calibrated
-  CALIBRATED      // bottom-top calibrated
+typedef enum {
+    UNCALIBRATED,   // nothing calibrated
+    SEMICALIBRATED, // bottom calibrated
+    CALIBRATED      // bottom-top calibrated
 } MotorMode;
 
 #ifdef __EEPROM__
@@ -26,52 +24,51 @@ typedef enum
 
 #define MINIMUM_POS_CHANGE 8
 
-class Motor : Service
-{
+class Motor : Service {
 private:
-  unsigned int end_stop = ~0u, position = 0;
-  MotorMode mode = UNCALIBRATED;
+    unsigned int end_stop = ~0u, position = 0;
+    MotorMode mode = UNCALIBRATED;
 
-  long next_position = -1;
-  MotorState state = OFF;
+    long next_position = -1;
+    MotorState state = OFF;
 
 protected:
-  void update_position(unsigned char result);
+    void update_position(unsigned char result);
 
-  void initPin(uint8_t pin, uint8_t val = LOW);
+    void initPin(uint8_t pin, uint8_t val = LOW);
 
-  virtual void _off() = 0;
+    virtual void _off() = 0;
 
-  virtual void _dir_cw() = 0;
+    virtual void _dir_cw() = 0;
 
-  virtual void _dir_ccw() = 0;
+    virtual void _dir_ccw() = 0;
 
 public:
-  Motor(uint8_t _pin1, uint8_t _pin2);
+    Motor(uint8_t _pin1, uint8_t _pin2);
 
-  void off();
+    void off();
 
-  void dir_cw();
+    void dir_cw();
 
-  void dir_ccw();
+    void dir_ccw();
 
-  void set_end_stop(unsigned int end_stop);
+    void set_end_stop(unsigned int end_stop);
 
-  unsigned int get_position();
+    unsigned int get_position();
 
-  void reset_position();
+    void reset_position();
 
-  void set_position(unsigned int pos);
+    void set_position(unsigned int pos);
 
-  MotorState get_state();
+    MotorState get_state();
 
-  MotorMode get_mode();
+    MotorMode get_mode();
 
-  void set_mode(MotorMode state);
+    void set_mode(MotorMode state);
 
-  void cycle() override;
+    void cycle() override;
 
-  ~Motor();
+    ~Motor();
 };
 
 #endif //ARDUINO_PROJECTS_ROOT_MOTOR_H

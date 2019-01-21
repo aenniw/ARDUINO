@@ -8,7 +8,9 @@
 #include <Buttons.h>
 
 #ifdef __EEPROM__
+
 #include <EEPROM.h>
+
 #endif
 
 #define BUTTON_DOWN A0
@@ -23,20 +25,19 @@
 
 #ifdef __EEPROM__
 const size_t ADDRESS_PRESETS[3] = {
-    (ADDRESS_MODE + sizeof(unsigned int)),
-    (ADDRESS_MODE + 2 * sizeof(unsigned int)),
-    (ADDRESS_MODE + 3 * sizeof(unsigned int))};
+        (ADDRESS_MODE + sizeof(unsigned int)),
+        (ADDRESS_MODE + 2 * sizeof(unsigned int)),
+        (ADDRESS_MODE + 3 * sizeof(unsigned int))};
 #endif
 
-class Keypad : Service
-{
-  private:
+class Keypad : Service {
+private:
     ToggleButton *down = nullptr, *up = nullptr;
     TimedButton *preset_buttons[3] = {nullptr}, *rst = nullptr;
 protected:
     bool stop_motor();
 
-  public:
+public:
     Keypad(Motor *_motor, Display *_display);
 
     void set_preset(uint8_t i);
