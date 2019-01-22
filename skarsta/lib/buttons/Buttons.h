@@ -9,7 +9,7 @@ class Button {
 public:
     virtual void isr() = 0;
 
-    virtual ~Button() {};
+    virtual ~Button() = default;
 };
 
 class ToggleButton : Button {
@@ -28,8 +28,8 @@ public:
 
 class TimedButton : Button {
 private:
-    unsigned long msg_time = 0;
-    bool button_state = false;
+    volatile unsigned long msg_time = 0;
+    volatile bool button_state = false;
     unsigned int delay;
     uint8_t button;
 

@@ -26,11 +26,12 @@ typedef enum {
 
 class Motor : Service {
 private:
-    unsigned int end_stop = ~0u, position = 0;
+    unsigned int end_stop = ~0u;
     MotorMode mode = UNCALIBRATED;
-
     long next_position = -1;
-    MotorState state = OFF;
+
+    volatile MotorState state = OFF;
+    volatile unsigned int position = 0;
 
 protected:
     void update_position(unsigned char result);
