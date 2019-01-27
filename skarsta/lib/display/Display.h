@@ -12,7 +12,7 @@ private:
     TM1637 *display = nullptr;
     uint8_t brightness = BRIGHT_HIGH;
     int8_t disp_buffer[4] = {0x00, 0x00, 0x00, 0x00};
-    bool dirty = false, blink = false, clear = false;
+    bool dirty = false, blink = false, clear = false, disabled = false;
 
 protected:
     void set_brightness(uint8_t b);
@@ -29,6 +29,8 @@ public:
     void print(const char *text);
 
     void cycle() override;
+
+    void disable(uint8_t cause);
 
     ~Display() {
         delete display;

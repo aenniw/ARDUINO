@@ -1,8 +1,5 @@
 #include "Watchdog.h"
-
-static unsigned int position_diff(unsigned int a, unsigned int b) {
-    return a > b ? a - b : b - a;
-}
+#include <util/atomic.h>
 
 Watchdog::Watchdog(Motor *m, Display *d) {
     this->motor = m;
@@ -11,25 +8,43 @@ Watchdog::Watchdog(Motor *m, Display *d) {
 
 void Watchdog::cycle() {
     static unsigned long last_tick = millis();
-    static unsigned int last_position = motor->get_position();
     unsigned long now = millis(), diff = get_period(last_tick, now);
 
     if (diff >= WATCHDOG_TIMEOUT) {
+        unsigned int pos_diff = 0;
+        MotorState state = OFF;
 
-        if (position_diff(motor->get_position(), last_position) <= 4) {
-            motor->off();
-            display->print("-err");
+        ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
+            state = motor->get_state();
+            pos_diff = motor->get_position_change();
+        }
 
+        if (pos_diff <= WATCHDOG_DEADLOCK_CHANGE && state != OFF) {
+            error(1);
 #ifdef __DEBUG__
-            Serial.print("w stop l:");
-            Serial.print(last_position);
-            Serial.print(" c:");
-            Serial.print(motor->get_position());
-            Serial.println();
+            Serial.print("w-1 stop d:");
+            Serial.println(pos_diff);
+#endif
+        } else if (pos_diff > WATCHDOG_OTHER_CHANGE && state == OFF) {
+            error(2);
+#ifdef __DEBUG__
+            Serial.print("w-2 stop d:");
+            Serial.println(pos_diff);
+#endif
+        } else {
+            error_count = 0;
+#ifdef __DEBUG__
+            Serial.print("w d:");
+            Serial.println(pos_diff);
 #endif
         }
 
         last_tick = now;
-        last_position = motor->get_position();
     }
+}
+
+void Watchdog::error(uint8_t cause) {
+    if (error_count++ < WATCHDOG_TOLERANCE - 1) return;
+    motor->disable();
+    display->disable(cause);
 }

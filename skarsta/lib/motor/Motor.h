@@ -29,9 +29,10 @@ private:
     unsigned int end_stop = ~0u;
     MotorMode mode = UNCALIBRATED;
     long next_position = -1;
+    bool disabled = false;
 
     volatile MotorState state = OFF;
-    volatile unsigned int position = 0;
+    volatile unsigned int position = 0, position_change = 0;
 
 protected:
     void update_position(unsigned char result);
@@ -57,6 +58,8 @@ public:
 
     unsigned int get_position();
 
+    unsigned int get_position_change();
+
     void reset_position();
 
     void set_position(unsigned int pos);
@@ -66,6 +69,8 @@ public:
     MotorMode get_mode();
 
     void set_mode(MotorMode state);
+
+    void disable();;
 
     void cycle() override;
 
