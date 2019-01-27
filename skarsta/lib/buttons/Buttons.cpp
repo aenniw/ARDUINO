@@ -47,11 +47,13 @@ TimedButton::TimedButton(uint8_t button, unsigned int delay, void (*short_press)
 void ToggleButton::isr() {
     bool state = digitalRead(button) == LOW;
 
+    if (this->state == state) return;
     if (state) {
         this->on();
     } else {
         this->off();
     }
+    this->state = state;
 }
 
 bool TimedButton::get_state() {
@@ -63,15 +65,13 @@ bool TimedButton::is_short() {
 }
 
 void TimedButton::isr() {
-    // TODO: move to class def
-    static bool last_state = false;
     button_state = digitalRead(button) == LOW;
     if (button_state) {
         if (this->on) this->on();
         msg_time = millis();
-        last_state = true;
+        this->state = true;
         return;
-    } else if (!last_state) {
+    } else if (!this->state) {
         button_state = false;
         return;
     }
@@ -81,6 +81,6 @@ void TimedButton::isr() {
     } else {
         this->long_press();
     }
-    last_state = false;
+    this->state = false;
     msg_time = millis();
 }

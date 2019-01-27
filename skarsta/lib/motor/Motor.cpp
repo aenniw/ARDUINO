@@ -52,10 +52,11 @@ void Motor::off() {
     Serial.println();
 #endif
     state = OFF;
+    position_change = 0;
 }
 
 void Motor::dir_cw() {
-    if (position >= end_stop && mode == CALIBRATED) {
+    if (disabled || (position >= end_stop && mode == CALIBRATED)) {
         return;
     }
 
@@ -67,7 +68,7 @@ void Motor::dir_cw() {
 }
 
 void Motor::dir_ccw() {
-    if (position <= 0 && mode != UNCALIBRATED) {
+    if (disabled || (position <= 0 && mode != UNCALIBRATED)) {
         return;
     }
 
@@ -83,6 +84,7 @@ unsigned int Motor::get_position() {
 }
 
 void Motor::reset_position() {
+    if (disabled) return;
     this->position = 0u;
 #ifdef __EEPROM__
     updateEEPROM(ADDRESS_POSITION, position);
@@ -118,6 +120,7 @@ void Motor::update_position(const unsigned char result) {
     } else if (result == DIR_CCW && position != 0) {
         position--;
     }
+    position_change++;
 
 #ifdef __EEPROM__
     if (state == OFF)
@@ -145,6 +148,7 @@ MotorMode Motor::get_mode() {
 }
 
 void Motor::set_mode(MotorMode mode) {
+    if (disabled) return;
     this->mode = mode;
 #ifdef __EEPROM__
     updateEEPROM(ADDRESS_MODE, this->mode);
@@ -156,6 +160,7 @@ void Motor::set_mode(MotorMode mode) {
 }
 
 void Motor::set_end_stop(unsigned int end_stop) {
+    if (disabled) return;
     this->end_stop = end_stop;
 #ifdef __EEPROM__
     updateEEPROM(ADDRESS_END_STOP, this->end_stop);
@@ -175,4 +180,15 @@ void Motor::cycle() {};
 
 Motor::~Motor() {
     delete encoder;
+}
+
+void Motor::disable() {
+    disabled = true;
+    off();
+}
+
+unsigned int Motor::get_position_change() {
+    unsigned int cur_change = position_change;
+    position_change = 0;
+    return cur_change;
 }

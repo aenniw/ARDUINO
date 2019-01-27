@@ -6,6 +6,8 @@
 #define MAX_BUTTONS 10
 
 class Button {
+protected:
+    volatile bool state = false;
 public:
     virtual void isr() = 0;
 

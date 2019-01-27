@@ -2,12 +2,16 @@
 
 static int8_t codes_numbers[] = {0x3f, 0x06, 0x5b, 0x4f, 0x66,
                                  0x6d, 0x7d, 0x07, 0x7f, 0x6f};
+static char error_msg[5] = {'e', 'r', ' ', '\0', '\0'};
 
 static int8_t get_code_n(uint8_t n) {
     return n > 9 ? 0x00 : codes_numbers[n];
 }
 
 static int8_t get_code_c(char c) {
+    if (c >= '0' && c <= '9') {
+        return get_code_n((uint8_t) (c - '0'));
+    }
     if (c >= 'A' && c <= 'Z') {
         c = static_cast<char>(c + 32);
     }
@@ -33,6 +37,7 @@ Display::Display(uint8_t _pin1, uint8_t _pin2) {
 }
 
 void Display::set_blink(bool state) {
+    if (disabled) return;
 #ifdef __DEBUG__
     if (blink != state) {
         Serial.print("blink=");
@@ -45,6 +50,7 @@ void Display::set_blink(bool state) {
 }
 
 void Display::print(unsigned int position) {
+    if (disabled) return;
     int8_t buffer[4] = {
             get_code_n(position / 1000),
             get_code_n((position / 100) % 10),
@@ -64,6 +70,7 @@ void Display::print(unsigned int position) {
 }
 
 void Display::print(const char *text) {
+    if (disabled) return;
     const uint8_t len = strlen(text);
     int8_t buffer[4] = {
             len > 0 ? get_code_c(text[0]) : 0x00,
@@ -131,11 +138,17 @@ void Display::cycle() {
             clear = !clear;
             last_tick = now;
         }
-    } else if (brightness != 0 && diff >= FADE_TIMEOUT) {
+    } else if (!disabled && brightness != 0 && diff >= FADE_TIMEOUT) {
         this->set_brightness((uint8_t) (8 - ((diff - FADE_TIMEOUT) / 10000)));
         if (brightness != 0)
             display->display(disp_buffer, true);
         else
             display->clearDisplay();
     }
+}
+
+void Display::disable(uint8_t cause) {
+    error_msg[3] = (char) ('0' + (cause % 10));
+    print(error_msg);
+    disabled = true;
 }
