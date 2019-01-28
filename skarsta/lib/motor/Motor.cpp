@@ -111,6 +111,7 @@ void Motor::set_position(unsigned int pos) {
 }
 
 void Motor::update_position(const unsigned char result) {
+    position_change++;
     if (mode == UNCALIBRATED) {
         return;
     }
@@ -120,7 +121,6 @@ void Motor::update_position(const unsigned char result) {
     } else if (result == DIR_CCW && position != 0) {
         position--;
     }
-    position_change++;
 
 #ifdef __EEPROM__
     if (state == OFF)
