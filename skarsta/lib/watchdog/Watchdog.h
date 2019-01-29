@@ -5,9 +5,9 @@
 #include <Motor.h>
 #include <Display.h>
 
-#define WATCHDOG_TIMEOUT 1000
-#define WATCHDOG_DEADLOCK_CHANGE 4
-#define WATCHDOG_OTHER_CHANGE 20
+#define WATCHDOG_TIMEOUT 250
+#define WATCHDOG_DEADLOCK_CHANGE 2
+#define WATCHDOG_OTHER_CHANGE 10
 #define WATCHDOG_TOLERANCE 2
 
 class Watchdog : Service {

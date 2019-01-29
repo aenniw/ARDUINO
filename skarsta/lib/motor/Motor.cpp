@@ -52,7 +52,6 @@ void Motor::off() {
     Serial.println();
 #endif
     state = OFF;
-    position_change = 0;
 }
 
 void Motor::dir_cw() {

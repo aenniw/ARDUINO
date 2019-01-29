@@ -44,7 +44,13 @@ void Watchdog::cycle() {
 }
 
 void Watchdog::error(uint8_t cause) {
-    if (error_count++ < WATCHDOG_TOLERANCE - 1) return;
+    if (error_count++ < WATCHDOG_TOLERANCE - 1) {
+#ifdef __DEBUG__
+        Serial.print("w ec:");
+        Serial.println(error_count);
+#endif
+        return;
+    }
     motor->disable();
     display->disable(cause);
 }
