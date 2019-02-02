@@ -4,42 +4,51 @@
 #include <Arduino.h>
 
 #define MAX_BUTTONS 10
+#define DEBOUNCE 5
 
 class Button {
 protected:
     volatile bool state = false;
-public:
-    virtual void isr() = 0;
+    uint8_t button, isrIndex = MAX_BUTTONS;
 
-    virtual ~Button() = default;
+    virtual void _isr(bool state) = 0;
+
+public:
+    explicit Button(uint8_t button);
+
+    virtual void isr();
+
+    virtual ~Button();
 };
 
 class ToggleButton : Button {
 private:
-    uint8_t button;
-
     void (*on)();
 
     void (*off)();
 
+protected:
+    void _isr(bool state) override;
+
 public:
     ToggleButton(uint8_t button, void (*on)(), void (*off)());
-
-    void isr() override;
 };
 
 class TimedButton : Button {
 private:
     volatile unsigned long msg_time = 0;
-    volatile bool button_state = false;
     unsigned int delay;
-    uint8_t button;
 
     void (*on)();
 
     void (*short_press)();
 
     void (*long_press)();
+
+protected:
+    void _isr(bool state) override;
+
+    bool debounce();
 
 public:
     TimedButton(uint8_t button, unsigned int delay, void (*short_press)(), void (*long_press)())
@@ -50,8 +59,6 @@ public:
     bool get_state();
 
     bool is_short();
-
-    void isr() override;
 };
 
 #endif //ARDUINO_PROJECTS_ROOT_BUTTONS_H
