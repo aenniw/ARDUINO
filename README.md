@@ -18,4 +18,4 @@ sudo pip install platformio
 
 ## SubProjects
 
-[SKARSTA-motorized-table](skarsta/README.md)
+[SKARSTA-motorized-table](skarsta/README.md) | [Yarn-Winder](yarn-winder/README.md)

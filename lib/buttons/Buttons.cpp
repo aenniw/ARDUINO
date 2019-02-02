@@ -1,5 +1,5 @@
 #include "Buttons.h"
-#include <Service.h>
+#include <limits.h>
 
 #define NO_PIN_NUMBER
 #define DISABLE_PCINT_MULTI_SERVICE
@@ -27,6 +27,14 @@ static uint8_t registerIsr(uint8_t button, Button *buttonI) {
         }
     }
     return MAX_BUTTONS;
+}
+
+static unsigned long get_period(const unsigned long last, const unsigned long next) {
+    if (last > next) //overflow
+    {
+        return (ULONG_MAX - last) + next;
+    }
+    return next - last;
 }
 
 Button::Button(uint8_t button) {
