@@ -5,10 +5,28 @@
 #include <Motor.h>
 #include <Display.h>
 
+/**
+ * WATCHDOG_TIMEOUT     represents timeout in millis for watchdog to perform its checks
+ * WATCHDOG_TOLERANCE   represents number of failed check in row needed to trigger an error,
+ *                      so the reaction time will be (WATCHDOG_TIMEOUT * WATCHDOG_TOLERANCE) ms
+ *
+ * WATCHDOG_DEADLOCK_CHANGE     represents rotation steps threshold for detecting if motor is stuck and cannot move
+ *                              so if rotation change is greater then WATCHDOG_DEADLOCK_CHANGE for WATCHDOG_TOLERANCE times Error 1 will be trigerred
+ * WATCHDOG_OTHER_CHANGE        represents rotation steps threshold for detecting if motor was started mainly due to programing errors,
+ *                              so if rotation change is greater then WATCHDOG_OTHER_CHANGE for WATCHDOG_TOLERANCE times Error 2 will be trigerred
+ */
+
+#ifndef  __H_BRIDGE_MOTOR__
+#define WATCHDOG_TIMEOUT 10
+#define WATCHDOG_DEADLOCK_CHANGE 1
+#define WATCHDOG_OTHER_CHANGE 5
+#define WATCHDOG_TOLERANCE 5
+#else
 #define WATCHDOG_TIMEOUT 250
 #define WATCHDOG_DEADLOCK_CHANGE 2
 #define WATCHDOG_OTHER_CHANGE 10
 #define WATCHDOG_TOLERANCE 2
+#endif
 
 class Watchdog : Service {
 private:

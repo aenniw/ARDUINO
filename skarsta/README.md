@@ -189,6 +189,16 @@ After testing quite a few DC motors from Ebay, Aliexpress and Banggood, I stuck 
     <a href="https://drive.google.com/uc?export=view&id=15VFWSnQ_u37xM2864LjUWOSjwABPXVya"><img src="https://drive.google.com/uc?export=view&id=15VFWSnQ_u37xM2864LjUWOSjwABPXVya" style="width: 500px; max-width: 100%; height: auto" title="Click for the larger version." /></a>
   </details>
 
+### Error codes && handling
+
+- if any Error message bellow is showed on display it is needed to manually power down/up table to be able to operate once again,
+  after any of error pops out it is advised to closely inspect table if the problem reoccurs if so open an issue
+
+  | _Error code_ |         _Description_         |
+  | ------------ | :---------------------------: |
+  | Err 1        | Motor stuck and cannot rotate |
+  | Err 2        |  Motor started unexpectedly   |
+
 ### Library Credentials
 
 [ENCODER](https://github.com/buxtronix/arduino/tree/master/libraries/Rotary)
