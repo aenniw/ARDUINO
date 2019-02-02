@@ -1,0 +1,50 @@
+#!/usr/bin/env bash
+
+function template_cmake(){
+    echo 'cmake_minimum_required(VERSION 3.2)'
+    echo "project($1)"
+    echo '
+include(CMakeListsPrivate.txt)
+
+add_custom_target(
+    ${PROJECT_NAME}_BUILD ALL
+    COMMAND ${PLATFORMIO_CMD} -f -c clion run
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+)
+
+add_custom_target(
+    ${PROJECT_NAME}_UPLOAD ALL
+    COMMAND ${PLATFORMIO_CMD} -f -c clion run --target upload
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+)
+
+add_custom_target(
+    ${PROJECT_NAME}_CLEAN ALL
+    COMMAND ${PLATFORMIO_CMD} -f -c clion run --target clean
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+)
+
+add_custom_target(
+    ${PROJECT_NAME}_TEST ALL
+    COMMAND ${PLATFORMIO_CMD} -f -c clion test
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+)
+
+add_custom_target(
+    ${PROJECT_NAME}_REBUILD_PROJECT_INDEX ALL
+    COMMAND ${PLATFORMIO_CMD} -f -c clion init --ide clion
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+)
+
+add_executable(${PROJECT_NAME} ${SRC_LIST})
+'
+}
+
+## Builds CMake structure with platformio for Clion
+for PROJECT in $(ls -d ${1:-.}/*/platformio.ini); do
+    cd ${PROJECT%*/*}
+    platformio init --ide clion
+    rm ./.travis.yml ./lib/readme.txt ./.gitignore
+    template_cmake ${PWD##*/} > ./CMakeLists.txt
+    cd ..
+done
