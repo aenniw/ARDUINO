@@ -9,3 +9,4 @@ target/
 **/cmake-build-debug/
 **/lib/readme.txt
 **/data/
+*/CMakeLists.txt
