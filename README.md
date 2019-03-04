@@ -8,6 +8,9 @@
 
 ```bash
 sudo pip install platformio
+
+IDE=eclipse ./configure     # for eclipse layout setup
+IDE=clion ./configure       # for clion layout setup
 ```
 
 ## Build
