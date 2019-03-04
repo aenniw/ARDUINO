@@ -9,4 +9,8 @@ target/
 **/cmake-build-debug/
 **/lib/readme.txt
 **/data/
-*/CMakeLists.txt
+**/CMakeLists.txt
+.project
+.cproject
+/platformio.ini
+**/.settings
