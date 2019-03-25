@@ -16,16 +16,16 @@
  *                              so if rotation change is greater then WATCHDOG_OTHER_CHANGE for WATCHDOG_TOLERANCE times Error 2 will be trigerred
  */
 
-#ifndef  __H_BRIDGE_MOTOR__
+#ifndef H_BRIDGE_MOTOR
 #define WATCHDOG_TIMEOUT 10
 #define WATCHDOG_DEADLOCK_CHANGE 1
 #define WATCHDOG_OTHER_CHANGE 5
 #define WATCHDOG_TOLERANCE 5
 #else
-#define WATCHDOG_TIMEOUT 250
+#define WATCHDOG_TIMEOUT 100
 #define WATCHDOG_DEADLOCK_CHANGE 2
-#define WATCHDOG_OTHER_CHANGE 10
-#define WATCHDOG_TOLERANCE 2
+#define WATCHDOG_OTHER_CHANGE 5
+#define WATCHDOG_TOLERANCE 3
 #endif
 
 class Watchdog : Service {
