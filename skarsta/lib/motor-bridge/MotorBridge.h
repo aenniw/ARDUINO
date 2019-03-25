@@ -6,7 +6,7 @@
 
 #define MIN_SPEED 100
 #define MAX_SPEED 255
-#define SPEED_STEP_DURATION 30
+#define SPEED_STEP_DURATION 10
 
 class MotorBridge : public Motor {
 private:
