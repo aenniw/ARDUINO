@@ -2,11 +2,10 @@
 #include <Display.h>
 #include <Keypad.h>
 #include <Watchdog.h>
+#include <vector>
 
 #ifdef __H_BRIDGE_MOTOR__
-
 #include <MotorBridge.h>
-
 #else
 #include <MotorRelay.h>
 #endif
@@ -24,8 +23,7 @@
 #define R_PWM 9
 #define L_PWM 10
 
-static Service **services;
-static const uint8_t services_count = 4;
+static std::vector<Service *> services;
 
 #ifdef __EEPROM__
 
@@ -64,10 +62,11 @@ void setup() {
     auto motor = new MotorRelay(ENCODER_PIN_CLK, ENCODER_PIN_DIO, POWER_RELAY, DIRECTION_RELAY);
 #endif
     auto display = new Display(DISPLAY_PIN_CLK, DISPLAY_PIN_DIO);
-    services = new Service *[services_count]{(Service *) new Watchdog(motor, display),
-                                             (Service *) new Keypad(motor, display),
-                                             (Service *) motor,
-                                             (Service *) display};
+
+    services.push_back((Service *) new Watchdog(motor, display));
+    services.push_back((Service *) new Keypad(motor, display));
+    services.push_back((Service *) motor);
+    services.push_back((Service *) display);
 
 #ifdef __DEBUG__
     Serial.println("starting");
@@ -75,7 +74,7 @@ void setup() {
 }
 
 void loop() {
-    for (uint8_t i = 0; i < services_count; i++) {
-        services[i]->cycle();
+    for (const auto &service: services) {
+        service->cycle();
     }
 }
