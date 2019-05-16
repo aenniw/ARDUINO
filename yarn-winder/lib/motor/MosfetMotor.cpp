@@ -13,15 +13,15 @@ MosfetMotor::MosfetMotor(uint8_t pwm, uint8_t gate) {
 }
 
 uint8_t MosfetMotor::get_speed() {
-    return speed;
+    return (uint8_t) ((speed / 255.0) * 100);
 }
 
 void MosfetMotor::set_speed(uint8_t s) {
-    digitalWrite(pwm, (speed = s));
+    analogWrite(pwm, (speed = s));
 }
 
 long MosfetMotor::get_evolution() {
-    return rotary_count;
+    return rotary_count / EVOLUTION;
 }
 
 void MosfetMotor::reset() {
@@ -45,14 +45,14 @@ void MosfetMotor::toggle() {
 }
 
 void MosfetMotor::increase_speed() {
-    if (speed >= MIN_SPEED && speed < 255) {
-        motor->set_speed(speed + 1);
+    if (speed >= MIN_SPEED && speed + MIN_STEP <= MAX_SPEED) {
+        motor->set_speed(speed + MIN_STEP);
     }
 }
 
 void MosfetMotor::decrease_speed() {
-    if (speed > MIN_SPEED && speed < 255) {
-        motor->set_speed(speed - 1);
+    if (speed - MIN_STEP >= MIN_SPEED && speed <= MAX_SPEED) {
+        motor->set_speed(speed - MIN_STEP);
     }
 }
 

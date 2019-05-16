@@ -15,6 +15,8 @@ public:
     virtual void next() =0;
 
     virtual void prev() =0;
+
+    virtual void back() {};
 };
 
 class MenuItem : public Item {
@@ -58,6 +60,8 @@ public:
     void prev() override;
 
     void interact() override;
+
+    void back() override;
 
     void print(LOCALE locale, Display *display, bool nl) const override;
 };

@@ -23,9 +23,13 @@ public:
 
     void print(const char *c);
 
-    void println(const char *c);
+    void println(const char *c = "");
 
     void print(int i, int b = 10);
+
+    void print(long i, int b = 10);
+
+    void print(double i, int d = 2);
 
     void cycle() override;
 

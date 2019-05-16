@@ -4,7 +4,10 @@
 #include <Arduino.h>
 #include <Motor.h>
 
-#define MIN_SPEED 20
+#define MAX_SPEED 255
+#define MIN_SPEED 30
+#define MIN_STEP 5
+#define EVOLUTION 216
 
 class MosfetMotor : public Motor {
 private:

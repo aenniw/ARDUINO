@@ -50,14 +50,20 @@ void Menu::interact() {
             last_menu = on_active(this);
         }
     } else if (active_item == item_count - 1) {
+        back();
+    } else if (items) {
+        items[active_item]->interact();
+    }
+}
+
+void Menu::back() {
+    if (active) {
         active = false;
         active_item = 0;
         if (on_inactive) {
             on_inactive(last_menu);
             last_menu = nullptr;
         }
-    } else if (items) {
-        items[active_item]->interact();
     }
 }
 
