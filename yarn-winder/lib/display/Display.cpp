@@ -30,8 +30,16 @@ void Display::println(const char *c) {
     display->println(c);
 }
 
-void Display::print(int i, int b = 10) {
-    display->println(i, b);
+void Display::print(int i, int b) {
+    display->print(i, b);
+}
+
+void Display::print(long i, int b) {
+    display->print(i, b);
+}
+
+void Display::print(double i, int d) {
+    display->print(i, d);
 }
 
 void Display::cycle() {

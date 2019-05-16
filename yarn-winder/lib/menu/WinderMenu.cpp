@@ -15,15 +15,23 @@ static Menu *change_menu(Menu *m) {
     return last_root;
 }
 
+static void back_menu() {
+    if (active_menu) {
+        active_menu->back();
+    }
+}
+
 static void reset_motor() {
     if (motor) {
         motor->reset();
+        back_menu();
     }
 }
 
 static void toggle_motor() {
     if (motor) {
         motor->toggle();
+        back_menu();
     }
 }
 
