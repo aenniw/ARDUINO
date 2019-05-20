@@ -15,14 +15,11 @@ static std::vector<Service *> services;
 static WinderMenu *menu = nullptr;
 
 void setup() {
-#ifdef __DEBUG__
-    Serial.begin(9600);
-#endif
-
     auto display = new Display();
     auto buttons = NIButtons::get_instance();
+    auto config = Configuration::get_instance();
     auto motor = new MosfetMotor(MOTOR_PWM, GATE_PIN);
-    menu = new WinderMenu(display, motor);
+    menu = new WinderMenu(config, display, motor);
 
     services.push_back((Service *) motor);
     services.push_back((Service *) display);
@@ -32,10 +29,6 @@ void setup() {
     buttons->add_button(BUTTON_PLUS)->on_pressed([]() { menu->prev(); });
     buttons->add_button(BUTTON_MINUS)->on_pressed([]() { menu->next(); });
     buttons->add_button(BUTTON_OK)->on_pressed([]() { menu->interact(); });
-
-#ifdef __DEBUG__
-    Serial.println("starting");
-#endif
 }
 
 

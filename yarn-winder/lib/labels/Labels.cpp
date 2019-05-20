@@ -62,10 +62,10 @@ void MonitorLabel::print(LOCALE locale, Display *display, bool nl) const {
     display->println("%");
     evol->print(locale, display, false);
     display->print(": ");
-    display->print(motor->get_evolution());
+    display->print((long) motor->get_evolution());
     display->println();
     len->print(locale, display, false);
     display->print(": ");
-    display->print(motor->get_evolution() * 0.12);
+    display->print(motor->get_len(), 3);
     display->print("m");
 }

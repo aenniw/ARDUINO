@@ -8,6 +8,7 @@
 #define MIN_SPEED 30
 #define MIN_STEP 5
 #define EVOLUTION 216
+#define SPOOL_RADIUS 1.5
 
 class MosfetMotor : public Motor {
 private:
@@ -23,7 +24,9 @@ public:
 
     MotorState get_state() override;
 
-    long get_evolution() override;
+    unsigned long get_evolution() override;
+
+    double get_len() override;
 
     void reset() override;
 
