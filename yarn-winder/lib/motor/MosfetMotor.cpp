@@ -20,10 +20,6 @@ void MosfetMotor::set_speed(uint8_t s) {
     analogWrite(pwm, (speed = s));
 }
 
-long MosfetMotor::get_evolution() {
-    return rotary_count / EVOLUTION;
-}
-
 void MosfetMotor::reset() {
     set_speed(0);
     rotary_count = 0;
@@ -58,4 +54,12 @@ void MosfetMotor::decrease_speed() {
 
 MotorState MosfetMotor::get_state() {
     return speed ? ON : OFF;
+}
+
+unsigned long MosfetMotor::get_evolution() {
+    return rotary_count / EVOLUTION;
+}
+
+double MosfetMotor::get_len() {
+    return 0;
 }

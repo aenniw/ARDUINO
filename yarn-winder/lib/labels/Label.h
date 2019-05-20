@@ -2,10 +2,7 @@
 #define ARDUINO_PROJECTS_LABEL_H
 
 #include <Display.h>
-
-typedef enum {
-    EN, CS
-} LOCALE;
+#include <Configuration.h>
 
 class Label {
 public:

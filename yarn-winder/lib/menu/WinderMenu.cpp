@@ -1,9 +1,9 @@
 #include "WinderMenu.h"
 #include <LocaleLabels.h>
 
+static Configuration *config = nullptr;
 static Menu *active_menu = nullptr;
 static Motor *motor = nullptr;
-static LOCALE locale = EN;
 
 static void restore_menu(Menu *m) {
     active_menu = m;
@@ -47,21 +47,22 @@ static void decrease_speed() {
     }
 }
 
-WinderMenu::WinderMenu(Display *display, Motor *m) {
+WinderMenu::WinderMenu(Configuration *c, Display *display, Motor *m) {
     this->display = display;
     motor = m;
+    config = c;
 
     active_menu = new Menu(new MonitorLabel(motor, &speed_label, &evol_label, &len_label), new Item *[5]{
             new MenuItem(new StatusLabel(motor, &start_label, &pause_label), toggle_motor),
             new MenuItem(&stop_label, reset_motor),
             new Menu(&profile_label, new Item *[3]{
-                    new MenuItem(&auto_wind_label),
-                    new MenuItem(&manual_wind_label),
+                    new MenuItem(&auto_wind_label, []() { if (config) config->set_profile(Auto); }),
+                    new MenuItem(&manual_wind_label, []() { if (config) config->set_profile(Manual); }),
                     new MenuItem(&back_label)
             }, 3, change_menu, restore_menu),
             new Menu(&language_label, new Item *[3]{
-                    new MenuItem(&english_label, []() { locale = EN; }),
-                    new MenuItem(&czech_label, []() { locale = CS; }),
+                    new MenuItem(&english_label, []() { if (config) config->set_locale(EN); }),
+                    new MenuItem(&czech_label, []() { if (config) config->set_locale(CS); }),
                     new MenuItem(&back_label)
             }, 3, change_menu, restore_menu),
             new MenuItem(&back_label)
@@ -70,7 +71,7 @@ WinderMenu::WinderMenu(Display *display, Motor *m) {
 
 void WinderMenu::cycle() {
     display->clear();
-    print(locale, display, true);
+    print(config->get_locale(), display, true);
 }
 
 void WinderMenu::interact() {

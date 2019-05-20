@@ -14,7 +14,7 @@ protected:
     void print(LOCALE locale, Display *display, bool nl) const override;
 
 public:
-    WinderMenu(Display *display, Motor *motor);
+    WinderMenu(Configuration *config, Display *display, Motor *motor);
 
     void interact() override;
 
