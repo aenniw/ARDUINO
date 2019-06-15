@@ -5,7 +5,11 @@ static Motor *motor = nullptr;
 static Display *display = nullptr;
 unsigned int preset_values[3] = {0u};
 
-#define PRESET_BUTTON(pin, p, on) new TimedButton(pin, SAVE_BUTTON_TIMEOUT, []() { if (!keypad->stop_motor()) keypad->goto_preset(p); }, []() { keypad->set_preset(p); },on)
+#define PRESET_BUTTON(pin, p, on) buttons->add_button(pin)\
+                                            ->long_press(SAVE_BUTTON_TIMEOUT)\
+                                            ->on_short_press([]() { if (!keypad->stop_motor()) keypad->goto_preset(p); })\
+                                            ->on_long_press([]() { keypad->set_preset(p); })\
+                                            ->on_press(on);
 #define SET_PRESET_BUTTON(pin, p, on) preset_buttons[p] = PRESET_BUTTON(pin, p,on)
 
 Keypad::Keypad(Motor *_motor, Display *_display) {
@@ -26,9 +30,15 @@ Keypad::Keypad(Motor *_motor, Display *_display) {
 #endif
 #endif
     }
+    auto motor_off = []() { motor->off(); };
+    auto buttons = NIButtons::get_instance();
     // up/down
-    down = new ToggleButton(BUTTON_DOWN, []() { if (!keypad->stop_motor()) motor->dir_ccw(); }, []() { motor->off(); });
-    up = new ToggleButton(BUTTON_UP, []() { if (!keypad->stop_motor()) motor->dir_cw(); }, []() { motor->off(); });
+    down = buttons->add_button(BUTTON_DOWN)
+            ->on_press([]() { if (!keypad->stop_motor()) motor->dir_ccw(); })
+            ->on_release(motor_off);
+    up = buttons->add_button(BUTTON_UP)
+            ->on_press([]() { if (!keypad->stop_motor()) motor->dir_cw(); })
+            ->on_release(motor_off);
     // display light-up callback
     auto light_up = []() { display->light_up(); };
     // presets
@@ -36,43 +46,47 @@ Keypad::Keypad(Motor *_motor, Display *_display) {
     SET_PRESET_BUTTON(BUTTON_P1, 1, light_up);
     SET_PRESET_BUTTON(BUTTON_P2, 2, light_up);
     // calibration
-    rst = new TimedButton(BUTTON_RST, RST_BUTTON_TIMEOUT, []() { keypad->stop_motor(); }, []() {
-        switch (motor->get_mode()) {
-            case UNCALIBRATED:
-                motor->set_mode(SEMICALIBRATED);
-                motor->reset_position();
-                break;
-            case SEMICALIBRATED:
-                motor->set_mode(CALIBRATED);
-                motor->set_end_stop(motor->get_position());
-                display->set_blink(false);
-                break;
-            default:
-                for (int i = 0; i < 3; i++) {
-                    preset_values[i] = 0u;
+    rst = buttons->add_button(BUTTON_RST)
+            ->long_press(RST_BUTTON_TIMEOUT)
+            ->on_short_press([]() { keypad->stop_motor(); })
+            ->on_long_press([]() {
+                switch (motor->get_mode()) {
+                    case UNCALIBRATED:
+                        motor->set_mode(SEMICALIBRATED);
+                        motor->reset_position();
+                        break;
+                    case SEMICALIBRATED:
+                        motor->set_mode(CALIBRATED);
+                        motor->set_end_stop(motor->get_position());
+                        display->set_blink(false);
+                        break;
+                    default:
+                        for (int i = 0; i < 3; i++) {
+                            preset_values[i] = 0u;
 #ifdef __EEPROM__
-                    updateEEPROM(ADDRESS_PRESETS[i], preset_values[i]);
+                            updateEEPROM(ADDRESS_PRESETS[i], preset_values[i]);
 #endif
+                        }
+                        motor->set_mode(UNCALIBRATED);
+                        motor->set_end_stop(~0u);
+                        display->set_blink(true);
+                        motor->reset_position();
+                        break;
                 }
-                motor->set_mode(UNCALIBRATED);
-                motor->set_end_stop(~0u);
-                display->set_blink(true);
-                motor->reset_position();
-                break;
-        }
-    }, light_up);
+            })
+            ->on_press(light_up);
 }
 
 void Keypad::cycle() {
     static unsigned int pos_watch = 0;
 
-    if (rst->get_state() && !rst->is_short()) {
+    if (rst->held()) {
         display->set_blink(false);
         display->print("-rst");
         return;
     }
     for (auto &preset_button : preset_buttons) {
-        if (preset_button->get_state() && !preset_button->is_short()) {
+        if (preset_button->held()) {
             display->set_blink(false);
             display->print("-set");
             return;

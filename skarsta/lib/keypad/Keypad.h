@@ -5,7 +5,7 @@
 #include <Service.h>
 #include <Motor.h>
 #include <Display.h>
-#include <Buttons.h>
+#include <NIButtons.h>
 
 #ifdef __EEPROM__
 
@@ -32,8 +32,8 @@ const size_t ADDRESS_PRESETS[3] = {
 
 class Keypad : Service {
 private:
-    ToggleButton *down = nullptr, *up = nullptr;
-    TimedButton *preset_buttons[3] = {nullptr}, *rst = nullptr;
+    NIButton *down = nullptr, *up = nullptr;
+    NIButton *preset_buttons[3] = {nullptr}, *rst = nullptr;
 protected:
     bool stop_motor();
 
