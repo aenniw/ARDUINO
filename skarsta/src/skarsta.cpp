@@ -1,8 +1,8 @@
+#include <vector>
 #include <Arduino.h>
 #include <Display.h>
 #include <Keypad.h>
 #include <Watchdog.h>
-#include <vector>
 
 #ifdef __H_BRIDGE_MOTOR__
 #include <MotorBridge.h>
@@ -67,6 +67,7 @@ void setup() {
     services.push_back((Service *) new Keypad(motor, display));
     services.push_back((Service *) motor);
     services.push_back((Service *) display);
+    services.push_back((Service *) NIButtons::get_instance());
 
 #ifdef __DEBUG__
     Serial.println("starting");
