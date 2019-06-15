@@ -4,12 +4,11 @@
 #include <MosfetMotor.h>
 #include <WinderMenu.h>
 
-#define MOTOR_PWM 6
-#define GATE_PIN 2
-
-#define BUTTON_PLUS 8
-#define BUTTON_OK 9
-#define BUTTON_MINUS 10
+#define GATE_PIN        2
+#define BUTTON_PLUS     3
+#define BUTTON_OK       4
+#define BUTTON_MINUS    5
+#define MOTOR_PWM       6
 
 static std::vector<Service *> services;
 static WinderMenu *menu = nullptr;
