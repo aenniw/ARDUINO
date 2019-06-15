@@ -2,28 +2,43 @@
 #define ARDUINO_PROJECTS_NIBUTTONS_H
 
 #include <vector>
-#include <PMButton.h>
+#include <PMButton.h>   // https://github.com/JCWentzel/PolymorphicButtons.git#master
 #include <Service.h>
 
-class NIButton : public PMButton, Service {
+#define DEBOUNCE 5
+
+class NIButton : public Service {
 private:
-    void (*_on_pressed)() = nullptr;
+    int _gpio = 0;
+    PMButton *_button = nullptr;
+    bool _pressed = false, _held = false;
+
+    void (*_on_short_press)() = nullptr;
+
+    void (*_on_long_press)() = nullptr;
+
+    void (*_on_press)() = nullptr;
+
+    void (*_on_release)() = nullptr;
 
 public:
-    explicit NIButton(int gpio) : PMButton(gpio) {
-    }
+    explicit NIButton(int gpio);
 
-    NIButton *on_pressed(void (*_on_pressed)()) {
-        this->_on_pressed = _on_pressed;
-        return this;
-    }
+    NIButton *on_short_press(void (*_on_pressed)());
 
-    void cycle() override {
-        checkSwitch();
-        if (_on_pressed && this->pressed()) {
-            this->_on_pressed();
-        }
-    }
+    NIButton *long_press(long delay);
+
+    NIButton *on_long_press(void (*_on_pressed)());
+
+    NIButton *on_press(void (*_on_press)());
+
+    NIButton *on_release(void (*_on_release)());
+
+    bool pressed();
+
+    bool held();
+
+    void cycle() override;
 };
 
 class NIButtons : Service {
@@ -33,30 +48,13 @@ private:
     NIButtons() = default;
 
 public:
+    static NIButtons *get_instance();
 
-    static NIButtons *get_instance() {
-        static auto *singleton = new NIButtons();
-        return singleton;
-    }
+    NIButton *add_button(uint8_t gpio);
 
-    NIButton *add_button(uint8_t gpio) {
-        auto button = new NIButton(gpio);
-        button->begin();
-        buttons.push_back(button);
-        return button;
-    }
+    void cycle() override;
 
-    void cycle() override {
-        for (const auto &button: buttons) {
-            button->cycle();
-        }
-    }
-
-    ~NIButtons() {
-        for (const auto &button: buttons) {
-            delete button;
-        }
-    }
+    ~NIButtons();
 
 };
 
