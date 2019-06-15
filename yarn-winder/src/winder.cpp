@@ -26,9 +26,9 @@ void setup() {
     services.push_back((Service *) buttons);
     services.push_back((Service *) menu);
 
-    buttons->add_button(BUTTON_PLUS)->on_pressed([]() { menu->prev(); });
-    buttons->add_button(BUTTON_MINUS)->on_pressed([]() { menu->next(); });
-    buttons->add_button(BUTTON_OK)->on_pressed([]() { menu->interact(); });
+    buttons->add_button(BUTTON_PLUS)->on_short_press([]() { menu->prev(); });
+    buttons->add_button(BUTTON_MINUS)->on_short_press([]() { menu->next(); });
+    buttons->add_button(BUTTON_OK)->on_short_press([]() { menu->interact(); });
 }
 
 
