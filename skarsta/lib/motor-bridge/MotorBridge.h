@@ -25,9 +25,7 @@ protected:
     void enable();
 
 public:
-    MotorBridge(uint8_t _pin1, uint8_t _pin2,
-                uint8_t _pin3, uint8_t _pin4,
-                uint8_t _pin5, uint8_t _pin6);
+    MotorBridge(Stepper *stepper, uint8_t _pin1, uint8_t _pin2, uint8_t _pin3, uint8_t _pin4);
 
     void cycle() override;
 };

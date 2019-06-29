@@ -3,6 +3,7 @@
 
 #include <Arduino.h>
 #include <Service.h>
+#include <Stepper.h>
 
 typedef enum {
     CCW,
@@ -35,7 +36,7 @@ private:
     volatile unsigned int position = 0, position_change = 0;
 
 protected:
-    void update_position(unsigned char result);
+    void update_position();
 
     void initPin(uint8_t pin, uint8_t val = LOW);
 
@@ -46,7 +47,7 @@ protected:
     virtual void _dir_ccw() = 0;
 
 public:
-    Motor(uint8_t _pin1, uint8_t _pin2);
+    explicit Motor(Stepper *stepper);
 
     void off();
 
@@ -73,8 +74,6 @@ public:
     void disable();;
 
     void cycle() override;
-
-    ~Motor();
 };
 
 #endif //ARDUINO_PROJECTS_ROOT_MOTOR_H

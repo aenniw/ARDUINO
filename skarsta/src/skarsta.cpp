@@ -10,6 +10,13 @@
 #include <MotorRelay.h>
 #endif
 
+#ifdef __OPTICAL_STEPPER__
+#include <OpticalStepper.h>
+#else
+#include <RotaryStepper.h>
+#endif
+
+#define OPTOGATE_PIN 2
 #define ENCODER_PIN_CLK 2
 #define ENCODER_PIN_DIO 3
 #define DISPLAY_PIN_CLK 4
@@ -56,10 +63,16 @@ void setup() {
 #endif
 
     delay(1000);
-#ifdef __H_BRIDGE_MOTOR__
-    auto motor = new MotorBridge(ENCODER_PIN_CLK, ENCODER_PIN_DIO, R_EN, L_EN, R_PWM, L_PWM);
+#ifdef __OPTICAL_STEPPER__
+    auto stepper = new OpticalStepper(OPTOGATE_PIN);
 #else
-    auto motor = new MotorRelay(ENCODER_PIN_CLK, ENCODER_PIN_DIO, POWER_RELAY, DIRECTION_RELAY);
+    auto stepper = new RotaryStepper(ENCODER_PIN_CLK, ENCODER_PIN_DIO);
+#endif
+
+#ifdef __H_BRIDGE_MOTOR__
+    auto motor = new MotorBridge(stepper, R_EN, L_EN, R_PWM, L_PWM);
+#else
+    auto motor = new MotorRelay(stepper, POWER_RELAY, DIRECTION_RELAY);
 #endif
     auto display = new Display(DISPLAY_PIN_CLK, DISPLAY_PIN_DIO);
 

@@ -5,16 +5,14 @@
 #endif
 
 #include <Motor.h>
-#include <Rotary.h>
 
 static Motor *motor = nullptr;
-static Rotary *encoder = nullptr;
 
 static unsigned int position_abs(unsigned int a, unsigned int b) {
     return a >= b ? a - b : b - a;
 }
 
-Motor::Motor(uint8_t _pin1, uint8_t _pin2) {
+Motor::Motor(Stepper *stepper) {
 #ifdef __EEPROM__
     EEPROM.get(ADDRESS_POSITION, position);
     EEPROM.get(ADDRESS_END_STOP, end_stop);
@@ -30,14 +28,12 @@ Motor::Motor(uint8_t _pin1, uint8_t _pin2) {
     Serial.println(mode);
 #endif
 
-    encoder = new Rotary(_pin1, _pin2);
     motor = this;
-
-    auto interrupt_routine = []() {
-        motor->update_position(encoder->process());
-    };
-    attachInterrupt((uint8_t) digitalPinToInterrupt(_pin1), interrupt_routine, CHANGE); // set interrupt
-    attachInterrupt((uint8_t) digitalPinToInterrupt(_pin2), interrupt_routine, CHANGE); // set interrupt
+    stepper->on_step([]() {
+        if (motor != nullptr) {
+            motor->update_position();
+        }
+    });
 }
 
 void Motor::off() {
@@ -109,15 +105,15 @@ void Motor::set_position(unsigned int pos) {
 #endif
 }
 
-void Motor::update_position(const unsigned char result) {
+void Motor::update_position() {
     position_change++;
     if (mode == UNCALIBRATED) {
         return;
     }
 
-    if (result == DIR_CW) {
+    if (state == CW) {
         position++;
-    } else if (result == DIR_CCW && position != 0) {
+    } else if (state == CCW && position != 0) {
         position--;
     }
 
@@ -176,10 +172,6 @@ void Motor::initPin(uint8_t pin, uint8_t val) {
 }
 
 void Motor::cycle() {};
-
-Motor::~Motor() {
-    delete encoder;
-}
 
 void Motor::disable() {
     disabled = true;
