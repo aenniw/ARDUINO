@@ -5,14 +5,24 @@ test -d ./target && \
 mkdir ./target
 
 TAG=`git tag -l --points-at HEAD`
-for PROJECT_BIN in ./*/.pioenvs/*/firmware.elf; do
-    PROJECT_NAME=${PROJECT_BIN%${PROJECT_BIN#*/*/}} && \
-        PROJECT_NAME=${PROJECT_NAME%*/} && \
-        PROJECT_NAME=${PROJECT_NAME#./*}
-    BOARD_NAME=${PROJECT_BIN%*/*} && \
-        BOARD_NAME=${BOARD_NAME##*/} && \
 
-    if echo ${TAG:-${PROJECT_NAME}} | grep -iq $PROJECT_NAME; then
-        cp ${PROJECT_BIN} ./target/${PROJECT_NAME}-${BOARD_NAME}.elf
-    fi
-done
+function package() {
+    BINARY=$1
+    SUFFIX=$2
+
+    for PROJECT_FS in ./*/.pioenvs/*/${BINARY}; do
+        PROJECT_NAME=${PROJECT_FS%${PROJECT_FS#*/*/}} && \
+            PROJECT_NAME=${PROJECT_NAME%*/} && \
+            PROJECT_NAME=${PROJECT_NAME#./*}
+        BOARD_NAME=${PROJECT_FS%*/*} && \
+            BOARD_NAME=${BOARD_NAME##*/} && \
+
+        if echo ${TAG:-${PROJECT_NAME}} | grep -iq $PROJECT_NAME || \
+            echo ${TAG} | grep -iqv '-' ; then
+            cp ${PROJECT_FS} ./target/${PROJECT_NAME}-${BOARD_NAME}${SUFFIX}.${BINARY#*.}
+        fi
+    done
+}
+
+package firmware.hex
+package firmware.elf
