@@ -3,6 +3,7 @@ CMakeListsPrivate.txt
 .gcc-flags.json
 .pioenvs
 .piolibdeps
+.pio
 .vscode
 target/
 **/.idea/

@@ -111,15 +111,17 @@ void Motor::update_position() {
         return;
     }
 
-    if (state == CW) {
+    if (state != OFF) {
+        last_state = state;
+    }
+    if (state == CW || last_state == CW) {
         position++;
-    } else if (state == CCW && position != 0) {
+    } else if ((state == CCW || last_state == CCW) && position != 0) {
         position--;
     }
 
 #ifdef __EEPROM__
-    if (state == OFF)
-        updateEEPROM(ADDRESS_POSITION, position);
+    updateEEPROM(ADDRESS_POSITION, position);
 #endif
 
     if (position == 0 || position >= end_stop) {

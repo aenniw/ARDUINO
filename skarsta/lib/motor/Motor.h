@@ -32,8 +32,8 @@ private:
     long next_position = -1;
     bool disabled = false;
 
-    volatile MotorState state = OFF;
-    volatile unsigned int position = 0, position_change = 0;
+    MotorState state = OFF, last_state = OFF;
+    unsigned int position = 0, position_change = 0;
 
 protected:
     void update_position();
