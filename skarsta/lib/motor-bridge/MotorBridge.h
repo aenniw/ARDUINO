@@ -4,9 +4,9 @@
 #include <Arduino.h>
 #include <Motor.h>
 
-#define MIN_SPEED 100
+#define MIN_SPEED 150
 #define MAX_SPEED 255
-#define SPEED_STEP_DURATION 10
+#define SPEED_STEP_DURATION 15
 
 class MotorBridge : public Motor {
 private:
