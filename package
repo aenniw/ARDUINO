@@ -10,7 +10,7 @@ function package() {
     BINARY=$1
     SUFFIX=$2
 
-    for PROJECT_FS in ./*/.pioenvs/*/${BINARY}; do
+    for PROJECT_FS in ./*/.pio/build/*/${BINARY}; do
         PROJECT_NAME=${PROJECT_FS%${PROJECT_FS#*/*/}} && \
             PROJECT_NAME=${PROJECT_NAME%*/} && \
             PROJECT_NAME=${PROJECT_NAME#./*}
