@@ -5,6 +5,8 @@
 #include <Display.h>
 #include <Labels.h>
 
+#define MAX_MENU_ITEMS 4
+
 class Item : public Label {
 public:
     virtual void interact() = 0;
@@ -34,7 +36,7 @@ public:
 };
 
 class Menu : public Navigation {
-private:
+protected:
     const Label *_label;
 
     Item **items = nullptr;
@@ -51,9 +53,14 @@ private:
 
     volatile boolean active = false;
     volatile uint8_t active_item = 0;
+
+    virtual void print_item(uint8_t i, LOCALE locale, Display *display, bool nl) const;
+
 public:
     Menu(const Label *label, Item **items, uint8_t item_count, Menu *(*on_active)(Menu *) = nullptr,
          void(*on_inactive)(Menu *) = nullptr, void (*next)() = nullptr, void (*prev)() = nullptr);
+
+    boolean is_active() const;
 
     void next() override;
 
@@ -66,5 +73,18 @@ public:
     void print(LOCALE locale, Display *display, bool nl) const override;
 };
 
+class MenuValue : public Menu {
+public:
+    MenuValue(const Label *label, Label *value, Menu *(*on_active)(Menu *) = nullptr,
+              void(*on_inactive)(Menu *) = nullptr, void (*next)() = nullptr, void (*prev)() = nullptr) :
+            Menu(label, new Item *[1]{new MenuItem(value)}, 1, on_active, on_inactive, next,
+                 prev) {}
+
+    void print_item(uint8_t i, LOCALE locale, Display *display, bool nl) const override;
+
+    void next() override;
+
+    void prev() override;
+};
 
 #endif //ARDUINO_PROJECTS_MENU_H

@@ -2,9 +2,7 @@
 #define ARDUINO_PROJECTS_CONFIGURATION_H
 
 #ifdef __EEPROM__
-
 #include <EEPROM.h>
-
 #endif
 
 typedef enum {
@@ -20,7 +18,8 @@ typedef enum {
 
 const int ADDRESS_PROFILE = EEPROM.begin();
 const int ADDRESS_LOCALE = ADDRESS_PROFILE + sizeof(uint8_t);
-const int ADDRESS_END = ADDRESS_LOCALE + sizeof(uint8_t);
+const int ADDRESS_BRIGHTNESS = ADDRESS_LOCALE + sizeof(uint8_t);
+const int ADDRESS_END = ADDRESS_BRIGHTNESS + sizeof(uint8_t);
 
 template<typename T>
 const T &eeprom_set(int idx, const T &t) {

@@ -19,6 +19,23 @@ public:
     void print(LOCALE locale, Display *display, bool nl) const override;
 };
 
+template<class T>
+class ValueLabel : public Label {
+private:
+    T *value = nullptr;
+public:
+    explicit ValueLabel(T *value) {
+        this->value = value;
+    }
+
+    void print(LOCALE locale, Display *display, bool nl) const override {
+        display->println();
+        display->print("     ");
+        display->print((long) (*value));
+        display->println();
+    }
+};
+
 class StatusLabel : public Label {
 private:
     Motor *motor = nullptr;

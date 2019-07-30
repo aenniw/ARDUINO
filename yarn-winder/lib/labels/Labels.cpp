@@ -54,16 +54,22 @@ void MonitorLabel::print(LOCALE locale, Display *display, bool nl) const {
         return;
     }
 
-    display->set_size(1);
-    display->position(0, 4);
+    display->position(0, 10);
     speed->print(locale, display, false);
     display->print(": ");
     display->print((int) motor->get_speed());
     display->println("%");
+
     evol->print(locale, display, false);
     display->print(": ");
     display->print((long) motor->get_evolution());
+    unsigned long stop_evol = *motor->get_stop_evolution();
+    if (stop_evol) {
+        display->print("/");
+        display->print((long) stop_evol);
+    }
     display->println();
+
     len->print(locale, display, false);
     display->print(": ");
     display->print(motor->get_len(), 3);

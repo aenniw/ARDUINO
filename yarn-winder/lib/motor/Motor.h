@@ -27,6 +27,12 @@ public:
     virtual void increase_speed() =0;
 
     virtual void decrease_speed() =0;
+
+    virtual void increase_stop_evolution() =0;
+
+    virtual void decrease_stop_evolution() =0;
+
+    virtual unsigned long *get_stop_evolution() =0;
 };
 
 

@@ -1,3 +1,4 @@
+#include <climits>
 #include "MosfetMotor.h"
 
 static MosfetMotor *motor;
@@ -8,8 +9,9 @@ MosfetMotor::MosfetMotor(uint8_t pwm, uint8_t gate) {
     pinMode((this->pwm = pwm), OUTPUT);
     pinMode((this->gate = gate), INPUT_PULLUP);
     attachInterrupt(digitalPinToInterrupt(gate), []() {
-        motor->rotary_count++;
-    }, CHANGE);
+        if (motor->speed)
+            motor->rotary_count++;
+    }, RISING);
 }
 
 uint8_t MosfetMotor::get_speed() {
@@ -25,7 +27,11 @@ void MosfetMotor::reset() {
     rotary_count = 0;
 }
 
-void MosfetMotor::cycle() {}
+void MosfetMotor::cycle() {
+    if (get_state() == ON && rotary_count_end > 0 && rotary_count_end == get_evolution()) {
+        set_speed(0);
+    }
+}
 
 MosfetMotor::~MosfetMotor() {
     digitalWrite(pwm, 0);
@@ -62,4 +68,20 @@ unsigned long MosfetMotor::get_evolution() {
 
 double MosfetMotor::get_len() {
     return 0;
+}
+
+unsigned long *MosfetMotor::get_stop_evolution() {
+    return &rotary_count_end;
+}
+
+void MosfetMotor::decrease_stop_evolution() {
+    if (rotary_count_end > 0) {
+        rotary_count_end = rotary_count_end - 1;
+    }
+}
+
+void MosfetMotor::increase_stop_evolution() {
+    if (rotary_count_end < ULONG_MAX) {
+        rotary_count_end = rotary_count_end + 1;
+    }
 }
