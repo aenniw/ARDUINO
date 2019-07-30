@@ -8,7 +8,8 @@
 
 class WinderMenu : Service, public Navigation {
 private:
-    Display *display = nullptr;
+    Display *_display = nullptr;
+    Label *_status = nullptr;
 protected:
 
     void print(LOCALE locale, Display *display, bool nl) const override;

@@ -1,17 +1,58 @@
 #include "Display.h"
+#include "Logo.h"
 
-Display::Display() {
-    display = new Adafruit_SSD1306(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
-    display->begin(SSD1306_SWITCHCAPVCC, 0x3C);
+#ifdef __EEPROM__
+#include <Configuration.h>
+#endif
+
+Display::Display(uint8_t bck, uint8_t sclk, uint8_t din, uint8_t dc, uint8_t cs, uint8_t rst) {
+    display = new Adafruit_PCD8544(sclk, din, dc, cs, rst);
+    display->begin();
+    display->setRotation(2);
+    display->setTextColor(BLACK);
+    display->setContrast(50);
+    display->setTextSize(1);
+    pinMode((this->bck = bck), OUTPUT);
+#ifdef __EEPROM__
+    EEPROM.get(ADDRESS_BRIGHTNESS, _backlight);
+#endif
+    this->set_backlight(_backlight);
+
+    display->clearDisplay();
+    display->drawBitmap(0, 0, logo_bitmap, logo_width, logo_height, BLACK);
+    display->display();
+    delay(1500);
+
     display->clearDisplay();
     display->display();
-    display->setTextColor(WHITE);
-    display->setTextSize(1);
 }
 
 void Display::clear() {
     display->setCursor(0, 0);
     display->clearDisplay();
+}
+
+void Display::set_backlight(uint8_t v) {
+    analogWrite(bck, 255 - (uint8_t) (2.55f * (this->_backlight = v)));
+#ifdef __EEPROM__
+    eeprom_set(ADDRESS_BRIGHTNESS, (uint8_t) this->_backlight);
+#endif
+}
+
+void Display::increase_backlight() {
+    if (_backlight < 100) {
+        set_backlight(_backlight + 1);
+    }
+}
+
+void Display::decrease_backlight() {
+    if (_backlight > 0) {
+        set_backlight(_backlight - 1);
+    }
+}
+
+uint8_t *Display::get_backlight() {
+    return &_backlight;
 }
 
 void Display::position(int16_t x, int16_t y) {

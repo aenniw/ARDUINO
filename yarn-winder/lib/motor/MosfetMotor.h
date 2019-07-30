@@ -7,13 +7,14 @@
 #define MAX_SPEED 255
 #define MIN_SPEED 30
 #define MIN_STEP 5
-#define EVOLUTION 216
+#define EVOLUTION 58
 #define SPOOL_RADIUS 1.5
 
 class MosfetMotor : public Motor {
 private:
     uint8_t pwm = 0, gate = 0, speed = 0;
     volatile unsigned long rotary_count = 0;
+    unsigned long rotary_count_end = 0;
 
 public:
     MosfetMotor(uint8_t pwm, uint8_t gate);
@@ -37,6 +38,12 @@ public:
     void increase_speed() override;
 
     void decrease_speed() override;
+
+    void increase_stop_evolution() override;
+
+    void decrease_stop_evolution() override;
+
+    unsigned long *get_stop_evolution() override;
 
     ~MosfetMotor();
 };
