@@ -11,11 +11,15 @@ MosfetMotor::MosfetMotor(uint8_t pwm, uint8_t gate) {
     attachInterrupt(digitalPinToInterrupt(gate), []() {
         if (motor->speed)
             motor->rotary_count++;
-    }, RISING);
+    }, IR_TRIGGER);
 }
 
 uint8_t MosfetMotor::get_speed() {
-    return (uint8_t) ((speed / 255.0) * 100);
+    if (!speed) {
+        return 0;
+    }
+    const auto min = (float) (MIN_SPEED - MIN_STEP);
+    return (uint8_t) (((speed - min) / (MAX_SPEED - min)) * 100);
 }
 
 void MosfetMotor::set_speed(uint8_t s) {
@@ -28,8 +32,19 @@ void MosfetMotor::reset() {
 }
 
 void MosfetMotor::cycle() {
-    if (get_state() == ON && rotary_count_end > 0 && rotary_count_end == get_evolution()) {
-        set_speed(0);
+    if (speed && rotary_count_end) {
+        const unsigned long remaining_count = (rotary_count_end * EVOLUTION) - rotary_count;
+
+        if (remaining_count <= EVOLUTION_OFFSET) {
+            set_speed(0);
+            rotary_count = rotary_count_end * EVOLUTION;
+        } else if (speed > MIN_SPEED) {
+            if (remaining_count <= EVOLUTION) {
+                set_speed(MIN_SPEED);
+            } else if (remaining_count <= 2 * EVOLUTION) {
+                decrease_speed();
+            }
+        }
     }
 }
 
@@ -53,8 +68,12 @@ void MosfetMotor::increase_speed() {
 }
 
 void MosfetMotor::decrease_speed() {
-    if (speed - MIN_STEP >= MIN_SPEED && speed <= MAX_SPEED) {
-        motor->set_speed(speed - MIN_STEP);
+    if (speed > 0) {
+        if (speed - MIN_STEP > MIN_SPEED) {
+            motor->set_speed(speed - MIN_STEP);
+        } else {
+            motor->set_speed(0);
+        }
     }
 }
 
@@ -67,7 +86,8 @@ unsigned long MosfetMotor::get_evolution() {
 }
 
 double MosfetMotor::get_len() {
-    return 0;
+    // TODO: update based on fitting curve
+    return get_evolution() * 0.0965;
 }
 
 unsigned long *MosfetMotor::get_stop_evolution() {

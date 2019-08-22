@@ -4,17 +4,21 @@
 #include <Arduino.h>
 #include <Motor.h>
 
-#define MAX_SPEED 255
-#define MIN_SPEED 30
-#define MIN_STEP 5
-#define EVOLUTION 58
+#define MAX_SPEED           255
+#define MIN_SPEED           30
+#define MIN_STEP            5
 #define SPOOL_RADIUS 1.5
+
+#define IR_TRIGGER          RISING
+#define EVOLUTION_OFFSET    4
+#define EVOLUTION           44
+
 
 class MosfetMotor : public Motor {
 private:
     uint8_t pwm = 0, gate = 0, speed = 0;
     volatile unsigned long rotary_count = 0;
-    unsigned long rotary_count_end = 0;
+    unsigned long rotary_count_end = 8;
 
 public:
     MosfetMotor(uint8_t pwm, uint8_t gate);
