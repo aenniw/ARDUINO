@@ -7,7 +7,6 @@
 #define MAX_SPEED           255
 #define MIN_SPEED           30
 #define MIN_STEP            5
-#define SPOOL_RADIUS 1.5
 
 #define IR_TRIGGER          RISING
 #define EVOLUTION_OFFSET    4
@@ -20,16 +19,17 @@ private:
     volatile unsigned long rotary_count = 0;
     unsigned long rotary_count_end = 8;
 
+protected:
+    void set_speed(uint8_t s) override;
+
 public:
     MosfetMotor(uint8_t pwm, uint8_t gate);
-
-    void set_speed(uint8_t s) override;
 
     uint8_t get_speed() override;
 
     MotorState get_state() override;
 
-    unsigned long get_evolution() override;
+    unsigned long get_evolution() const override;
 
     double get_len() override;
 
