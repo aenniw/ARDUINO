@@ -18,7 +18,7 @@ public:
 
     virtual void reset()=0;
 
-    virtual unsigned long get_evolution() =0;
+    virtual unsigned long get_evolution() const =0;
 
     virtual double get_len() =0;
 

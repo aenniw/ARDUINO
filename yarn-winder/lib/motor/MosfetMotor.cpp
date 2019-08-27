@@ -3,6 +3,13 @@
 
 static MosfetMotor *motor;
 
+static unsigned long get_period(const unsigned long last, const unsigned long next) {
+    if (last > next) {
+        return (ULONG_MAX - last) + next;
+    }
+    return next - last;
+}
+
 MosfetMotor::MosfetMotor(uint8_t pwm, uint8_t gate) {
     motor = this;
 
@@ -33,17 +40,19 @@ void MosfetMotor::reset() {
 
 void MosfetMotor::cycle() {
     if (speed && rotary_count_end) {
-        const unsigned long remaining_count = (rotary_count_end * EVOLUTION) - rotary_count;
+        static unsigned long last_tick = millis();
+        const unsigned long now = millis(), diff = get_period(last_tick, now),
+                remaining_count = (rotary_count_end * EVOLUTION) - rotary_count;
 
         if (remaining_count <= EVOLUTION_OFFSET) {
             set_speed(0);
             rotary_count = rotary_count_end * EVOLUTION;
-        } else if (speed > MIN_SPEED) {
-            if (remaining_count <= EVOLUTION) {
-                set_speed(MIN_SPEED);
-            } else if (remaining_count <= 2 * EVOLUTION) {
+        } else if (remaining_count <= EVOLUTION) {
+            set_speed(MIN_SPEED);
+        } else if (remaining_count <= 2 * EVOLUTION && diff >= 25) {
+            if (speed - MIN_STEP > MIN_SPEED)
                 decrease_speed();
-            }
+            last_tick = now;
         }
     }
 }
@@ -81,7 +90,7 @@ MotorState MosfetMotor::get_state() {
     return speed ? ON : OFF;
 }
 
-unsigned long MosfetMotor::get_evolution() {
+unsigned long MosfetMotor::get_evolution() const {
     return rotary_count / EVOLUTION;
 }
 
@@ -95,6 +104,7 @@ unsigned long *MosfetMotor::get_stop_evolution() {
 }
 
 void MosfetMotor::decrease_stop_evolution() {
+    rotary_count = 0;
     if (rotary_count_end > 0) {
         rotary_count_end = rotary_count_end - 1;
     }
