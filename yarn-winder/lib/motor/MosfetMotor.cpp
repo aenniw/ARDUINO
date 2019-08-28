@@ -16,13 +16,13 @@ MosfetMotor::MosfetMotor(uint8_t pwm, uint8_t gate) {
     pinMode((this->pwm = pwm), OUTPUT);
     pinMode((this->gate = gate), INPUT_PULLUP);
     attachInterrupt(digitalPinToInterrupt(gate), []() {
-        if (motor->speed)
+        if (motor->is_rotating())
             motor->rotary_count++;
     }, IR_TRIGGER);
 }
 
-uint8_t MosfetMotor::get_speed() {
-    if (!speed) {
+uint8_t MosfetMotor::get_speed() const {
+    if (get_state() == OFF) {
         return 0;
     }
     const auto min = (float) (MIN_SPEED - MIN_STEP);
@@ -30,6 +30,9 @@ uint8_t MosfetMotor::get_speed() {
 }
 
 void MosfetMotor::set_speed(uint8_t s) {
+    if (s) {
+        no_spin = false;
+    }
     analogWrite(pwm, (speed = s));
 }
 
@@ -39,21 +42,13 @@ void MosfetMotor::reset() {
 }
 
 void MosfetMotor::cycle() {
-    if (speed && rotary_count_end) {
-        static unsigned long last_tick = millis();
-        const unsigned long now = millis(), diff = get_period(last_tick, now),
-                remaining_count = (rotary_count_end * EVOLUTION) - rotary_count;
+    const unsigned long now = millis();
 
-        if (remaining_count <= EVOLUTION_OFFSET) {
-            set_speed(0);
-            rotary_count = rotary_count_end * EVOLUTION;
-        } else if (remaining_count <= EVOLUTION) {
-            set_speed(MIN_SPEED);
-        } else if (remaining_count <= 2 * EVOLUTION && diff >= 25) {
-            if (speed - MIN_STEP > MIN_SPEED)
-                decrease_speed();
-            last_tick = now;
-        }
+    if (get_state() == OFF) {
+        spin_detect(now);
+    } else if (get_state() == ON && rotary_count_end) {
+        //spin_up(now);
+        spin_down(now);
     }
 }
 
@@ -86,7 +81,7 @@ void MosfetMotor::decrease_speed() {
     }
 }
 
-MotorState MosfetMotor::get_state() {
+MotorState MosfetMotor::get_state() const {
     return speed ? ON : OFF;
 }
 
@@ -94,12 +89,23 @@ unsigned long MosfetMotor::get_evolution() const {
     return rotary_count / EVOLUTION;
 }
 
-double MosfetMotor::get_len() {
-    // TODO: update based on fitting curve
-    return get_evolution() * 0.0965;
+unsigned long MosfetMotor::get_remaining_evolutions() const {
+    if (!rotary_count_end || get_evolution() >= rotary_count_end) {
+        return 0;
+    }
+    return (rotary_count_end * EVOLUTION) - rotary_count;
 }
 
-unsigned long *MosfetMotor::get_stop_evolution() {
+double MosfetMotor::get_len() const {
+    if (!rotary_count) {
+        return 0;
+    }
+
+    const double evolution = rotary_count / (double) EVOLUTION;
+    return 0.1502201 + 0.06363677 * evolution + 0.001051915 * evolution * evolution;
+}
+
+unsigned long *MosfetMotor::get_stop_evolution() const {
     return &rotary_count_end;
 }
 
@@ -114,4 +120,51 @@ void MosfetMotor::increase_stop_evolution() {
     if (rotary_count_end < ULONG_MAX) {
         rotary_count_end = rotary_count_end + 1;
     }
+}
+
+bool MosfetMotor::is_rotating() const {
+    return !no_spin;
+}
+
+void MosfetMotor::spin_detect(unsigned long ms) {
+    static unsigned long last_rotary_count = rotary_count, last_spin_tick = millis();
+    const unsigned long diff = get_period(last_spin_tick, ms);
+
+    if (diff >= 500) {
+        if (last_rotary_count == rotary_count) {
+            no_spin = true;
+        }
+        last_spin_tick = ms;
+    }
+    last_rotary_count = rotary_count;
+}
+
+void MosfetMotor::spin_down(unsigned long ms) {
+    static unsigned long last_slow_tick = millis();
+    const unsigned long diff = get_period(last_slow_tick, ms),
+            remaining_count = get_remaining_evolutions();
+
+    if (remaining_count <= EVOLUTION_OFFSET) {
+        set_speed(0);
+        rotary_count = rotary_count_end * EVOLUTION;
+    } else if (remaining_count <= EVOLUTION) {
+        set_speed(MIN_SPEED); // prevents from manual speed increase
+    } else if (remaining_count <= 2 * EVOLUTION && diff >= 20) {
+        if (speed - MIN_STEP > MIN_SPEED) {
+            decrease_speed();
+        }
+        last_slow_tick = ms;
+    }
+}
+
+void MosfetMotor::spin_up(unsigned long ms) {
+    static unsigned long last_inc_tick = millis();
+    const unsigned long diff = get_period(last_inc_tick, ms),
+            remaining_count = get_remaining_evolutions();
+
+    if (remaining_count > 2 * EVOLUTION && diff >= 750) {
+        increase_speed();
+        last_inc_tick = ms;
+    }
+
 }

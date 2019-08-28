@@ -10,17 +10,15 @@ typedef enum {
 
 class Motor : Service {
 public:
-    virtual void set_speed(uint8_t s)=0;
+    virtual uint8_t get_speed() const =0;
 
-    virtual uint8_t get_speed() =0;
-
-    virtual MotorState get_state() =0;
+    virtual MotorState get_state() const =0;
 
     virtual void reset()=0;
 
     virtual unsigned long get_evolution() const =0;
 
-    virtual double get_len() =0;
+    virtual double get_len() const =0;
 
     virtual void toggle()=0;
 
@@ -32,7 +30,7 @@ public:
 
     virtual void decrease_stop_evolution() =0;
 
-    virtual unsigned long *get_stop_evolution() =0;
+    virtual unsigned long *get_stop_evolution() const =0;
 };
 
 
