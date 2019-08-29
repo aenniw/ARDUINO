@@ -42,21 +42,6 @@ void MosfetMotor::reset() {
     rotary_count = 0;
 }
 
-void MosfetMotor::cycle() {
-    const unsigned long now = millis();
-
-    if (get_state() == OFF) {
-        spin_detect(now);
-    } else if (get_state() == ON && rotary_count_end) {
-        switch (*profile) {
-            case Auto:
-                spin_up(now);
-            case Semi:
-                spin_down(now);
-        }
-    }
-}
-
 MosfetMotor::~MosfetMotor() {
     digitalWrite(pwm, 0);
     detachInterrupt(digitalPinToInterrupt(gate));
@@ -135,13 +120,13 @@ void MosfetMotor::spin_detect(unsigned long ms) {
     static unsigned long last_rotary_count = rotary_count, last_spin_tick = millis();
     const unsigned long diff = get_period(last_spin_tick, ms);
 
-    if (diff >= SPINDOWN_TIMEOUT) {
+    if (diff >= SPIN_TIMEOUT) {
         if (last_rotary_count == rotary_count) {
             no_spin = true;
         }
         last_spin_tick = ms;
+        last_rotary_count = rotary_count;
     }
-    last_rotary_count = rotary_count;
 }
 
 void MosfetMotor::spin_down(unsigned long ms) {
@@ -172,4 +157,40 @@ void MosfetMotor::spin_up(unsigned long ms) {
         last_inc_tick = ms;
     }
 
+}
+
+void MosfetMotor::cycle() {
+    const unsigned long now = millis();
+
+    if (get_state() == OFF) {
+        spin_detect(now);
+    } else if (get_state() == ON) {
+        if (stall_detection) {
+            stall_detect(now);
+        }
+
+        if (rotary_count_end) {
+            switch (*profile) {
+                case Auto:
+                    spin_up(now);
+                case Semi:
+                    spin_down(now);
+            }
+        }
+    }
+}
+
+void MosfetMotor::stall_detect(unsigned long ms) {
+    static unsigned long last_rotary_count = rotary_count, last_spin_tick = millis();
+    const unsigned long diff = get_period(last_spin_tick, ms);
+
+    if (diff >= STALL_TIMEOUT) {
+        if (last_rotary_count == rotary_count) {
+            last_rotary_count = 0;
+            set_speed(0);
+        } else {
+            last_rotary_count = rotary_count;
+        }
+        last_spin_tick = ms;
+    }
 }
