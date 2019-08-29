@@ -11,6 +11,8 @@ private:
     const char *label = nullptr;
     uint8_t labels_count = 0;
     LOCALE fallback = EN;
+protected:
+    void print_progmem(Display *display, const char *label) const;
 public:
     explicit StaticLabel(const char *label);
 
@@ -30,8 +32,8 @@ public:
 
     void print(LOCALE locale, Display *display, bool nl) const override {
         display->println();
-        display->print("     ");
-        display->print((long) (*value));
+        display->print(F("     "));
+        display->print(*value);
         display->println();
     }
 };
@@ -44,6 +46,25 @@ public:
     StatusLabel(Motor *motor, const Label *start, const Label *pause);
 
     void print(LOCALE locale, Display *display, bool nl) const override;
+};
+
+
+template<class T>
+class SelectionLabel : public Label {
+private:
+    T *selector = nullptr;
+    Label **labels = nullptr;
+public:
+    SelectionLabel(Label **labels, T *profile) {
+        this->labels = labels;
+        this->selector = profile;
+    }
+
+    void print(LOCALE locale, Display *display, bool nl) const override {
+        display->println();
+        display->print(F("  "));
+        labels[(uint8_t) (*selector)]->print(locale, display, true);
+    }
 };
 
 class MonitorLabel : public Label {

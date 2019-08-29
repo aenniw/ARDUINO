@@ -63,12 +63,20 @@ void Display::set_size(uint8_t s) {
     display->setTextSize(s);
 }
 
-void Display::print(const char *c) {
+void Display::print(const char c) {
     display->print(c);
 }
 
-void Display::println(const char *c) {
-    display->println(c);
+void Display::print(const __FlashStringHelper *ifsh) {
+    display->print(ifsh);
+}
+
+void Display::println() {
+    display->println();
+}
+
+void Display::println(const __FlashStringHelper *ifsh) {
+    display->println(ifsh);
 }
 
 void Display::print(int i, int b) {
@@ -76,6 +84,10 @@ void Display::print(int i, int b) {
 }
 
 void Display::print(long i, int b) {
+    display->print(i, b);
+}
+
+void Display::print(unsigned long i, int b) {
     display->print(i, b);
 }
 

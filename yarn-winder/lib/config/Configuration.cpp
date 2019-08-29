@@ -18,19 +18,8 @@ static void eeprom_reset() {
 
 #endif
 
-PROFILE Configuration::get_profile() const {
-    return profile;
-}
-
-void Configuration::set_profile(PROFILE profile) {
-    this->profile = profile;
-#ifdef __EEPROM__
-    eeprom_set(ADDRESS_PROFILE, (uint8_t) this->profile);
-#endif
-}
-
-LOCALE Configuration::get_locale() const {
-    return locale;
+LOCALE *Configuration::get_locale() const {
+    return &locale;
 }
 
 void Configuration::set_locale(LOCALE locale) {
@@ -57,4 +46,20 @@ Configuration::Configuration() {
     EEPROM.get(ADDRESS_LOCALE, data);
     this->locale = (LOCALE) data;
 #endif
+}
+
+void Configuration::prev_profile() {
+    if (profile > Manual) {
+        profile = (PROFILE) (profile - 1);
+    }
+}
+
+void Configuration::next_profile() {
+    if (profile < Auto) {
+        profile = (PROFILE) (profile + 1);
+    }
+}
+
+PROFILE *Configuration::get_profile() {
+    return &profile;
 }

@@ -25,7 +25,7 @@ void setup() {
     auto display = new Display(DISPLAY_BCK, DISPLAY_SCLK, DISPLAY_DIN, DISPLAY_DC, DISPLAY_CS, DISPLAY_RST);
     auto buttons = NIButtons::get_instance();
     auto config = Configuration::get_instance();
-    auto motor = new MosfetMotor(MOTOR_PWM, GATE_PIN);
+    auto motor = new MosfetMotor(config->get_profile(), MOTOR_PWM, GATE_PIN);
 
     menu = new WinderMenu(config, display, motor);
     encoder = new RotaryEncoder(ROTARY_CLK, ROTARY_DT);

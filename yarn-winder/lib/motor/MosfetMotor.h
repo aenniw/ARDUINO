@@ -3,10 +3,13 @@
 
 #include <Arduino.h>
 #include <Motor.h>
+#include <Configuration.h>
 
 #define MAX_SPEED           255
 #define MIN_SPEED           30
 #define MIN_STEP            5
+#define SPINDOWN_TIMEOUT    750
+#define SPINUP_TIMEOUT      750
 
 #define IR_TRIGGER          RISING
 #define EVOLUTION_OFFSET    4
@@ -15,9 +18,11 @@
 
 class MosfetMotor : public Motor {
 private:
+    PROFILE *profile = nullptr;
+
     uint8_t pwm = 0, gate = 0, speed = 0;
     volatile unsigned long rotary_count = 0;
-    unsigned long rotary_count_end = 8;
+    unsigned long rotary_count_end = 0;
     bool no_spin = true;
 private:
     void spin_detect(unsigned long ms);
@@ -34,7 +39,7 @@ protected:
     void set_speed(uint8_t s);
 
 public:
-    MosfetMotor(uint8_t pwm, uint8_t gate);
+    MosfetMotor(PROFILE *profile, uint8_t pwm, uint8_t gate);
 
     uint8_t get_speed() const override;
 

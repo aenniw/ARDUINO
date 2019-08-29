@@ -31,13 +31,19 @@ public:
 
     void set_size(uint8_t s);
 
-    void print(const char *c);
+    void print(char c);
 
-    void println(const char *c = "");
+    void print(const __FlashStringHelper *ifsh);
+
+    void println();
+
+    void println(const __FlashStringHelper *ifsh);
 
     void print(int i, int b = 10);
 
     void print(long i, int b = 10);
+
+    void print(unsigned long i, int b = 10);
 
     void print(double i, int d = 2);
 
