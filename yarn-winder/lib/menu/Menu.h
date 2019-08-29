@@ -8,8 +8,12 @@
 #define MAX_MENU_ITEMS 4
 
 class Item : public Label {
+protected:
+    bool (*_enabled)() = nullptr;
 public:
     virtual void interact() = 0;
+
+    virtual boolean enabled();;
 };
 
 class Navigation : public Item {
@@ -58,7 +62,8 @@ protected:
 
 public:
     Menu(const Label *label, Item **items, uint8_t item_count, Menu *(*on_active)(Menu *) = nullptr,
-         void(*on_inactive)(Menu *) = nullptr, void (*next)() = nullptr, void (*prev)() = nullptr);
+         void(*on_inactive)(Menu *) = nullptr, void (*next)() = nullptr, void (*prev)() = nullptr,
+         bool (*_enabled)() = nullptr);
 
     boolean is_active() const;
 
@@ -76,9 +81,9 @@ public:
 class MenuValue : public Menu {
 public:
     MenuValue(const Label *label, Label *value, Menu *(*on_active)(Menu *) = nullptr,
-              void(*on_inactive)(Menu *) = nullptr, void (*next)() = nullptr, void (*prev)() = nullptr) :
-            Menu(label, new Item *[1]{new MenuItem(value)}, 1, on_active, on_inactive, next,
-                 prev) {}
+              void(*on_inactive)(Menu *) = nullptr, void (*next)() = nullptr, void (*prev)() = nullptr,
+              bool (*_enabled)() = nullptr) :
+            Menu(label, new Item *[1]{new MenuItem(value)}, 1, on_active, on_inactive, next, prev, _enabled) {}
 
     void print_item(uint8_t i, LOCALE locale, Display *display, bool nl) const override;
 

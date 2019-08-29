@@ -10,7 +10,7 @@ static unsigned long get_period(const unsigned long last, const unsigned long ne
     return next - last;
 }
 
-MosfetMotor::MosfetMotor(uint8_t pwm, uint8_t gate) {
+MosfetMotor::MosfetMotor(PROFILE *profile, uint8_t pwm, uint8_t gate) {
     motor = this;
 
     pinMode((this->pwm = pwm), OUTPUT);
@@ -19,6 +19,7 @@ MosfetMotor::MosfetMotor(uint8_t pwm, uint8_t gate) {
         if (motor->is_rotating())
             motor->rotary_count++;
     }, IR_TRIGGER);
+    this->profile = profile;
 }
 
 uint8_t MosfetMotor::get_speed() const {
@@ -47,8 +48,12 @@ void MosfetMotor::cycle() {
     if (get_state() == OFF) {
         spin_detect(now);
     } else if (get_state() == ON && rotary_count_end) {
-        //spin_up(now);
-        spin_down(now);
+        switch (*profile) {
+            case Auto:
+                spin_up(now);
+            case Semi:
+                spin_down(now);
+        }
     }
 }
 
@@ -130,7 +135,7 @@ void MosfetMotor::spin_detect(unsigned long ms) {
     static unsigned long last_rotary_count = rotary_count, last_spin_tick = millis();
     const unsigned long diff = get_period(last_spin_tick, ms);
 
-    if (diff >= 500) {
+    if (diff >= SPINDOWN_TIMEOUT) {
         if (last_rotary_count == rotary_count) {
             no_spin = true;
         }
@@ -162,7 +167,7 @@ void MosfetMotor::spin_up(unsigned long ms) {
     const unsigned long diff = get_period(last_inc_tick, ms),
             remaining_count = get_remaining_evolutions();
 
-    if (remaining_count > 2 * EVOLUTION && diff >= 750) {
+    if (remaining_count > 2 * EVOLUTION && diff >= SPINUP_TIMEOUT) {
         increase_speed();
         last_inc_tick = ms;
     }

@@ -11,17 +11,24 @@ StaticLabel::StaticLabel(const char *const labels[], uint8_t labels_count, LOCAL
 }
 
 void StaticLabel::print(LOCALE locale, Display *display, bool nl) const {
-    if (this->label) {
-        display->print(this->label);
+    if (label) {
+        print_progmem(display, label);
     } else if (labels && labels_count) {
         if (locale < labels_count) {
-            display->print(labels[locale]);
+            print_progmem(display, (char *) pgm_read_word(&(labels[locale])));
         } else {
-            display->print(labels[fallback]);
+            print_progmem(display, (char *) pgm_read_word(&(labels[fallback])));
         }
     }
     if (nl) {
-        display->println("");
+        display->println();
+    }
+}
+
+void StaticLabel::print_progmem(Display *display, const char *label) const {
+    const uint8_t len = strlen_P(label);
+    for (uint8_t i = 0; i < len; i++) {
+        display->print((char) pgm_read_byte_near(label + i));
     }
 }
 
@@ -56,22 +63,22 @@ void MonitorLabel::print(LOCALE locale, Display *display, bool nl) const {
 
     display->position(0, 10);
     speed->print(locale, display, false);
-    display->print(": ");
+    display->print(F(": "));
     display->print((int) motor->get_speed());
-    display->println("%");
+    display->println(F("%"));
 
     evol->print(locale, display, false);
-    display->print(": ");
+    display->print(F(": "));
     display->print((long) motor->get_evolution());
     unsigned long stop_evol = *motor->get_stop_evolution();
     if (stop_evol) {
-        display->print("/");
+        display->print(F("/"));
         display->print((long) stop_evol);
     }
     display->println();
 
     len->print(locale, display, false);
-    display->print(": ");
+    display->print(F(": "));
     display->print(motor->get_len(), 3);
-    display->print("m");
+    display->print(F("m"));
 }

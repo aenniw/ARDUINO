@@ -6,7 +6,7 @@
 #endif
 
 typedef enum {
-    Manual, Auto
+    Manual, Semi, Auto
 } PROFILE;
 
 
@@ -41,11 +41,13 @@ private:
     Configuration();
 
 public:
-    PROFILE get_profile() const;
+    PROFILE *get_profile();
 
-    void set_profile(PROFILE profile);
+    void next_profile();
 
-    LOCALE get_locale() const;
+    void prev_profile();
+
+    LOCALE *get_locale() const;
 
     void set_locale(LOCALE locale);
 

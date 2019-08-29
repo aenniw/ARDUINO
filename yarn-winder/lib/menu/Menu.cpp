@@ -17,7 +17,9 @@ void MenuItem::print(LOCALE locale, Display *display, bool nl) const {
 }
 
 Menu::Menu(const Label *label, Item **items, uint8_t item_count, Menu *(*on_active)(Menu *) = nullptr,
-           void(*on_inactive)(Menu *) = nullptr, void (*on_next)() = nullptr, void (*on_prev)() = nullptr) {
+           void(*on_inactive)(Menu *) = nullptr, void (*on_next)() = nullptr, void (*on_prev)() = nullptr,
+           bool (*_enabled)() = nullptr) {
+    this->_enabled = _enabled;
     this->_label = label;
     this->items = items;
     this->item_count = item_count;
@@ -30,16 +32,26 @@ Menu::Menu(const Label *label, Item **items, uint8_t item_count, Menu *(*on_acti
 void Menu::next() {
     if (!active && on_next) {
         on_next();
-    } else if (active && active_item + 1 < item_count) {
-        active_item++;
+    } else if (active) {
+        for (uint8_t i = active_item + 1; i < item_count; i++) {
+            if (items[i]->enabled()) {
+                active_item = i;
+                break;
+            }
+        }
     }
 };
 
 void Menu::prev() {
     if (!active && on_prev) {
         on_prev();
-    } else if (active && active_item > 0) {
-        active_item--;
+    } else if (active) {
+        for (int16_t i = active_item - 1; i >= 0; i--) {
+            if (items[i]->enabled()) {
+                active_item = (uint8_t) i;
+                break;
+            }
+        }
     }
 };
 
@@ -73,8 +85,12 @@ boolean Menu::is_active() const {
 
 void Menu::print_item(uint8_t i, LOCALE locale, Display *display, bool nl) const {
     if (i >= 0 && i < item_count) {
-        if (i == active_item && item_count > 1)
-            display->print("> ");
+        if (item_count > 1) {
+            if (i == active_item)
+                display->print(F("> "));
+            else if (!items[i]->enabled())
+                display->print(F("- "));
+        }
         items[i]->print(locale, display, nl);
     }
 }
@@ -82,7 +98,7 @@ void Menu::print_item(uint8_t i, LOCALE locale, Display *display, bool nl) const
 void Menu::print(LOCALE locale, Display *display, bool nl) const {
     if (active && items) {
         _label->print(locale, display, true);
-        display->println("--------------");
+        display->println(F("--------------"));
 
         const uint8_t last_entry = active_item > MAX_MENU_ITEMS - 1 ? active_item : MAX_MENU_ITEMS - 1;
         const uint8_t first_entry = active_item >= MAX_MENU_ITEMS ? 1 + active_item - MAX_MENU_ITEMS : 0;
@@ -111,4 +127,11 @@ void MenuValue::prev() {
     if (on_prev) {
         on_prev();
     }
+}
+
+boolean Item::enabled() {
+    if (_enabled) {
+        return _enabled();
+    }
+    return true;
 }

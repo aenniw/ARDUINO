@@ -46,20 +46,22 @@ WinderMenu::WinderMenu(Configuration *c, Display *d, Motor *m) {
     _status = new MonitorLabel(motor, &speed_label, &evol_label, &len_label);
 
     auto back_entry = new MenuItem(&back_label);
+    auto profile_labels = new Label *[3]{&manual_wind_label, &semi_wind_label, &auto_wind_label};
+    auto locale_labels = new Label *[2]{&english_label, &czech_label};
+
     auto settings_menu = new Menu(&settings_label, new Item *[4]{
-            new Menu(&profile_label, new Item *[3]{
-                    new MenuItem(&auto_wind_label, []() { if (config) config->set_profile(Auto); }),
-                    new MenuItem(&manual_wind_label, []() { if (config) config->set_profile(Manual); }),
-                    back_entry
-            }, 3, change_menu, restore_menu),
-            new Menu(&language_label, new Item *[3]{
-                    new MenuItem(&english_label, []() { if (config) config->set_locale(EN); }),
-                    new MenuItem(&czech_label, []() { if (config) config->set_locale(CS); }),
-                    back_entry
-            }, 3, change_menu, restore_menu),
-            new MenuValue(&brig_label, new ValueLabel<uint8_t>(display->get_backlight()), change_menu, restore_menu,
-                          []() { if (display) display->decrease_backlight(); },
-                          []() { if (display) display->increase_backlight(); }),
+            new MenuValue(&profile_label, new SelectionLabel<PROFILE>(profile_labels, config->get_profile()),
+                          change_menu, restore_menu,
+                          []() { config->prev_profile(); },
+                          []() { config->next_profile(); }),
+            new MenuValue(&language_label, new SelectionLabel<LOCALE>(locale_labels, config->get_locale()),
+                          change_menu, restore_menu,
+                          []() { config->set_locale(EN); },
+                          []() { config->set_locale(CS); }),
+            new MenuValue(&brig_label, new ValueLabel<uint8_t>(display->get_backlight()),
+                          change_menu, restore_menu,
+                          []() { display->decrease_backlight(); },
+                          []() { display->increase_backlight(); }),
             back_entry
     }, 4, change_menu, restore_menu);
 
@@ -67,17 +69,18 @@ WinderMenu::WinderMenu(Configuration *c, Display *d, Motor *m) {
                                    new MenuItem(new StatusLabel(motor, &start_label, &pause_label), toggle_motor),
                                    new MenuItem(&stop_label, reset_motor),
                                    new MenuValue(&evol_max_label, new ValueLabel<unsigned long>(motor->get_stop_evolution()),
-                                                 change_menu, restore_menu, []() { if (motor) motor->decrease_stop_evolution(); },
-                                                                            []() { if (motor) motor->increase_stop_evolution(); }),
+                                                 change_menu, restore_menu, []() { motor->decrease_stop_evolution(); },
+                                                 []() { motor->increase_stop_evolution(); },
+                                                 []() { return *config->get_profile() != Manual; }),
                                    settings_menu,
                                    back_entry
-                           }, 5, change_menu, restore_menu, []() { if (motor) motor->decrease_speed(); },
-                                                            []() { if (motor) motor->increase_speed(); });
+                           }, 5, change_menu, restore_menu, []() { motor->decrease_speed(); },
+                           []() { motor->increase_speed(); });
 }
 
 void WinderMenu::cycle() {
     _display->clear();
-    print(config->get_locale(), _display, true);
+    print(*config->get_locale(), _display, true);
 }
 
 void WinderMenu::interact() {
