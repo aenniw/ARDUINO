@@ -8,7 +8,8 @@
 #define MAX_SPEED           255
 #define MIN_SPEED           30
 #define MIN_STEP            5
-#define SPINDOWN_TIMEOUT    750
+#define SPIN_TIMEOUT        500
+#define STALL_TIMEOUT       250
 #define SPINUP_TIMEOUT      750
 
 #define IR_TRIGGER          RISING
@@ -23,8 +24,10 @@ private:
     uint8_t pwm = 0, gate = 0, speed = 0;
     volatile unsigned long rotary_count = 0;
     unsigned long rotary_count_end = 0;
-    bool no_spin = true;
+    bool no_spin = true, stall_detection = true; // TODO: stall puled from config
 private:
+    void stall_detect(unsigned long ms);
+
     void spin_detect(unsigned long ms);
 
     void spin_down(unsigned long ms);
