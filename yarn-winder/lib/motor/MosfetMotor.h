@@ -7,9 +7,13 @@
 
 #define MAX_SPEED           255
 #define MIN_SPEED           30
-#define MIN_STEP            5
+#define STEP_SPEED          5
+
+#define MAX_STALL           1000
+#define MIN_STALL           100
+#define STEP_STALL          50
+
 #define SPIN_TIMEOUT        500
-#define STALL_TIMEOUT       250
 #define SPINUP_TIMEOUT      750
 
 #define IR_TRIGGER          RISING
@@ -19,12 +23,13 @@
 
 class MosfetMotor : public Motor {
 private:
-    PROFILE *profile = nullptr;
+    PROFILE profile = Manual;
 
     uint8_t pwm = 0, gate = 0, speed = 0;
+    uint16_t stall_timeout = 250;
     volatile unsigned long rotary_count = 0;
     unsigned long rotary_count_end = 0;
-    bool no_spin = true, stall_detection = true; // TODO: stall puled from config
+    bool no_spin = true;
 private:
     void stall_detect(unsigned long ms);
 
@@ -41,8 +46,10 @@ protected:
 
     void set_speed(uint8_t s);
 
+    void set_stall_timeout(uint16_t t);
+
 public:
-    MosfetMotor(PROFILE *profile, uint8_t pwm, uint8_t gate);
+    MosfetMotor(uint8_t pwm, uint8_t gate);
 
     uint8_t get_speed() const override;
 
@@ -67,6 +74,18 @@ public:
     void decrease_stop_evolution() override;
 
     unsigned long *get_stop_evolution() const override;
+
+    void increase_stall_timeout() override;
+
+    void decrease_stall_timeout() override;
+
+    uint16_t *get_stall_timeout() const override;
+
+    PROFILE *get_profile() const override;
+
+    void next_profile() override;
+
+    void prev_profile() override;
 
     ~MosfetMotor();
 };

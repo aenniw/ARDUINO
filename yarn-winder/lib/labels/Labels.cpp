@@ -1,5 +1,23 @@
 #include "Labels.h"
 
+static uint8_t read_vcc(uint16_t min, uint16_t max) {
+    ADMUX = _BV(REFS0) | _BV(MUX3) | _BV(MUX2) | _BV(MUX1); // Read 1.1V reference against AVcc
+    //delay(2); // Wait for Vref to settle
+    ADCSRA |= _BV(ADSC); // Convert
+    while (bit_is_set(ADCSRA, ADSC));
+    long vcc = ADCL;
+    vcc |= ADCH << 8;
+    vcc = 1126400L / vcc; // Back-calculate AVcc in mV
+
+    if (vcc >= max) {
+        return 100;
+    } else if (vcc <= min) {
+        return 0;
+    } else {
+        return (uint8_t) ((vcc - min) / ((max - min) / 100.0));
+    }
+}
+
 StaticLabel::StaticLabel(const char *label) {
     this->label = label;
 }
@@ -10,10 +28,11 @@ StaticLabel::StaticLabel(const char *const labels[], uint8_t labels_count, LOCAL
     this->fallback = fallback;
 }
 
-void StaticLabel::print(LOCALE locale, Display *display, bool nl) const {
+void StaticLabel::print(Display *display, bool nl) const {
     if (label) {
         print_progmem(display, label);
     } else if (labels && labels_count) {
+        const LOCALE locale = *display->get_locale();
         if (locale < labels_count) {
             print_progmem(display, (char *) pgm_read_word(&(labels[locale])));
         } else {
@@ -38,36 +57,37 @@ StatusLabel::StatusLabel(Motor *motor, const Label *start, const Label *pause) {
     this->pause = pause;
 }
 
-void StatusLabel::print(LOCALE locale, Display *display, bool nl) const {
+void StatusLabel::print(Display *display, bool nl) const {
     if (!motor || !start || !pause) {
         return;
     }
     if (motor->get_state() == ON) {
-        pause->print(locale, display, nl);
+        pause->print(display, nl);
     } else {
-        start->print(locale, display, nl);
+        start->print(display, nl);
     }
 }
 
-MonitorLabel::MonitorLabel(Motor *motor, const Label *speed, const Label *evol, const Label *len) {
+MonitorLabel::MonitorLabel(Motor *motor, const Label *speed, const Label *evol, const Label *len, const Label *bat) {
     this->motor = motor;
     this->speed = speed;
     this->evol = evol;
     this->len = len;
+    this->bat = bat;
 }
 
-void MonitorLabel::print(LOCALE locale, Display *display, bool nl) const {
+void MonitorLabel::print(Display *display, bool nl) const {
     if (!motor || !speed || !evol || !len) {
         return;
     }
 
     display->position(0, 10);
-    speed->print(locale, display, false);
+    speed->print(display, false);
     display->print(F(": "));
     display->print((int) motor->get_speed());
     display->println(F("%"));
 
-    evol->print(locale, display, false);
+    evol->print(display, false);
     display->print(F(": "));
     display->print((long) motor->get_evolution());
     unsigned long stop_evol = *motor->get_stop_evolution();
@@ -77,8 +97,13 @@ void MonitorLabel::print(LOCALE locale, Display *display, bool nl) const {
     }
     display->println();
 
-    len->print(locale, display, false);
+    len->print(display, false);
     display->print(F(": "));
     display->print(motor->get_len(), 3);
-    display->print(F("m"));
+    display->println(F("m"));
+
+    bat->print(display, false);
+    display->print(F(": "));
+    display->print(read_vcc(3000, 4200));
+    display->print(F("%"));
 }

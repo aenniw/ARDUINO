@@ -11,6 +11,7 @@
 
 class Service {
 public:
+    virtual void begin() {};
     virtual void cycle() = 0;
 };
 

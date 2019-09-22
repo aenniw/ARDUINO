@@ -18,7 +18,7 @@ public:
 
     StaticLabel(const char *const labels[], uint8_t labels_count, LOCALE fallback = EN);
 
-    void print(LOCALE locale, Display *display, bool nl) const override;
+    void print(Display *display, bool nl) const override;
 };
 
 template<class T>
@@ -30,7 +30,7 @@ public:
         this->value = value;
     }
 
-    void print(LOCALE locale, Display *display, bool nl) const override {
+    void print(Display *display, bool nl) const override {
         display->println();
         display->print(F("     "));
         display->print(*value);
@@ -45,7 +45,7 @@ private:
 public:
     StatusLabel(Motor *motor, const Label *start, const Label *pause);
 
-    void print(LOCALE locale, Display *display, bool nl) const override;
+    void print(Display *display, bool nl) const override;
 };
 
 
@@ -53,28 +53,28 @@ template<class T>
 class SelectionLabel : public Label {
 private:
     T *selector = nullptr;
-    Label **labels = nullptr;
+    const Label **labels = nullptr;
 public:
-    SelectionLabel(Label **labels, T *profile) {
+    SelectionLabel(const Label **labels, T *profile) {
         this->labels = labels;
         this->selector = profile;
     }
 
-    void print(LOCALE locale, Display *display, bool nl) const override {
+    void print(Display *display, bool nl) const override {
         display->println();
         display->print(F("  "));
-        labels[(uint8_t) (*selector)]->print(locale, display, true);
+        labels[(uint8_t) (*selector)]->print(display, true);
     }
 };
 
 class MonitorLabel : public Label {
 private:
     Motor *motor = nullptr;
-    const Label *speed = nullptr, *evol = nullptr, *len = nullptr;
+    const Label *speed = nullptr, *evol = nullptr, *len = nullptr, *bat = nullptr;
 public:
-    MonitorLabel(Motor *motor, const Label *speed, const Label *evol, const Label *len);
+    MonitorLabel(Motor *motor, const Label *speed, const Label *evol, const Label *len, const Label *bat);
 
-    void print(LOCALE locale, Display *display, bool nl) const override;
+    void print(Display *display, bool nl) const override;
 };
 
 

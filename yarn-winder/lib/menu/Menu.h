@@ -34,7 +34,7 @@ private:
 public:
     explicit MenuItem(const Label *label, void (*callback)() = nullptr);
 
-    void print(LOCALE locale, Display *display, bool nl) const override;
+    void print(Display *display, bool nl) const override;
 
     void interact() override;
 };
@@ -58,7 +58,7 @@ protected:
     volatile boolean active = false;
     volatile uint8_t active_item = 0;
 
-    virtual void print_item(uint8_t i, LOCALE locale, Display *display, bool nl) const;
+    virtual void print_item(uint8_t i, Display *display, bool nl) const;
 
 public:
     Menu(const Label *label, Item **items, uint8_t item_count, Menu *(*on_active)(Menu *) = nullptr,
@@ -75,7 +75,7 @@ public:
 
     void back() override;
 
-    void print(LOCALE locale, Display *display, bool nl) const override;
+    void print(Display *display, bool nl) const override;
 };
 
 class MenuValue : public Menu {
@@ -85,7 +85,7 @@ public:
               bool (*_enabled)() = nullptr) :
             Menu(label, new Item *[1]{new MenuItem(value)}, 1, on_active, on_inactive, next, prev, _enabled) {}
 
-    void print_item(uint8_t i, LOCALE locale, Display *display, bool nl) const override;
+    void print_item(uint8_t i, Display *display, bool nl) const override;
 
     void next() override;
 
