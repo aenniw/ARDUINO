@@ -10,8 +10,16 @@ static unsigned long get_period(const unsigned long last, const unsigned long ne
     return next - last;
 }
 
-MosfetMotor::MosfetMotor(PROFILE *profile, uint8_t pwm, uint8_t gate) {
+MosfetMotor::MosfetMotor(uint8_t pwm, uint8_t gate) {
     motor = this;
+
+#ifdef __EEPROM__
+    uint16_t data;
+    EEPROM.get(ADDRESS_PROFILE, data);
+    this->profile = (PROFILE) data;
+    EEPROM.get(ADDRESS_STALL, data);
+    this->stall_timeout = data;
+#endif
 
     pinMode((this->pwm = pwm), OUTPUT);
     pinMode((this->gate = gate), INPUT_PULLUP);
@@ -19,14 +27,13 @@ MosfetMotor::MosfetMotor(PROFILE *profile, uint8_t pwm, uint8_t gate) {
         if (motor->is_rotating())
             motor->rotary_count++;
     }, IR_TRIGGER);
-    this->profile = profile;
 }
 
 uint8_t MosfetMotor::get_speed() const {
     if (get_state() == OFF) {
         return 0;
     }
-    const auto min = (float) (MIN_SPEED - MIN_STEP);
+    const auto min = (float) (MIN_SPEED - STEP_SPEED);
     return (uint8_t) (((speed - min) / (MAX_SPEED - min)) * 100);
 }
 
@@ -35,6 +42,13 @@ void MosfetMotor::set_speed(uint8_t s) {
         no_spin = false;
     }
     analogWrite(pwm, (speed = s));
+}
+
+void MosfetMotor::set_stall_timeout(uint16_t t) {
+    stall_timeout = t;
+#ifdef __EEPROM__
+    eeprom_set(ADDRESS_STALL, this->stall_timeout);
+#endif
 }
 
 void MosfetMotor::reset() {
@@ -56,15 +70,15 @@ void MosfetMotor::toggle() {
 }
 
 void MosfetMotor::increase_speed() {
-    if (speed >= MIN_SPEED && speed + MIN_STEP <= MAX_SPEED) {
-        motor->set_speed(speed + MIN_STEP);
+    if (speed >= MIN_SPEED && speed + STEP_SPEED <= MAX_SPEED) {
+        motor->set_speed(speed + STEP_SPEED);
     }
 }
 
 void MosfetMotor::decrease_speed() {
     if (speed > 0) {
-        if (speed - MIN_STEP > MIN_SPEED) {
-            motor->set_speed(speed - MIN_STEP);
+        if (speed - STEP_SPEED > MIN_SPEED) {
+            motor->set_speed(speed - STEP_SPEED);
         } else {
             motor->set_speed(0);
         }
@@ -112,6 +126,42 @@ void MosfetMotor::increase_stop_evolution() {
     }
 }
 
+uint16_t *MosfetMotor::get_stall_timeout() const {
+    return &stall_timeout;
+}
+
+void MosfetMotor::increase_stall_timeout() {
+    if (stall_timeout < MIN_STALL) {
+        set_stall_timeout(MIN_STALL);
+    } else if (stall_timeout < MAX_STALL) {
+        set_stall_timeout(stall_timeout + STEP_STALL);
+    }
+}
+
+void MosfetMotor::decrease_stall_timeout() {
+    if (stall_timeout > MIN_STALL) {
+        set_stall_timeout(stall_timeout - STEP_STALL);
+    } else if (stall_timeout) {
+        set_stall_timeout(0);
+    }
+}
+
+void MosfetMotor::prev_profile() {
+    if (profile > Manual) {
+        profile = (PROFILE) (profile - 1);
+    }
+}
+
+void MosfetMotor::next_profile() {
+    if (profile < Auto) {
+        profile = (PROFILE) (profile + 1);
+    }
+}
+
+PROFILE *MosfetMotor::get_profile() const {
+    return &profile;
+}
+
 bool MosfetMotor::is_rotating() const {
     return !no_spin;
 }
@@ -140,7 +190,7 @@ void MosfetMotor::spin_down(unsigned long ms) {
     } else if (remaining_count <= EVOLUTION) {
         set_speed(MIN_SPEED); // prevents from manual speed increase
     } else if (remaining_count <= 2 * EVOLUTION && diff >= 20) {
-        if (speed - MIN_STEP > MIN_SPEED) {
+        if (speed - STEP_SPEED > MIN_SPEED) {
             decrease_speed();
         }
         last_slow_tick = ms;
@@ -165,12 +215,12 @@ void MosfetMotor::cycle() {
     if (get_state() == OFF) {
         spin_detect(now);
     } else if (get_state() == ON) {
-        if (stall_detection) {
+        if (stall_timeout) {
             stall_detect(now);
         }
 
         if (rotary_count_end) {
-            switch (*profile) {
+            switch (profile) {
                 case Auto:
                     spin_up(now);
                 case Semi:
@@ -184,7 +234,7 @@ void MosfetMotor::stall_detect(unsigned long ms) {
     static unsigned long last_rotary_count = rotary_count, last_spin_tick = millis();
     const unsigned long diff = get_period(last_spin_tick, ms);
 
-    if (diff >= STALL_TIMEOUT) {
+    if (diff >= stall_timeout) {
         if (last_rotary_count == rotary_count) {
             last_rotary_count = 0;
             set_speed(0);

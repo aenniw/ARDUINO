@@ -17,31 +17,30 @@
 #define ROTARY_DT       A3
 #define ROTARY_OK       A4
 
+static NIButton button_ok(ROTARY_OK);
+static MosfetMotor motor(MOTOR_PWM, GATE_PIN);
+static RotaryEncoder encoder(ROTARY_CLK, ROTARY_DT);
+static Display display(DISPLAY_BCK, DISPLAY_SCLK, DISPLAY_DIN, DISPLAY_DC, DISPLAY_CS, DISPLAY_RST);
+static WinderMenu winder_menu(&display, &motor);
+
 static std::vector<Service *> services;
-static RotaryEncoder *encoder = nullptr;
-static WinderMenu *menu = nullptr;
 
 void setup() {
-    auto display = new Display(DISPLAY_BCK, DISPLAY_SCLK, DISPLAY_DIN, DISPLAY_DC, DISPLAY_CS, DISPLAY_RST);
-    auto buttons = NIButtons::get_instance();
-    auto config = Configuration::get_instance();
-    auto motor = new MosfetMotor(config->get_profile(), MOTOR_PWM, GATE_PIN);
-
-    menu = new WinderMenu(config, display, motor);
-    encoder = new RotaryEncoder(ROTARY_CLK, ROTARY_DT);
-
-    services.push_back((Service *) motor);
-    services.push_back((Service *) display);
-    services.push_back((Service *) buttons);
-    services.push_back((Service *) menu);
+    services.push_back((Service *) &motor);
+    services.push_back((Service *) &display);
+    services.push_back((Service *) &button_ok);
+    services.push_back((Service *) &winder_menu);
 
     PCICR |= (1 << PCIE1);
     PCMSK1 |= (1 << PCINT10) | (1 << PCINT11);
-    buttons->add_button(ROTARY_OK)->on_short_press([]() { menu->interact(); });
+    button_ok.on_short_press([]() { winder_menu.interact(); });
+
+    for (const auto &service: services)
+        service->begin();
 }
 
 ISR(PCINT1_vect) {
-    encoder->tick();
+    encoder.tick();
 }
 
 void loop() {
@@ -50,11 +49,11 @@ void loop() {
     }
 
     static long last_position = 0;
-    long current_position = encoder->getPosition();
+    long current_position = encoder.getPosition();
     if (current_position > last_position) {
-        menu->next();
+        winder_menu.next();
     } else if (current_position < last_position) {
-        menu->prev();
+        winder_menu.prev();
     }
     last_position = current_position;
 }

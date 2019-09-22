@@ -9,7 +9,6 @@ typedef enum {
     Manual, Semi, Auto
 } PROFILE;
 
-
 typedef enum {
     EN, CS
 } LOCALE;
@@ -19,7 +18,8 @@ typedef enum {
 const int ADDRESS_PROFILE = EEPROM.begin();
 const int ADDRESS_LOCALE = ADDRESS_PROFILE + sizeof(uint8_t);
 const int ADDRESS_BRIGHTNESS = ADDRESS_LOCALE + sizeof(uint8_t);
-const int ADDRESS_END = ADDRESS_BRIGHTNESS + sizeof(uint8_t);
+const int ADDRESS_STALL = ADDRESS_BRIGHTNESS + sizeof(uint8_t);
+const int ADDRESS_END = ADDRESS_STALL + sizeof(uint16_t);
 
 template<typename T>
 const T &eeprom_set(int idx, const T &t) {
@@ -32,27 +32,5 @@ const T &eeprom_set(int idx, const T &t) {
 }
 
 #endif
-
-class Configuration {
-private:
-    PROFILE profile = Manual;
-    LOCALE locale = EN;
-
-    Configuration();
-
-public:
-    PROFILE *get_profile();
-
-    void next_profile();
-
-    void prev_profile();
-
-    LOCALE *get_locale() const;
-
-    void set_locale(LOCALE locale);
-
-    static Configuration *get_instance();
-};
-
 
 #endif //ARDUINO_PROJECTS_CONFIGURATION_H

@@ -11,9 +11,9 @@ void MenuItem::interact() {
         this->callback();
 }
 
-void MenuItem::print(LOCALE locale, Display *display, bool nl) const {
+void MenuItem::print(Display *display, bool nl) const {
     if (label)
-        label->print(locale, display, nl);
+        label->print(display, nl);
 }
 
 Menu::Menu(const Label *label, Item **items, uint8_t item_count, Menu *(*on_active)(Menu *) = nullptr,
@@ -83,7 +83,7 @@ boolean Menu::is_active() const {
     return active;
 }
 
-void Menu::print_item(uint8_t i, LOCALE locale, Display *display, bool nl) const {
+void Menu::print_item(uint8_t i, Display *display, bool nl) const {
     if (i >= 0 && i < item_count) {
         if (item_count > 1) {
             if (i == active_item)
@@ -91,29 +91,29 @@ void Menu::print_item(uint8_t i, LOCALE locale, Display *display, bool nl) const
             else if (!items[i]->enabled())
                 display->print(F("- "));
         }
-        items[i]->print(locale, display, nl);
+        items[i]->print(display, nl);
     }
 }
 
-void Menu::print(LOCALE locale, Display *display, bool nl) const {
+void Menu::print(Display *display, bool nl) const {
     if (active && items) {
-        _label->print(locale, display, true);
+        _label->print(display, true);
         display->println(F("--------------"));
 
         const uint8_t last_entry = active_item > MAX_MENU_ITEMS - 1 ? active_item : MAX_MENU_ITEMS - 1;
         const uint8_t first_entry = active_item >= MAX_MENU_ITEMS ? 1 + active_item - MAX_MENU_ITEMS : 0;
         for (uint8_t i = first_entry; i <= last_entry; i++) {
-            print_item(i, locale, display, nl);
+            print_item(i, display, nl);
         }
 
     } else {
-        _label->print(locale, display, nl);
+        _label->print(display, nl);
     }
 }
 
-void MenuValue::print_item(uint8_t i, LOCALE locale, Display *display, bool nl) const {
+void MenuValue::print_item(uint8_t i, Display *display, bool nl) const {
     if (i == 0) {
-        items[0]->print(locale, display, nl);
+        items[0]->print(display, nl);
     }
 }
 
