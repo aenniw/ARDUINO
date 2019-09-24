@@ -62,7 +62,7 @@ WinderMenu::WinderMenu(Display *d, Motor *m) :
                         []() { motor->increase_stop_evolution(); },
                         []() { return *motor->get_profile() != Manual; }),
         settings_menu_items(
-                {&profile_menu_value, &stall_menu_value, &stall_menu_value, &locale_menu_value, &back_entry}),
+                {&profile_menu_value, &stall_menu_value, &brig_menu_value, &locale_menu_value, &back_entry}),
         main_menu_items({&status_menu_item, &stop_menu_item, &evol_menu_value, &settings_menu, &back_entry}),
         settings_menu(&settings_label, settings_menu_items, settings_menu_items_len, change_menu, restore_menu),
         main_menu(&menu_label, main_menu_items, main_menu_items_len, change_menu, restore_menu,
