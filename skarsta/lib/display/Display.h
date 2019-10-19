@@ -9,7 +9,7 @@
 
 class Display : Service {
 private:
-    TM1637 *display = nullptr;
+    TM1637 display;
     uint8_t brightness = BRIGHT_HIGH;
     int8_t disp_buffer[4] = {0x00, 0x00, 0x00, 0x00};
     bool dirty = false, blink = false, clear = false, disabled = false;
@@ -28,13 +28,9 @@ public:
 
     void print(const char *text);
 
-    void cycle() override;
+    void cycle(unsigned long now) override;
 
     void disable(uint8_t cause);
-
-    ~Display() {
-        delete display;
-    }
 };
 
 #endif //ARDUINO_PROJECTS_ROOT_DISPLAY_H

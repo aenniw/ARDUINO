@@ -1,20 +1,21 @@
+#include <Motor.h>
+
 #ifdef __EEPROM__
-
 #include <EEPROM.h>
-
 #endif
 
-#include <Motor.h>
-#include <Rotary.h>
-
 static Motor *motor = nullptr;
-static Rotary *encoder = nullptr;
 
 static unsigned int position_abs(unsigned int a, unsigned int b) {
     return a >= b ? a - b : b - a;
 }
 
-Motor::Motor(uint8_t _pin1, uint8_t _pin2) {
+Motor::Motor(uint8_t _pin1, uint8_t _pin2) :
+        encoder((char) _pin1, (char) _pin2), encoder_pin_1(_pin1), encoder_pin_2(_pin2) {
+    motor = this;
+}
+
+void Motor::begin() {
 #ifdef __EEPROM__
     EEPROM.get(ADDRESS_POSITION, position);
     EEPROM.get(ADDRESS_END_STOP, end_stop);
@@ -30,14 +31,11 @@ Motor::Motor(uint8_t _pin1, uint8_t _pin2) {
     Serial.println(mode);
 #endif
 
-    encoder = new Rotary(_pin1, _pin2);
-    motor = this;
-
     auto interrupt_routine = []() {
-        motor->update_position(encoder->process());
+        motor->update_position(motor->encoder.process());
     };
-    attachInterrupt((uint8_t) digitalPinToInterrupt(_pin1), interrupt_routine, CHANGE); // set interrupt
-    attachInterrupt((uint8_t) digitalPinToInterrupt(_pin2), interrupt_routine, CHANGE); // set interrupt
+    attachInterrupt((uint8_t) digitalPinToInterrupt(encoder_pin_1), interrupt_routine, CHANGE); // set interrupt
+    attachInterrupt((uint8_t) digitalPinToInterrupt(encoder_pin_2), interrupt_routine, CHANGE); // set interrupt
 }
 
 void Motor::off() {
@@ -120,22 +118,6 @@ void Motor::update_position(const unsigned char result) {
     } else if (result == DIR_CCW && position != 0) {
         position--;
     }
-
-#ifdef __EEPROM__
-    if (state == OFF)
-        updateEEPROM(ADDRESS_POSITION, position);
-#endif
-
-    if (position == 0 || position >= end_stop) {
-        if ((position == 0 && get_state() == CCW) ||
-            (position >= end_stop && get_state() == CW)) {
-            off();
-        }
-    }
-    if (next_position >= 0 && next_position == position) {
-        off();
-        next_position = -1;
-    }
 }
 
 MotorState Motor::get_state() {
@@ -175,11 +157,22 @@ void Motor::initPin(uint8_t pin, uint8_t val) {
     digitalWrite(pin, val);
 }
 
-void Motor::cycle() {};
+void Motor::cycle(unsigned long now) {
+    if (mode == UNCALIBRATED) {
+        return;
+    }
 
-Motor::~Motor() {
-    delete encoder;
-}
+#ifdef __EEPROM__
+    updateEEPROM(ADDRESS_POSITION, position);
+#endif
+
+    if ((get_state() == CCW && position <= STOP_POS_DIFF) ||
+        (get_state() == CW && position >= end_stop - STOP_POS_DIFF) ||
+        (next_position >= 0 && position_abs(position, (unsigned int) next_position) <= STOP_POS_DIFF)) {
+        off();
+        next_position = -1;
+    }
+};
 
 void Motor::disable() {
     disabled = true;

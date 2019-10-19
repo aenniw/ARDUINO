@@ -46,6 +46,15 @@ void eeprom_reset() {
 
 #endif
 
+#ifdef __H_BRIDGE_MOTOR__
+MotorBridge motor(ENCODER_PIN_CLK, ENCODER_PIN_DIO, R_EN, L_EN, R_PWM, L_PWM);
+#else
+MotorRelay motor(ENCODER_PIN_CLK, ENCODER_PIN_DIO, POWER_RELAY, DIRECTION_RELAY);
+#endif
+Display display(DISPLAY_PIN_CLK, DISPLAY_PIN_DIO);
+Watchdog watchdog(&motor, &display);
+Keypad keypad(&motor, &display);
+
 void setup() {
 #ifdef __DEBUG__
     Serial.begin(9600);
@@ -56,26 +65,22 @@ void setup() {
 #endif
 
     delay(1000);
-#ifdef __H_BRIDGE_MOTOR__
-    auto motor = new MotorBridge(ENCODER_PIN_CLK, ENCODER_PIN_DIO, R_EN, L_EN, R_PWM, L_PWM);
-#else
-    auto motor = new MotorRelay(ENCODER_PIN_CLK, ENCODER_PIN_DIO, POWER_RELAY, DIRECTION_RELAY);
-#endif
-    auto display = new Display(DISPLAY_PIN_CLK, DISPLAY_PIN_DIO);
 
-    services.push_back((Service *) new Watchdog(motor, display));
-    services.push_back((Service *) new Keypad(motor, display));
-    services.push_back((Service *) motor);
-    services.push_back((Service *) display);
-    services.push_back((Service *) NIButtons::get_instance());
+    services.push_back((Service *) &watchdog);
+    services.push_back((Service *) &keypad);
+    services.push_back((Service *) &motor);
+    services.push_back((Service *) &display);
 
 #ifdef __DEBUG__
     Serial.println("starting");
 #endif
+
+    for (const auto &service: services)
+        service->begin();
 }
 
 void loop() {
-    for (const auto &service: services) {
-        service->cycle();
-    }
+    unsigned long now = millis();
+    for (const auto &service: services)
+        service->cycle(now);
 }

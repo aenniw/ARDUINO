@@ -10,9 +10,7 @@
 
 class MotorBridge : public Motor {
 private:
-    uint8_t r_pwm = 0, l_pwm = 0, r_enable = 0, l_enable = 0;
-    volatile uint8_t speed = 0;
-
+    uint8_t r_pwm = 0, l_pwm = 0, r_enable = 0, l_enable = 0, speed = 0;
 protected:
     void _off() override;
 
@@ -25,11 +23,12 @@ protected:
     void enable();
 
 public:
-    MotorBridge(uint8_t _pin1, uint8_t _pin2,
-                uint8_t _pin3, uint8_t _pin4,
-                uint8_t _pin5, uint8_t _pin6);
+    MotorBridge(uint8_t _pin1, uint8_t _pin2, uint8_t _pin3, uint8_t _pin4, uint8_t _pin5, uint8_t _pin6)
+            : Motor(_pin1, _pin2), r_pwm(_pin5), l_pwm(_pin6), r_enable(_pin3), l_enable(_pin4) {};
 
-    void cycle() override;
+    void begin() override;
+
+    void cycle(unsigned long now) override;
 };
 
 #endif //ARDUINO_PROJECTS_ROOT_MOTOR_BRIDGE_H

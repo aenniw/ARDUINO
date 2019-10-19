@@ -12,7 +12,10 @@
 class Service {
 public:
     virtual void begin() {};
-    virtual void cycle() = 0;
+    virtual void cycle() {};
+    virtual void cycle(unsigned long) {
+        cycle();
+    };
 };
 
 unsigned long get_period(unsigned long last, unsigned long next);

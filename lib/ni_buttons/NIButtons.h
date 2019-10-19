@@ -10,7 +10,7 @@
 class NIButton : public Service {
 private:
     int _gpio = 0;
-    PMButton *_button = nullptr;
+    PMButton _button;
     bool _pressed = false, _held = false;
 
     void (*_on_short_press)() = nullptr;
@@ -23,6 +23,8 @@ private:
 
 public:
     explicit NIButton(int gpio);
+
+    void begin() override;
 
     NIButton *on_short_press(void (*_on_pressed)());
 
@@ -39,23 +41,6 @@ public:
     bool held();
 
     void cycle() override;
-};
-
-class NIButtons : Service {
-private:
-    std::vector<NIButton *> buttons;
-
-    NIButtons() = default;
-
-public:
-    static NIButtons *get_instance();
-
-    NIButton *add_button(uint8_t gpio);
-
-    void cycle() override;
-
-    ~NIButtons();
-
 };
 
 

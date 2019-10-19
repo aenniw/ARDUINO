@@ -1,35 +1,13 @@
 #include "NIButtons.h"
 
-static NIButtons *NIButtons::get_instance() {
-    static auto *singleton = new NIButtons();
-    return singleton;
+NIButton::NIButton(int gpio) : _gpio(gpio), _button(gpio) {
+    this->_button.debounce(DEBOUNCE);
+    this->_button.holdTime(500);
+    this->_button.begin();
 }
 
-NIButton *NIButtons::add_button(uint8_t gpio) {
-    auto button = new NIButton(gpio);
-    buttons.push_back(button);
-    return button;
-}
-
-void NIButtons::cycle() {
-    for (const auto &button: buttons) {
-        button->cycle();
-    }
-}
-
-NIButtons::~NIButtons() {
-    for (const auto &button: buttons) {
-        delete button;
-    }
-}
-
-
-NIButton::NIButton(int gpio) {
-    this->_gpio = gpio;
-    this->_button = new PMButton(gpio);
-    this->_button->debounce(DEBOUNCE);
-    this->_button->holdTime(500);
-    this->_button->begin();
+void NIButton::begin() {
+    this->_button.begin();
 }
 
 NIButton *NIButton::on_short_press(void (*_on_pressed)()) {
@@ -38,7 +16,7 @@ NIButton *NIButton::on_short_press(void (*_on_pressed)()) {
 }
 
 NIButton *NIButton::long_press(long delay) {
-    _button->holdTime(delay);
+    _button.holdTime(delay);
     return this;
 }
 
@@ -66,8 +44,8 @@ bool NIButton::held() {
 }
 
 void NIButton::cycle() {
-    _button->checkSwitch();
-    if (!_pressed && _button->pressed()) {
+    _button.checkSwitch();
+    if (!_pressed && _button.pressed()) {
         _pressed = true;
         if (_on_press) {
             this->_on_press();
@@ -90,7 +68,7 @@ void NIButton::cycle() {
         _held = false;
     }
 
-    if (_on_short_press && _button->clicked()) {
+    if (_on_short_press && _button.clicked()) {
         this->_on_short_press();
 #ifdef __DEBUG__
         Serial.print("b: short: ");
@@ -98,7 +76,7 @@ void NIButton::cycle() {
         Serial.println();
 #endif
     }
-    if (_button->held()) {
+    if (_button.held()) {
         if (_on_long_press) {
             this->_on_long_press();
         }
