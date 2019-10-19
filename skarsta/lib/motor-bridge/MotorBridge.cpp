@@ -1,11 +1,11 @@
 #include "MotorBridge.h"
 
-MotorBridge::MotorBridge(uint8_t _pin1, uint8_t _pin2, uint8_t _pin3, uint8_t _pin4, uint8_t _pin5, uint8_t _pin6)
-        : Motor(_pin1, _pin2) {
-    initPin((r_enable = _pin3));
-    initPin((l_enable = _pin4));
-    initPin((r_pwm = _pin5));
-    initPin((l_pwm = _pin6));
+void MotorBridge::begin() {
+    Motor::begin();
+    initPin(r_enable);
+    initPin(l_enable);
+    initPin(r_pwm);
+    initPin(l_pwm);
     this->enable();
 }
 
@@ -53,12 +53,12 @@ void MotorBridge::setSpeed(MotorState state, uint8_t speed) {
     }
 }
 
-void MotorBridge::cycle() {
-    static unsigned long last_tick = millis();
-    unsigned long now = millis(), diff = get_period(last_tick, now);
-
-    if (diff >= SPEED_STEP_DURATION && speed < MAX_SPEED && speed >= MIN_SPEED) {
+void MotorBridge::cycle(unsigned long now) {
+    static unsigned long last_tick = now;
+    if (get_period(last_tick, now) >= SPEED_STEP_DURATION && speed < MAX_SPEED && speed >= MIN_SPEED) {
         setSpeed(get_state(), speed + 5 % (MAX_SPEED + 1));
         last_tick = now;
     }
+
+    Motor::cycle(now);
 }

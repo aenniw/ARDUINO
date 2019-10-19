@@ -32,21 +32,21 @@ const size_t ADDRESS_PRESETS[3] = {
 
 class Keypad : Service {
 private:
-    NIButton *down = nullptr, *up = nullptr;
-    NIButton *preset_buttons[3] = {nullptr}, *rst = nullptr;
+    NIButton down, up, rst, preset_0, preset_1, preset_2;
+    NIButton *preset_buttons[3], *buttons[6];
 protected:
     bool stop_motor();
 
 public:
     Keypad(Motor *_motor, Display *_display);
 
+    void begin() override;
+
     void set_preset(uint8_t i);
 
     void goto_preset(uint8_t i);
 
     void cycle() override;
-
-    ~Keypad();
 };
 
 #endif //ARDUINO_PROJECTS_ROOT_KEYPAD_H

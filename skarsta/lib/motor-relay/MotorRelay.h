@@ -16,10 +16,10 @@ protected:
     void _dir_ccw() override;
 
 public:
-    MotorRelay(uint8_t _pin1, uint8_t _pin2, uint8_t _pin3, uint8_t _pin4) : Motor(_pin1, _pin2) {
-        initPin((power_pin = _pin3), HIGH);
-        initPin((dir_pin = _pin4));
-    };
+    MotorRelay(uint8_t _pin1, uint8_t _pin2, uint8_t _pin3, uint8_t _pin4) :
+            Motor(_pin1, _pin2), power_pin(_pin3), dir_pin(_pin4) {};
+
+    void begin() override;
 };
 
 #endif //ARDUINO_PROJECTS_ROOT_MOTOR_RELAY_H

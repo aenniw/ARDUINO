@@ -31,9 +31,9 @@ static int8_t get_code_c(char c) {
     }
 }
 
-Display::Display(uint8_t _pin1, uint8_t _pin2) {
-    display = new TM1637(_pin1, _pin2);
-    display->set(brightness);
+Display::Display(uint8_t _pin1, uint8_t _pin2) :
+        display(_pin1, _pin2) {
+    display.set(brightness);
 }
 
 void Display::set_blink(bool state) {
@@ -98,7 +98,7 @@ void Display::set_brightness(uint8_t b) {
     Serial.print("brightness: ");
     Serial.println(b);
 #endif
-    display->set(b);
+    display.set(b);
 }
 
 void Display::light_up() {
@@ -106,13 +106,13 @@ void Display::light_up() {
         this->dirty = true;
 }
 
-void Display::cycle() {
-    static unsigned long last_tick = millis();
-    unsigned long now = millis(), diff = get_period(last_tick, now);
+void Display::cycle(unsigned long now) {
+    static unsigned long last_tick = now;
+    unsigned long diff = get_period(last_tick, now);
 
     if (dirty) {
         this->set_brightness(BRIGHT_HIGH);
-        display->display(disp_buffer, true);
+        display.display(disp_buffer, true);
         dirty = false;
         last_tick = now;
 #ifdef __DEBUG__
@@ -130,10 +130,10 @@ void Display::cycle() {
             Serial.println();
 #endif
             if (!clear) {
-                display->clearDisplay();
+                display.clearDisplay();
             } else {
                 this->set_brightness(BRIGHT_HIGH);
-                display->display(disp_buffer, true);
+                display.display(disp_buffer, true);
             }
             clear = !clear;
             last_tick = now;
@@ -141,9 +141,9 @@ void Display::cycle() {
     } else if (!disabled && brightness != 0 && diff >= FADE_TIMEOUT) {
         this->set_brightness((uint8_t) (8 - ((diff - FADE_TIMEOUT) / 10000)));
         if (brightness != 0)
-            display->display(disp_buffer, true);
+            display.display(disp_buffer, true);
         else
-            display->clearDisplay();
+            display.clearDisplay();
     }
 }
 

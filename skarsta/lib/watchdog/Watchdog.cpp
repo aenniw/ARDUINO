@@ -11,13 +11,8 @@ void Watchdog::cycle() {
     unsigned long now = millis(), diff = get_period(last_tick, now);
 
     if (diff >= WATCHDOG_TIMEOUT) {
-        unsigned int pos_diff = 0;
-        MotorState state = OFF;
-
-        ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
-            state = motor->get_state();
-            pos_diff = motor->get_position_change();
-        }
+        unsigned int pos_diff = motor->get_position_change();
+        MotorState state = motor->get_state();
 
         if (pos_diff <= WATCHDOG_DEADLOCK_CHANGE && state != OFF) {
             error(1);

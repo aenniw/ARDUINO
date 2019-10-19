@@ -1,5 +1,11 @@
 #include <MotorRelay.h>
 
+void MotorRelay::begin() {
+    Motor::begin();
+    initPin(power_pin, HIGH);
+    initPin(dir_pin);
+}
+
 void MotorRelay::_off() {
     digitalWrite(power_pin, HIGH);
 }

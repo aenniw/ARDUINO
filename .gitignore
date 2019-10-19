@@ -17,3 +17,5 @@ target/
 .pio
 **/cmake-build*
 **/.gitignore
+CMakeFiles/
+CMakeCache.txt

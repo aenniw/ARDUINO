@@ -3,6 +3,7 @@
 
 #include <Arduino.h>
 #include <Service.h>
+#include <Rotary.h>
 
 typedef enum {
     CCW,
@@ -22,16 +23,20 @@ typedef enum {
 #define ADDRESS_MODE (ADDRESS_END_STOP + sizeof(MotorMode))
 #endif
 
+#define STOP_POS_DIFF 1
 #define MINIMUM_POS_CHANGE 8
 
 class Motor : Service {
 private:
-    unsigned int end_stop = ~0u;
-    MotorMode mode = UNCALIBRATED;
-    long next_position = -1;
-    bool disabled = false;
+    Rotary encoder;
+    const uint8_t encoder_pin_1 = 0, encoder_pin_2 = 0;
 
-    volatile MotorState state = OFF;
+    bool disabled = false;
+    long next_position = -1;
+    unsigned int end_stop = ~0u;
+
+    MotorState state = OFF;
+    MotorMode mode = UNCALIBRATED;
     volatile unsigned int position = 0, position_change = 0;
 
 protected:
@@ -47,6 +52,8 @@ protected:
 
 public:
     Motor(uint8_t _pin1, uint8_t _pin2);
+
+    void begin() override;
 
     void off();
 
@@ -70,11 +77,9 @@ public:
 
     void set_mode(MotorMode state);
 
-    void disable();;
+    void disable();
 
-    void cycle() override;
-
-    ~Motor();
+    void cycle(unsigned long now) override;
 };
 
 #endif //ARDUINO_PROJECTS_ROOT_MOTOR_H
