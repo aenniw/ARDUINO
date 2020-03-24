@@ -1,4 +1,5 @@
 #include <Arduino.h>
+#include <Wire.h>
 #include <vector>
 #include <NIButtons.h>
 #include <MosfetMotor.h>
