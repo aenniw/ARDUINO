@@ -36,12 +36,12 @@ After testing quite a few DC motors from Ebay, Aliexpress and Banggood, I stuck 
 ### How-to
 
 - **_NOTE_** your table needs to be leveled and manual adjustment shouldn't feel jerky, as it may influence on _mod_ functionality
-- print all parts from [Thingverse](https://www.thingiverse.com/thing:3081839) or download them directly from [models](models)
+- print parts from [models](models) based on build type
   - **_RELAY VERSION_** - all parts were printed in 0.2 mm layer height but 0.3 should be ok for [case-non-modular.stl](models/relay/case-non-modular.stl), for modular parts [case-modular-aio.stl](models/relay/case-modular-aio.stl), [case-modular-cover.stl](models/relay/case-modular-cover.stl) and [case-modular-frame.stl](models/relay/case-modular-frame.stl) 0.2 mm clearance is used so layer height 0.2 mm or lower is recommended
   - **_H-BRIDGE VERSION_** - all parts were printed in 0.2 mm layer height but 0.3 should be ok for [case-non-modular.stl](models/h-bridge/case-non-modular.stl), for modular parts [case-modular-aio.stl](models/h-bridge/case-modular-aio.stl), [case-modular-cover.stl](models/h-bridge/case-modular-cover.stl) and [case-modular-frame.stl](models/h-bridge/case-modular-frame.stl) 0.2 mm clearance is used so layer height 0.2 mm or lower is recommended
-  - all parts except for [buttons.stl](models/buttons.stl), [encoder-pulley.stl](models/encoder-pulley.stl), [keypad-connector.stl](models/keypad-connector.stl) and [table-frame-tie.stl](models/table-frame-tie.stl) were printed with supports, but it should work without them...
+  - all parts except for [buttons.stl](models/panel-v1/buttons.stl), [encoder-pulley.stl](models/encoder-pulley.stl), [keypad-connector.stl](models/keypad-connector.stl) and [table-frame-tie.stl](models/table-frame-tie.stl) were printed with supports, but it should work without them...
   - [motor-pulley.stl](models/motor-pulley.stl) needs to be printed with PLA with 100% infill or you can buy one of [Shaft-Coupling 6-7mm](https://www.ebay.com/itm/2-3-4-5-6-7-8mm-Aluminum-Flexible-Shaft-Coupling-Rigid-Coupler-Motor-Connector/291882575832?ssPageName=STRK%3AMEBIDX%3AIT&var=590884618019&_trksid=p2057872.m2749.l2649) and combine it with [GT2_Skarsta_shaft.stl](https://www.thingiverse.com/download:5633328) so that it can handle more torque. **Shaft-Coupling 6-7mm** and **GT2_Skarsta_shaft.stl** can be attached together with [Super-glue](https://www.banggood.com/Suleve-M243-50mL-Threadlocker-Screw-Lock-Glue-Multipe-Surface-Medium-Strength-Anaerobic-Adhesive-p-1214087.html?p=8H180110948532015010&custlinkid=17674&cur_warehouse=CN)
-  - [panel-cover-bridge.stl](models/panel-cover-bridge.stl) has a tweak for printing without support, but you need clear the first layer on the holes
+  - [panel-cover-bridge.stl](models/panel-v1/panel-cover-bridge.stl) has a tweak for printing without support, but you need clear the first layer on the holes
   - [motor-pulley.stl](models/motor-pulley.stl) should be printed with thicker walls or with 100% infill, also print few of these as this part will get permanently damaged when accidentally hit min/max height of table
   - based on your printer accuracy, may be needed pre-drilling of screw holes
 - get electronic parts:
@@ -71,11 +71,11 @@ After testing quite a few DC motors from Ebay, Aliexpress and Banggood, I stuck 
 
 ###### **_RELAY VERSION_**
 
-![](./img/wiring-relay.png)
+![](./docs/wiring-relay.png)
 
 ###### **_H-BRIDGE VERSION_**
 
-![](./img/wiring-h-bridge.png)
+![](./docs/wiring-h-bridge.png)
 
 ##### **_RELAY VERSION_** Motor case
 
@@ -155,42 +155,10 @@ After testing quite a few DC motors from Ebay, Aliexpress and Banggood, I stuck 
 - Add hexagonal rod and slowly insert it into table, if needed adjust hole for rod hole with original lever
 - Fix mounted motor case with 7 screws to table
 
-##### Display + Keypad case
+##### Display + Keypad cases
 
-- Paint button caps with paint or nail polish
-- Insert button caps to tactile switches
-  <details>
-    <summary>Tactile switches</summary>
-    <a href="https://drive.google.com/uc?export=view&id=1t-OP-l0pg0Zmd32IxDXx131u2P1lAcoV"><img src="https://drive.google.com/uc?export=view&id=1t-OP-l0pg0Zmd32IxDXx131u2P1lAcoV" style="width: 500px; max-width: 100%; height: auto" title="Click for the larger version." /></a>
-  </details>
-- Insert them to panel top case part and fix them with super/hot glue or with their pins
-  <details>
-    <summary>Front case panel</summary>
-    <a href="https://drive.google.com/uc?export=view&id=10cKNxXXogKxYKBh4oIO3JDHDGB05OmQT"><img src="https://drive.google.com/uc?export=view&id=10cKNxXXogKxYKBh4oIO3JDHDGB05OmQT" style="width: 500px; max-width: 100%; height: auto" title="Click for the larger version." /></a>
-  </details>
-- Insert 7-segment display to panel top part
-  <details>
-    <summary>Front case panel with display</summary>
-    <a href="https://drive.google.com/uc?export=view&id=1It6w3IHo9cuEwheeEhL4n8JV32JYSgZr"><img src="https://drive.google.com/uc?export=view&id=1It6w3IHo9cuEwheeEhL4n8JV32JYSgZr" style="width: 500px; max-width: 100%; height: auto" title="Click for the larger version." /></a>
-  </details>
-- Pass wires through panel bottom case part and secure them few centimeters below the end with zip tie
-- Wire up all the buttons and display with cables
-  <details>
-    <summary>Wired case panel</summary>
-    <a href="https://drive.google.com/uc?export=view&id=1vIWpAW9SODAJarWg87MDfvPzOkGBGSsY"><img src="https://drive.google.com/uc?export=view&id=1vIWpAW9SODAJarWg87MDfvPzOkGBGSsY" style="width: 500px; max-width: 100%; height: auto" title="Click for the larger version." /></a>
-  </details>
-- Fix top and bottom case parts with 6 screws
-  <details>
-    <summary>Finished Display + Keypad case</summary>
-    <a href="https://drive.google.com/uc?export=view&id=1TNIRP2qKsRAH4POK3g0ZD4hCG--lAydb"><img src="https://drive.google.com/uc?export=view&id=1TNIRP2qKsRAH4POK3g0ZD4hCG--lAydb" style="width: 500px; max-width: 100%; height: auto" title="Click for the larger version." /></a>
-  </details>
-- Connect cables to motor case and mount it with 3 screws to table
-- Cleanup the cable management with few table-frame-ties
-  <details>
-    <summary>Mounted Display + Keypad case</summary>
-    <a href="https://drive.google.com/uc?export=view&id=1aDSQ8JeYmuPXdMajL1Xrt5WNS_1qEvJo"><img src="https://drive.google.com/uc?export=view&id=1aDSQ8JeYmuPXdMajL1Xrt5WNS_1qEvJo" style="width: 500px; max-width: 100%; height: auto" title="Click for the larger version." /></a>
-    <a href="https://drive.google.com/uc?export=view&id=15VFWSnQ_u37xM2864LjUWOSjwABPXVya"><img src="https://drive.google.com/uc?export=view&id=15VFWSnQ_u37xM2864LjUWOSjwABPXVya" style="width: 500px; max-width: 100%; height: auto" title="Click for the larger version." /></a>
-  </details>
+- [panel-v1](./docs/panel-v1.md)
+- [panel-v2](./docs/panel-v2.md)
 
 ### Error codes && handling
 
