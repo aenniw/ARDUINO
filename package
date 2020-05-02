@@ -1,28 +1,19 @@
 #!/bin/bash
 
-test -d ./target && \
-    rm -rf ./target
-mkdir ./target
+test -d target || \
+    mkdir target
 
-TAG=`git tag -l --points-at HEAD`
+rm -f target/*
 
-function package() {
-    BINARY=$1
-    SUFFIX=$2
-
-    for PROJECT_FS in ./*/.pio/build/*/${BINARY}; do
-        PROJECT_NAME=${PROJECT_FS%${PROJECT_FS#*/*/}} && \
-            PROJECT_NAME=${PROJECT_NAME%*/} && \
-            PROJECT_NAME=${PROJECT_NAME#./*}
-        BOARD_NAME=${PROJECT_FS%*/*} && \
-            BOARD_NAME=${BOARD_NAME##*/} && \
-
-        if echo ${TAG:-${PROJECT_NAME}} | grep -iq $PROJECT_NAME || \
-            echo ${TAG} | grep -iqv '-' ; then
-            cp ${PROJECT_FS} ./target/${PROJECT_NAME}-${BOARD_NAME}${SUFFIX}.${BINARY#*.}
-        fi
+for PROJECT in ./*/platformio.ini; do
+    for EXTENSION in "elf" "hex"; do
+        for BINARY in ${PROJECT%/platformio.ini}/.pio/build/*/firmware.${EXTENSION}; do
+            PROJECT_NAME=${PROJECT%/*}
+            PROJECT_NAME=${PROJECT_NAME##*/}
+            ENVIROMENT_NAME=${BINARY%/*}
+            ENVIROMENT_NAME=${ENVIROMENT_NAME##*/}
+            
+            cp ${BINARY} "target/${PROJECT_NAME}-${ENVIROMENT_NAME}.${EXTENSION}"
+        done
     done
-}
-
-package firmware.hex
-package firmware.elf
+done
