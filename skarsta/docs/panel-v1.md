@@ -1,34 +1,63 @@
+## Overview
+
+<p align="center">
+  <img src="./img/panel-v1/panel.jpg"/>
+</p>
+
+## Printing
+
+- [buttons.stl](../models/panel-v1/buttons.stl) - print with `0.2mm` profile
+- [panel-cover.stl](../models/panel-v1/panel-cover.stl) - print with `0.2mm` profile, or without supports with [panel-cover-bridge.stl](../models/panel-v1/panel-cover-bridge.stl)
+- [panel-bottom.stl](../models/panel-v1/panel-bottom.stl) - print with `0.2mm` profile
+
+## Shopping list
+
+|                                                                                                                                                   Item |  Price  |
+| -----------------------------------------------------------------------------------------------------------------------------------------------------: | :-----: |
+| [0.56'' TM1637 - 7 Segment display](https://www.ebay.com/itm/0-56-TM1637-4Bit-Digital-LED-7-Segment-Clock-Tube-Display-For-Arduino-White/172971714554) | ~$1.69  |
+|   [Tactile switches - 12x12x7.3mm](https://www.ebay.com/itm/20-500Pcs-Square-Cap-12mm-Tactile-Momentary-Push-Button-Switches-12x12x7-3mm/183319341164) | ~$1.04  |
+|                                                                                                                                                    SUM | ~$2.73  |
+|                                                                                                                                           Weighted SUM | ~$2.002 |
+
+## Assembly
+
 - Paint button caps with paint or nail polish
 - Insert button caps to tactile switches
   <details>
     <summary>Tactile switches</summary>
-    <a href="https://drive.google.com/uc?export=view&id=1t-OP-l0pg0Zmd32IxDXx131u2P1lAcoV"><img src="https://drive.google.com/uc?export=view&id=1t-OP-l0pg0Zmd32IxDXx131u2P1lAcoV" style="width: 500px; max-width: 100%; height: auto" title="Click for the larger version." /></a>
+    <p align="center">
+      <img src="./img/panel-v1/switches.jpg"/>
+    </p>
   </details>
 - Insert them to panel top case part and fix them with super/hot glue or with their pins
   <details>
     <summary>Front case panel</summary>
-    <a href="https://drive.google.com/uc?export=view&id=10cKNxXXogKxYKBh4oIO3JDHDGB05OmQT"><img src="https://drive.google.com/uc?export=view&id=10cKNxXXogKxYKBh4oIO3JDHDGB05OmQT" style="width: 500px; max-width: 100%; height: auto" title="Click for the larger version." /></a>
+    <p align="center">
+      <img src="./img/panel-v1/front.jpg"/>
+    </p>
+    
   </details>
 - Insert 7-segment display to panel top part
   <details>
     <summary>Front case panel with display</summary>
-    <a href="https://drive.google.com/uc?export=view&id=1It6w3IHo9cuEwheeEhL4n8JV32JYSgZr"><img src="https://drive.google.com/uc?export=view&id=1It6w3IHo9cuEwheeEhL4n8JV32JYSgZr" style="width: 500px; max-width: 100%; height: auto" title="Click for the larger version." /></a>
+    <p align="center">
+      <img src="./img/panel-v1/display.jpg"/>
+    </p>
   </details>
 - Pass wires through panel bottom case part and secure them few centimeters below the end with zip tie
 - Wire up all the buttons and display with cables
   <details>
     <summary>Wired case panel</summary>
-    <a href="https://drive.google.com/uc?export=view&id=1vIWpAW9SODAJarWg87MDfvPzOkGBGSsY"><img src="https://drive.google.com/uc?export=view&id=1vIWpAW9SODAJarWg87MDfvPzOkGBGSsY" style="width: 500px; max-width: 100%; height: auto" title="Click for the larger version." /></a>
+    <p align="center">
+      <img src="./img/panel-v1/wired.jpg"/>
+    </p>
   </details>
 - Fix top and bottom case parts with 6 screws
   <details>
     <summary>Finished Display + Keypad case</summary>
-    <a href="https://drive.google.com/uc?export=view&id=1TNIRP2qKsRAH4POK3g0ZD4hCG--lAydb"><img src="https://drive.google.com/uc?export=view&id=1TNIRP2qKsRAH4POK3g0ZD4hCG--lAydb" style="width: 500px; max-width: 100%; height: auto" title="Click for the larger version." /></a>
+    <p align="center">
+      <img src="./img/panel-v1/assembled.jpg"/>
+    </p>
   </details>
 - Connect cables to motor case and mount it with 3 screws to table
 - Cleanup the cable management with few table-frame-ties
-  <details>
-    <summary>Mounted Display + Keypad case</summary>
-    <a href="https://drive.google.com/uc?export=view&id=1aDSQ8JeYmuPXdMajL1Xrt5WNS_1qEvJo"><img src="https://drive.google.com/uc?export=view&id=1aDSQ8JeYmuPXdMajL1Xrt5WNS_1qEvJo" style="width: 500px; max-width: 100%; height: auto" title="Click for the larger version." /></a>
-    <a href="https://drive.google.com/uc?export=view&id=15VFWSnQ_u37xM2864LjUWOSjwABPXVya"><img src="https://drive.google.com/uc?export=view&id=15VFWSnQ_u37xM2864LjUWOSjwABPXVya" style="width: 500px; max-width: 100%; height: auto" title="Click for the larger version." /></a>
-  </details>
