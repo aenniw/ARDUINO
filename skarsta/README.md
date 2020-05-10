@@ -64,7 +64,7 @@ After testing quite a few DC motors from Ebay, Aliexpress and Banggood, I stuck 
 
 [ENCODER](https://github.com/buxtronix/arduino/tree/master/libraries/Rotary)
 [TM1637](https://github.com/Seeed-Studio/Grove_4Digital_Display)
-[InterruptLib](https://github.com/GreyGnome/PinChangeInt)
+[PolymorphicButtons](https://github.com/JCWentzel/PolymorphicButtons.git)
 
 ### Thanks to
 

@@ -8,17 +8,8 @@
 #include <NIButtons.h>
 
 #ifdef __EEPROM__
-
 #include <EEPROM.h>
-
 #endif
-
-#define BUTTON_DOWN A0
-#define BUTTON_UP A1
-#define BUTTON_P0 A2
-#define BUTTON_P1 A3
-#define BUTTON_P2 A4
-#define BUTTON_RST A5
 
 #define SAVE_BUTTON_TIMEOUT 1500
 #define RST_BUTTON_TIMEOUT 1500
@@ -38,7 +29,9 @@ protected:
     bool stop_motor();
 
 public:
-    Keypad(Motor *_motor, Display *_display);
+    Keypad(Motor *_motor, Display *_display,
+           uint8_t down_pin, uint8_t up_pin, uint8_t rst_pin,
+           uint8_t preset_0_pin, uint8_t preset_1_pin, uint8_t preset_2_pin);
 
     void begin() override;
 
