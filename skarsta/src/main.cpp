@@ -2,26 +2,15 @@
 #include <Arduino.h>
 #include <Display.h>
 #include <Keypad.h>
+#include <configuration.h>
+#ifdef __WATCHDOG__
 #include <Watchdog.h>
-
+#endif
 #ifdef __H_BRIDGE_MOTOR__
 #include <MotorBridge.h>
 #else
 #include <MotorRelay.h>
 #endif
-
-#define ENCODER_PIN_CLK 2
-#define ENCODER_PIN_DIO 3
-#define DISPLAY_PIN_CLK 4
-#define DISPLAY_PIN_DIO 5
-
-#define DIRECTION_RELAY 6
-#define POWER_RELAY 7
-
-#define R_EN 7
-#define L_EN 8
-#define R_PWM 9
-#define L_PWM 10
 
 static std::vector<Service *> services;
 
@@ -51,9 +40,12 @@ MotorBridge motor(ENCODER_PIN_CLK, ENCODER_PIN_DIO, R_EN, L_EN, R_PWM, L_PWM);
 #else
 MotorRelay motor(ENCODER_PIN_CLK, ENCODER_PIN_DIO, POWER_RELAY, DIRECTION_RELAY);
 #endif
-Display display(DISPLAY_PIN_CLK, DISPLAY_PIN_DIO);
-Watchdog watchdog(&motor, &display);
-Keypad keypad(&motor, &display);
+Display display(DISPLAY_PIN_CLK, DISPLAY_PIN_DIO, FADE_TIMEOUT);
+#ifdef __WATCHDOG__
+Watchdog watchdog(&motor, &display, WATCHDOG_TIMEOUT, WATCHDOG_DEADLOCK_CHANGE, WATCHDOG_OTHER_CHANGE,
+                  WATCHDOG_TOLERANCE);
+#endif
+Keypad keypad(&motor, &display, BUTTON_DOWN, BUTTON_UP, BUTTON_RST, BUTTON_P0, BUTTON_P1, BUTTON_P2);
 
 void setup() {
 #ifdef __DEBUG__
@@ -66,7 +58,9 @@ void setup() {
 
     delay(1000);
 
+#ifdef __WATCHDOG__
     services.push_back((Service *) &watchdog);
+#endif
     services.push_back((Service *) &keypad);
     services.push_back((Service *) &motor);
     services.push_back((Service *) &display);

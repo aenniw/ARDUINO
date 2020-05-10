@@ -31,9 +31,18 @@ static int8_t get_code_c(char c) {
     }
 }
 
-Display::Display(uint8_t _pin1, uint8_t _pin2) :
-        display(_pin1, _pin2) {
+Display::Display(uint8_t _pin1, uint8_t _pin2, uint16_t _timeout) :
+        display(_pin1, _pin2), timeout(_timeout) {
     display.set(brightness);
+}
+
+void Display::begin() {
+    display.clearDisplay();
+    for (uint8_t i = 4; i > 0; i--) {
+        display.display(i - 1, get_code_n(8), true);
+        delay(200);
+    }
+    display.clearDisplay();
 }
 
 void Display::set_blink(bool state) {
@@ -138,8 +147,8 @@ void Display::cycle(unsigned long now) {
             clear = !clear;
             last_tick = now;
         }
-    } else if (!disabled && brightness != 0 && diff >= FADE_TIMEOUT) {
-        this->set_brightness((uint8_t) (8 - ((diff - FADE_TIMEOUT) / 10000)));
+    } else if (!disabled && brightness != 0 && diff >= timeout) {
+        this->set_brightness((uint8_t) (8 - ((diff - timeout) / 10000)));
         if (brightness != 0)
             display.display(disp_buffer, true);
         else

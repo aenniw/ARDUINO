@@ -10,9 +10,11 @@ unsigned int preset_values[3] = {0u};
                                     ->on_long_press([]() { keypad->set_preset(p); })\
                                     ->on_press(on)
 
-Keypad::Keypad(Motor *_motor, Display *_display) :
-        down(BUTTON_DOWN), up(BUTTON_UP), rst(BUTTON_RST),
-        preset_0(BUTTON_P0), preset_1(BUTTON_P1), preset_2(BUTTON_P2),
+Keypad::Keypad(Motor *_motor, Display *_display,
+               uint8_t down_pin, uint8_t up_pin, uint8_t rst_pin,
+               uint8_t preset_0_pin, uint8_t preset_1_pin, uint8_t preset_2_pin) :
+        down(down_pin), up(up_pin), rst(rst_pin),
+        preset_0(preset_0_pin), preset_1(preset_1_pin), preset_2(preset_2_pin),
         preset_buttons({&preset_0, &preset_1, &preset_2}),
         buttons({&preset_0, &preset_1, &preset_2, &down, &up, &rst}) {
     motor = _motor;
@@ -77,7 +79,7 @@ Keypad::Keypad(Motor *_motor, Display *_display) :
 
 void Keypad::begin() {
     for (auto &button : buttons)
-        button->cycle();
+        button->begin();
 }
 
 void Keypad::cycle() {
