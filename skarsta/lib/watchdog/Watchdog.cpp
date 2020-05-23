@@ -7,10 +7,7 @@ Watchdog::Watchdog(Motor *m, Display *d, uint16_t ti, uint8_t dc, uint8_t oc, ui
 }
 
 void Watchdog::cycle() {
-    static unsigned long last_tick = millis();
-    unsigned long now = millis(), diff = get_period(last_tick, now);
-
-    if (diff >= timeout) {
+    if (elapsed >= timeout) {
         unsigned int pos_diff = motor->get_position_change();
         MotorState state = motor->get_state();
 
@@ -34,7 +31,7 @@ void Watchdog::cycle() {
 #endif
         }
 
-        last_tick = now;
+        elapsed = 0;
     }
 }
 

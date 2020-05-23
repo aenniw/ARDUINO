@@ -5,7 +5,7 @@
 #include <Motor.h>
 #include <Display.h>
 
-class Watchdog : Service {
+class Watchdog : TimedService {
 private:
     Motor *motor = nullptr;
     Display *display = nullptr;

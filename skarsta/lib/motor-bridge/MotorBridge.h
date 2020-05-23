@@ -28,7 +28,7 @@ public:
 
     void begin() override;
 
-    void cycle(unsigned long now) override;
+    void cycle() override;
 };
 
 #endif //ARDUINO_PROJECTS_ROOT_MOTOR_BRIDGE_H

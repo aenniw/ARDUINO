@@ -7,7 +7,7 @@
 #include <Menu.h>
 #include <LocaleLabels.h>
 
-class WinderMenu : Service, public Navigation {
+class WinderMenu : public TimedService, public Navigation {
 private:
     const Label *profile_labels[3] = {&manual_wind_label, &semi_wind_label, &auto_wind_label};
     const Label *locale_labels[2] = {&english_label, &czech_label};
