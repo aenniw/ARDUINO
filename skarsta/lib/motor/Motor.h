@@ -26,7 +26,7 @@ typedef enum {
 #define STOP_POS_DIFF 1
 #define MINIMUM_POS_CHANGE 8
 
-class Motor : Service {
+class Motor : public TimedService {
 private:
     Rotary encoder;
     const uint8_t encoder_pin_1 = 0, encoder_pin_2 = 0;
@@ -79,7 +79,7 @@ public:
 
     void disable();
 
-    void cycle(unsigned long now) override;
+    void cycle() override;
 };
 
 #endif //ARDUINO_PROJECTS_ROOT_MOTOR_H

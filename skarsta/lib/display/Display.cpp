@@ -115,29 +115,17 @@ void Display::light_up() {
         this->dirty = true;
 }
 
-void Display::cycle(unsigned long now) {
-    static unsigned long last_tick = now;
-    unsigned long diff = get_period(last_tick, now);
-
+void Display::cycle() {
     if (dirty) {
         this->set_brightness(BRIGHT_HIGH);
         display.display(disp_buffer, true);
         dirty = false;
-        last_tick = now;
+        elapsed = 0;
 #ifdef __DEBUG__
         Serial.println("redraw");
 #endif
     } else if (blink) {
-        if (diff >= 500) {
-#ifdef __DEBUG__
-            Serial.print("blink toggle: ");
-            Serial.print(last_tick);
-            Serial.print(", ");
-            Serial.print(now);
-            Serial.print(", ");
-            Serial.print(diff);
-            Serial.println();
-#endif
+        if (elapsed >= 500) {
             if (!clear) {
                 display.clearDisplay();
             } else {
@@ -145,10 +133,10 @@ void Display::cycle(unsigned long now) {
                 display.display(disp_buffer, true);
             }
             clear = !clear;
-            last_tick = now;
+            elapsed = 0;
         }
-    } else if (!disabled && brightness != 0 && diff >= timeout) {
-        this->set_brightness((uint8_t) (8 - ((diff - timeout) / 10000)));
+    } else if (!disabled && brightness != 0 && elapsed >= timeout) {
+        this->set_brightness((uint8_t) (8 - ((elapsed - timeout) / 10000)));
         if (brightness != 0)
             display.display(disp_buffer, true);
         else

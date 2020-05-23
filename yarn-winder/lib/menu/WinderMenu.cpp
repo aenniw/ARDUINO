@@ -76,16 +76,13 @@ WinderMenu::WinderMenu(Display *d, Motor *m) :
 }
 
 void WinderMenu::cycle() {
-    static unsigned long last_update = 0;
-    const unsigned long now = millis();
-
-    if (get_period(last_update, now) <= 100) {
+    if (elapsed <= 100) {
         return;
     }
 
     _display->clear();
     print(_display, true);
-    last_update = now;
+    elapsed = 0;
 }
 
 void WinderMenu::interact() {

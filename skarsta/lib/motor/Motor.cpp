@@ -157,7 +157,7 @@ void Motor::initPin(uint8_t pin, uint8_t val) {
     digitalWrite(pin, val);
 }
 
-void Motor::cycle(unsigned long now) {
+void Motor::cycle() {
     if (mode == UNCALIBRATED) {
         return;
     }

@@ -5,7 +5,7 @@
 #include <Service.h>
 #include <TM1637.h>
 
-class Display : public Service {
+class Display : public TimedService {
 private:
     TM1637 display;
     uint8_t brightness = BRIGHT_HIGH;
@@ -29,7 +29,7 @@ public:
 
     void print(const char *text);
 
-    void cycle(unsigned long now) override;
+    void cycle() override;
 
     void disable(uint8_t cause);
 };

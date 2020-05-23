@@ -53,12 +53,11 @@ void MotorBridge::setSpeed(MotorState state, uint8_t speed) {
     }
 }
 
-void MotorBridge::cycle(unsigned long now) {
-    static unsigned long last_tick = now;
-    if (get_period(last_tick, now) >= SPEED_STEP_DURATION && speed < MAX_SPEED && speed >= MIN_SPEED) {
+void MotorBridge::cycle() {
+    if (elapsed >= SPEED_STEP_DURATION && speed < MAX_SPEED && speed >= MIN_SPEED) {
         setSpeed(get_state(), speed + 5 % (MAX_SPEED + 1));
-        last_tick = now;
+        elapsed = 0;
     }
 
-    Motor::cycle(now);
+    Motor::cycle();
 }

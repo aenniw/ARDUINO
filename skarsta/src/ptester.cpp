@@ -21,9 +21,8 @@ void setup() {
 }
 
 void loop() {
-    unsigned long now = millis();
     for (const auto &service: services)
-        service->cycle(now);
+        service->cycle();
 
     uint8_t i = 1;
     for (const auto &button: buttons) {
