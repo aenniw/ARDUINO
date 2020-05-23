@@ -4,6 +4,14 @@
 #include <Arduino.h>
 #include <Motor.h>
 
+#ifndef __INVERSE_RELAYS__
+    #define ENABLE LOW
+    #define DISABLE HIGH
+#else
+    #define ENABLE HIGH
+    #define DISABLE LOW
+#endif
+
 class MotorRelay : public Motor {
 private:
     uint8_t power_pin = 0, dir_pin = 0;
