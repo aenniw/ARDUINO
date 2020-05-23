@@ -1,9 +1,13 @@
 #include <MotorRelay.h>
 
-void MotorRelay::begin() {
-    Motor::begin();
+bool MotorRelay::begin() {
+    if (!Motor::begin())
+        return false;
+
     initPin(power_pin, DISABLE);
     initPin(dir_pin, DISABLE);
+
+    return true;
 }
 
 void MotorRelay::_off() {

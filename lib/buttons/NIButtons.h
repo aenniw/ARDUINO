@@ -24,7 +24,7 @@ private:
 public:
     explicit NIButton(int gpio);
 
-    void begin() override;
+    bool begin() override;
 
     NIButton *on_short_press(void (*_on_pressed)());
 

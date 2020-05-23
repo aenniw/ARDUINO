@@ -77,9 +77,11 @@ Keypad::Keypad(Motor *_motor, Display *_display,
     rst.on_press(light_up);
 }
 
-void Keypad::begin() {
+bool Keypad::begin() {
     for (auto &button : buttons)
-        button->begin();
+        if (!button->begin())
+            return false;
+    return true;
 }
 
 void Keypad::cycle() {

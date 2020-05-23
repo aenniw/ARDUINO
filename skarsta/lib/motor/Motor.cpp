@@ -11,14 +11,15 @@ static unsigned int position_abs(unsigned int a, unsigned int b) {
 }
 
 Motor::Motor(uint8_t _pin1, uint8_t _pin2) :
-        encoder((char) _pin1, (char) _pin2), encoder_pin_1(_pin1), encoder_pin_2(_pin2) {
+        sensor((char) _pin1, (char) _pin2), sensor_pin_1(_pin1), sensor_pin_2(_pin2) {
     motor = this;
 }
 
-void Motor::begin() {
+bool Motor::begin() {
 #ifdef __EEPROM__
     EEPROM.get(ADDRESS_POSITION, position);
-    EEPROM.get(ADDRESS_END_STOP, end_stop);
+    EEPROM.get(ADDRESS_END_STOP_0, end_stop[0]);
+    EEPROM.get(ADDRESS_END_STOP_1, end_stop[1]);
     EEPROM.get(ADDRESS_MODE, mode);
 #endif
 
@@ -26,34 +27,45 @@ void Motor::begin() {
     Serial.print("m pos: ");
     Serial.println(position);
     Serial.print("m end_pos: ");
-    Serial.println(end_stop);
+    Serial.print(end_stop[0]);
+    Serial.print(", ");
+    Serial.println(end_stop[1]);
     Serial.print("m mode:");
     Serial.println(mode);
 #endif
 
+#ifdef __USENSOR__
+    double sensor_value = sensor.measureDistanceCm();
+    for (uint8_t i = 0; i < 5 && sensor_value < 0; i++) {
+        delay(250);
+        sensor_value = sensor.measureDistanceCm();
+    }
+    return sensor_value >= 0;
+#else
     auto interrupt_routine = []() {
-        motor->update_position(motor->encoder.process());
+        motor->update_position(motor->sensor.process());
     };
-    attachInterrupt((uint8_t) digitalPinToInterrupt(encoder_pin_1), interrupt_routine, CHANGE); // set interrupt
-    attachInterrupt((uint8_t) digitalPinToInterrupt(encoder_pin_2), interrupt_routine, CHANGE); // set interrupt
+    attachInterrupt((uint8_t) digitalPinToInterrupt(sensor_pin_1), interrupt_routine, CHANGE);
+    attachInterrupt((uint8_t) digitalPinToInterrupt(sensor_pin_2), interrupt_routine, CHANGE);
+
+    return true;
+#endif
 }
 
 void Motor::off() {
-#ifdef __EEPROM__
-    if (mode != UNCALIBRATED)
-        updateEEPROM(ADDRESS_POSITION, position);
-#endif
     _off();
 #ifdef __DEBUG__
     Serial.print("m off ");
-    Serial.print(end_stop);
+    Serial.print(end_stop[0]);
+    Serial.print(", ");
+    Serial.print(end_stop[1]);
     Serial.println();
 #endif
     state = OFF;
 }
 
 void Motor::dir_cw() {
-    if (disabled || (position >= end_stop && mode == CALIBRATED)) {
+    if (disabled || (get_position() >= end_stop[1] && mode == CALIBRATED)) {
         return;
     }
 
@@ -65,7 +77,7 @@ void Motor::dir_cw() {
 }
 
 void Motor::dir_ccw() {
-    if (disabled || (position <= 0 && mode != UNCALIBRATED)) {
+    if (disabled || (get_position() <= end_stop[0] && mode != UNCALIBRATED)) {
         return;
     }
 
@@ -82,8 +94,16 @@ unsigned int Motor::get_position() {
 
 void Motor::reset_position() {
     if (disabled) return;
+#ifdef __USENSOR__
+    this->end_stop[0] = get_position();
+#else
     this->position = 0u;
+#endif
+
 #ifdef __EEPROM__
+#ifdef __USENSOR__
+    updateEEPROM(ADDRESS_END_STOP_0, this->end_stop[0]);
+#endif
     updateEEPROM(ADDRESS_POSITION, position);
 #endif
 #ifdef __DEBUG__
@@ -92,11 +112,11 @@ void Motor::reset_position() {
 }
 
 void Motor::set_position(unsigned int pos) {
-    if (mode != CALIBRATED || position_abs(pos, position) < MINIMUM_POS_CHANGE) {
+    if (mode != CALIBRATED || position_abs(pos, get_position()) < MINIMUM_POS_CHANGE) {
         return;
     }
     next_position = pos;
-    if (next_position < position) {
+    if (next_position < get_position()) {
         this->dir_ccw();
     } else {
         this->dir_cw();
@@ -106,6 +126,8 @@ void Motor::set_position(unsigned int pos) {
     Serial.println(pos);
 #endif
 }
+
+#ifndef __USENSOR__
 
 void Motor::update_position(const unsigned char result) {
     position_change++;
@@ -119,6 +141,8 @@ void Motor::update_position(const unsigned char result) {
         position--;
     }
 }
+
+#endif
 
 MotorState Motor::get_state() {
     return this->state;
@@ -142,9 +166,9 @@ void Motor::set_mode(MotorMode mode) {
 
 void Motor::set_end_stop(unsigned int end_stop) {
     if (disabled) return;
-    this->end_stop = end_stop;
+    this->end_stop[1] = end_stop;
 #ifdef __EEPROM__
-    updateEEPROM(ADDRESS_END_STOP, this->end_stop);
+    updateEEPROM(ADDRESS_END_STOP_1, this->end_stop[1]);
 #endif
 #ifdef __DEBUG__
     Serial.print("m end_pos: ");
@@ -158,17 +182,34 @@ void Motor::initPin(uint8_t pin, uint8_t val) {
 }
 
 void Motor::cycle() {
+#ifdef __USENSOR__
+    double measurement_raw;
+
+    if ((elapsed > 125 || position == 0) &&
+        (measurement_raw = sensor.measureDistanceCm()) >= 0) {
+        const unsigned int cur_position = (unsigned int) measurement_raw * 10,
+                position_diff = position_abs(position, cur_position);
+
+        if ((get_state() == OFF && position_diff > 15) ||
+            (get_state() != OFF && position_diff > 2)) {
+            position_change += position_diff;
+            position = cur_position;
+        }
+
+        elapsed = 0;
+    }
+#endif
     if (mode == UNCALIBRATED) {
         return;
     }
 
-#ifdef __EEPROM__
+#if defined(__EEPROM__) && !defined(__USENSOR__)
     updateEEPROM(ADDRESS_POSITION, position);
 #endif
 
-    if ((get_state() == CCW && position <= STOP_POS_DIFF) ||
-        (get_state() == CW && position >= end_stop - STOP_POS_DIFF) ||
-        (next_position >= 0 && position_abs(position, (unsigned int) next_position) <= STOP_POS_DIFF)) {
+    if ((get_state() == CCW && get_position() <= end_stop[0] + STOP_POS_DIFF) ||
+        (get_state() == CW && get_position() >= end_stop[1] - STOP_POS_DIFF) ||
+        (next_position >= 0 && position_abs(get_position(), (unsigned int) next_position) <= STOP_POS_DIFF)) {
         off();
         next_position = -1;
     }

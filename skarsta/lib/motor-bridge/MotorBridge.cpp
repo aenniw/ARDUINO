@@ -1,12 +1,16 @@
 #include "MotorBridge.h"
 
-void MotorBridge::begin() {
-    Motor::begin();
+bool MotorBridge::begin() {
+    if (!Motor::begin())
+        return false;
+
     initPin(r_enable);
     initPin(l_enable);
     initPin(r_pwm);
     initPin(l_pwm);
     this->enable();
+
+    return true;
 }
 
 void MotorBridge::_off() {

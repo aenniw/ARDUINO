@@ -12,13 +12,13 @@ void Watchdog::cycle() {
         MotorState state = motor->get_state();
 
         if (pos_diff <= deadlock_change && state != OFF) {
-            error(1);
+            error(ERROR_STALL);
 #ifdef __DEBUG__
             Serial.print("w-1 stop d:");
             Serial.println(pos_diff);
 #endif
         } else if (pos_diff > other_change && state == OFF) {
-            error(2);
+            error(ERROR_USTART);
 #ifdef __DEBUG__
             Serial.print("w-2 stop d:");
             Serial.println(pos_diff);

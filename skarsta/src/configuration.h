@@ -1,8 +1,8 @@
 #ifndef SKARSTA_CONFIGURATION_H
 #define SKARSTA_CONFIGURATION_H
 
-#define ENCODER_PIN_CLK 2
-#define ENCODER_PIN_DIO 3
+#define SENSOR_PIN0 2
+#define SENSOR_PIN1 3
 
 #define DISPLAY_PIN_CLK     4
 #define DISPLAY_PIN_DIO     5
@@ -26,7 +26,11 @@
  * WATCHDOG_OTHER_CHANGE        represents rotation steps threshold for detecting if motor was started mainly due to programing errors,
  *                              so if rotation change is greater then WATCHDOG_OTHER_CHANGE for WATCHDOG_TOLERANCE times Error 2 will be trigerred
  */
-#define WATCHDOG_TIMEOUT            100
+#ifdef __USENSOR__
+    #define WATCHDOG_TIMEOUT        250
+#else
+    #define WATCHDOG_TIMEOUT        100
+#endif
 #define WATCHDOG_DEADLOCK_CHANGE    2
 #define WATCHDOG_OTHER_CHANGE       5
 #ifdef __H_BRIDGE_MOTOR__
