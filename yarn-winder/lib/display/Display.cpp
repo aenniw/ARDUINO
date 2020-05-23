@@ -18,7 +18,7 @@ Display::Display(uint8_t bck, uint8_t sclk, uint8_t din, uint8_t dc, uint8_t cs,
     this->set_backlight(backlight);
 }
 
-void Display::begin() {
+bool Display::begin() {
     display.begin();
     display.setRotation(2);
     display.setTextColor(BLACK);
@@ -32,6 +32,8 @@ void Display::begin() {
 
     display.clearDisplay();
     display.display();
+
+    return true;
 }
 
 void Display::clear() {

@@ -3,7 +3,12 @@
 
 #include <Arduino.h>
 #include <Service.h>
+
+#ifdef __USENSOR__
+#include <HCSR04.h>
+#else
 #include <Rotary.h>
+#endif
 
 typedef enum {
     CCW,
@@ -19,8 +24,9 @@ typedef enum {
 
 #ifdef __EEPROM__
 #define ADDRESS_POSITION 0
-#define ADDRESS_END_STOP (ADDRESS_POSITION + sizeof(unsigned int))
-#define ADDRESS_MODE (ADDRESS_END_STOP + sizeof(MotorMode))
+#define ADDRESS_END_STOP_0 (ADDRESS_POSITION + sizeof(unsigned int))
+#define ADDRESS_END_STOP_1 (ADDRESS_END_STOP_0 + sizeof(unsigned int))
+#define ADDRESS_MODE (ADDRESS_END_STOP_1 + sizeof(MotorMode))
 #endif
 
 #define STOP_POS_DIFF 1
@@ -28,19 +34,27 @@ typedef enum {
 
 class Motor : public TimedService {
 private:
-    Rotary encoder;
-    const uint8_t encoder_pin_1 = 0, encoder_pin_2 = 0;
+#ifndef __USENSOR__
+    Rotary sensor;
+#else
+    UltraSonicDistanceSensor sensor;
+#endif
+    const uint8_t sensor_pin_1 = 0, sensor_pin_2 = 0;
 
     bool disabled = false;
     long next_position = -1;
-    unsigned int end_stop = ~0u;
+    unsigned int end_stop[2] = {0u, ~0u};
 
     MotorState state = OFF;
     MotorMode mode = UNCALIBRATED;
-    volatile unsigned int position = 0, position_change = 0;
+    volatile unsigned int position = 0u, position_change = 0u;
 
 protected:
+#ifndef __USENSOR__
+
     void update_position(unsigned char result);
+
+#endif
 
     void initPin(uint8_t pin, uint8_t val = LOW);
 
@@ -53,7 +67,7 @@ protected:
 public:
     Motor(uint8_t _pin1, uint8_t _pin2);
 
-    void begin() override;
+    bool begin() override;
 
     void off();
 
@@ -77,7 +91,7 @@ public:
 
     void set_mode(MotorMode state);
 
-    void disable();
+    void disable() override;
 
     void cycle() override;
 };

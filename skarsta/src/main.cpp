@@ -36,9 +36,9 @@ void eeprom_reset() {
 #endif
 
 #ifdef __H_BRIDGE_MOTOR__
-MotorBridge motor(ENCODER_PIN_CLK, ENCODER_PIN_DIO, R_EN, L_EN, R_PWM, L_PWM);
+MotorBridge motor(SENSOR_PIN0, SENSOR_PIN1, R_EN, L_EN, R_PWM, L_PWM);
 #else
-MotorRelay motor(ENCODER_PIN_CLK, ENCODER_PIN_DIO, POWER_RELAY, DIRECTION_RELAY);
+MotorRelay motor(SENSOR_PIN0, SENSOR_PIN1, POWER_RELAY, DIRECTION_RELAY);
 #endif
 Display display(DISPLAY_PIN_CLK, DISPLAY_PIN_DIO, FADE_TIMEOUT);
 #ifdef __WATCHDOG__
@@ -69,8 +69,14 @@ void setup() {
     Serial.println("starting");
 #endif
 
+    bool failed = false;
     for (const auto &service: services)
-        service->begin();
+        failed |= !service->begin();
+
+    if (failed) {
+        for (const auto &service: services)
+            service->disable(ERROR_INIT);
+    }
 }
 
 void loop() {

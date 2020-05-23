@@ -19,7 +19,7 @@ protected:
 public:
     Display(uint8_t _pin1, uint8_t _pin2, uint16_t _timeout);
 
-    void begin() override;
+    bool begin() override;
 
     void set_blink(bool state);
 
@@ -31,7 +31,7 @@ public:
 
     void cycle() override;
 
-    void disable(uint8_t cause);
+    void disable(uint8_t cause) override;
 };
 
 #endif //ARDUINO_PROJECTS_ROOT_DISPLAY_H

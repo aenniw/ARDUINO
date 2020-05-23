@@ -33,7 +33,7 @@ public:
            uint8_t down_pin, uint8_t up_pin, uint8_t rst_pin,
            uint8_t preset_0_pin, uint8_t preset_1_pin, uint8_t preset_2_pin);
 
-    void begin() override;
+    bool begin() override;
 
     void set_preset(uint8_t i);
 

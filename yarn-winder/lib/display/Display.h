@@ -21,7 +21,7 @@ protected:
 public:
     Display(uint8_t bck, uint8_t sclk, uint8_t din, uint8_t dc, uint8_t cs, uint8_t rst);
 
-    void begin() override;
+    bool begin() override;
 
     void clear();
 

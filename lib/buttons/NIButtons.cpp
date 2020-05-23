@@ -6,8 +6,9 @@ NIButton::NIButton(int gpio) : _gpio(gpio), _button(gpio) {
     this->_button.begin();
 }
 
-void NIButton::begin() {
+bool NIButton::begin() {
     this->_button.begin();
+    return true;
 }
 
 NIButton *NIButton::on_short_press(void (*_on_pressed)()) {

@@ -1,6 +1,7 @@
 #ifndef ARDUINO_PROJECTS_ROOT_SERVICE_H
 #define ARDUINO_PROJECTS_ROOT_SERVICE_H
 
+#include <Arduino.h>
 #include <elapsedMillis.h>
 #ifdef __EEPROM__
 #include <EEPROM.h>
@@ -10,8 +11,14 @@
 
 class Service {
 public:
-    virtual void begin() {};
+    virtual bool begin() {
+        return true;
+    };
     virtual void cycle() {};
+    virtual void disable() {};
+    virtual void disable(uint8_t) {
+        disable();
+    };
 };
 
 class TimedService : public Service {

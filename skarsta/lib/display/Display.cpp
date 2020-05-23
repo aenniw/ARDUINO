@@ -36,13 +36,14 @@ Display::Display(uint8_t _pin1, uint8_t _pin2, uint16_t _timeout) :
     display.set(brightness);
 }
 
-void Display::begin() {
+bool Display::begin() {
     display.clearDisplay();
     for (uint8_t i = 4; i > 0; i--) {
         display.display(i - 1, get_code_n(8), true);
         delay(200);
     }
     display.clearDisplay();
+    return true;
 }
 
 void Display::set_blink(bool state) {

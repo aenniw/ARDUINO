@@ -50,6 +50,33 @@ After testing quite a few DC motors from Ebay, Aliexpress and Banggood, I stuck 
 - [panel-v1](./docs/panel-v1.md)
 - [panel-v2](./docs/panel-v2.md)
 
+### Alternative sensors
+
+#### [HC-SR04](https://www.ebay.com/itm/Ultrasonic-Module-HC-SR04-Distance-Measuring-Transducer-Sensor-for-Arduino/271107439777?hash=item3f1f433ca1:g:g10AAOxyFrNRxF5k)
+
+- ultrasonic absolute position sensor mount moels: [sonar-cap.stl](./models/sensor-sonar/sonar-cap.stl), [sonar-mount.stl](./models/sensor-sonar/sonar-mount.stl)
+
+  | _HC_SR04_ | _Arduino - Nano_ |
+  | --------- | :--------------: |
+  | VCC       |        5V        |
+  | TRIG      |      GPIO2       |
+  | ECHO      |      GPIO3       |
+  | GND       |       GND        |
+
+<details>
+  <summary>bridge wiring diagram</summary>
+  <p align="center">
+    <img src="docs/img/case_bridge-v1/uwiring.png"/>
+  </p>
+</details>
+
+<details>
+  <summary>relays wiring diagram</summary>
+  <p align="center">
+    <img src="docs/img/case_relays-v1/uwiring.png"/>
+  </p>
+</details>
+
 ### Error codes && handling
 
 - if any Error message bellow is showed on display it is needed to manually power down/up table to be able to operate once again,
@@ -59,6 +86,7 @@ After testing quite a few DC motors from Ebay, Aliexpress and Banggood, I stuck 
   | ------------ | :---------------------------: |
   | Err 1        | Motor stuck and cannot rotate |
   | Err 2        |  Motor started unexpectedly   |
+  | Err 3        |         Wiring issue          |
 
 ### Library Credentials
 
