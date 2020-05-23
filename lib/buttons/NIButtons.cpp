@@ -21,8 +21,18 @@ NIButton *NIButton::long_press(long delay) {
     return this;
 }
 
+NIButton *NIButton::llong_press(long delay) {
+    _button.longHoldTime(delay);
+    return this;
+}
+
 NIButton *NIButton::on_long_press(void (*_on_pressed)()) {
     this->_on_long_press = _on_pressed;
+    return this;
+}
+
+NIButton *NIButton::on_llong_press(void (*_on_pressed)()) {
+    this->_on_llong_press = _on_pressed;
     return this;
 }
 
@@ -54,8 +64,7 @@ void NIButton::cycle() {
 #ifdef __DEBUG__
         Serial.print(millis());
         Serial.print(F("\t| b |: on: "));
-        Serial.print(_gpio);
-        Serial.println();
+        Serial.println(_gpio);
 #endif
     } else if (digitalRead((uint8_t) _gpio) && _pressed) {
         if (_on_release) {
@@ -64,8 +73,7 @@ void NIButton::cycle() {
 #ifdef __DEBUG__
         Serial.print(millis());
         Serial.print(F("\t| b |: off: "));
-        Serial.print(_gpio);
-        Serial.println();
+        Serial.println(_gpio);
 #endif
         _pressed = false;
         _held = false;
@@ -76,8 +84,7 @@ void NIButton::cycle() {
 #ifdef __DEBUG__
         Serial.print(millis());
         Serial.print(F("\t| b |: short: "));
-        Serial.print(_gpio);
-        Serial.println();
+        Serial.println(_gpio);
 #endif
     }
     if (_button.held()) {
@@ -87,8 +94,18 @@ void NIButton::cycle() {
 #ifdef __DEBUG__
         Serial.print(millis());
         Serial.print(F("\t| b |: long: "));
-        Serial.print(_gpio);
-        Serial.println();
+        Serial.println(_gpio);
+#endif
+        _held = true;
+    }
+    if (_button.heldLong()) {
+        if (_on_llong_press) {
+            this->_on_llong_press();
+        }
+#ifdef __DEBUG__
+        Serial.print(millis());
+        Serial.print(F("\t| b |: llong: "));
+        Serial.println(_gpio);
 #endif
         _held = true;
     }

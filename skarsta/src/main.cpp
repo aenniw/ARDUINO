@@ -1,18 +1,16 @@
 #include <vector>
 #include <Arduino.h>
 #include <Display.h>
+#include <Calibrator.h>
 #include <Keypad.h>
 #include <configuration.h>
-#ifdef __WATCHDOG__
 #include <Watchdog.h>
-#endif
+
 #ifdef __H_BRIDGE_MOTOR__
 #include <MotorBridge.h>
 #else
 #include <MotorRelay.h>
 #endif
-
-static std::vector<Service *> services;
 
 #ifdef __EEPROM__
 
@@ -42,43 +40,43 @@ MotorBridge motor(SENSOR_PIN0, SENSOR_PIN1, R_EN, L_EN, R_PWM, L_PWM, STOP_POS_D
 MotorRelay motor(SENSOR_PIN0, SENSOR_PIN1, POWER_RELAY, DIRECTION_RELAY, STOP_POS_DIFF, MINIMUM_POS_CHANGE);
 #endif
 Display display(DISPLAY_PIN_CLK, DISPLAY_PIN_DIO, FADE_TIMEOUT);
+Watchdog watchdog(&motor, WATCHDOG_TIMEOUT, WATCHDOG_DEADLOCK_CHANGE, WATCHDOG_OTHER_CHANGE);
+Calibrator calibrator(&motor);
+Keypad keypad(&motor, &display, &calibrator, BUTTON_DOWN, BUTTON_UP, BUTTON_RST, BUTTON_P0, BUTTON_P1, BUTTON_P2);
+std::vector<Service *> services = {&calibrator, &watchdog, &keypad, &motor, &display};
+
 #ifdef __WATCHDOG__
-Watchdog watchdog(&motor, &display, WATCHDOG_TIMEOUT, WATCHDOG_DEADLOCK_CHANGE, WATCHDOG_OTHER_CHANGE,
-                  WATCHDOG_TOLERANCE);
+SafetyTrigger stallTrigger(&motor, &display, STOPPED, WATCHDOG_TOLERANCE);
+SafetyTrigger runawayTrigger(&motor, &display, STARTED, WATCHDOG_TOLERANCE);
 #endif
-Keypad keypad(&motor, &display, BUTTON_DOWN, BUTTON_UP, BUTTON_RST, BUTTON_P0, BUTTON_P1, BUTTON_P2);
 
 void setup() {
 #ifdef __DEBUG__
     Serial.begin(9600);
+    Serial.print(millis());
+    Serial.println(F("\t|   | starting"));
 #endif
 #ifdef __EEPROM__
     if (!eeprom_valid())
         eeprom_reset();
 #endif
-
-    delay(1000);
-
+    watchdog.add_trigger(&calibrator);
 #ifdef __WATCHDOG__
-    services.push_back((Service *) &watchdog);
+    watchdog.add_trigger(&stallTrigger);
+    watchdog.add_trigger(&runawayTrigger);
 #endif
-    services.push_back((Service *) &keypad);
-    services.push_back((Service *) &motor);
-    services.push_back((Service *) &display);
-
-#ifdef __DEBUG__
-    Serial.print(millis());
-    Serial.println(F("\t|   | started"));
-#endif
-
     bool failed = false;
     for (const auto &service: services)
         failed |= !service->begin();
 
     if (failed) {
         for (const auto &service: services)
-            service->disable(ERROR_INIT);
+            service->disable(INIT);
     }
+#ifdef __DEBUG__
+    Serial.print(millis());
+    Serial.println(F("\t|   | started"));
+#endif
 }
 
 void loop() {

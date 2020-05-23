@@ -172,9 +172,11 @@ void Motor::set_mode(MotorMode mode) {
 #endif
 }
 
-void Motor::set_end_stop(unsigned int end_stop) {
+void Motor::set_end_stop(unsigned int end_stop, unsigned int offset) {
     if (disabled) return;
-    this->end_stop[1] = end_stop;
+    if (offset)
+        this->position -= offset;
+    this->end_stop[1] = end_stop - 2 * offset;
 #ifdef __EEPROM__
     updateEEPROM(ADDRESS_END_STOP_1, this->end_stop[1]);
 #endif

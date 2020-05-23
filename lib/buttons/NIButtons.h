@@ -2,7 +2,7 @@
 #define ARDUINO_PROJECTS_NIBUTTONS_H
 
 #include <vector>
-#include <PMButton.h>   // https://github.com/JCWentzel/PolymorphicButtons.git#master
+#include <PMButton.h>
 #include <Service.h>
 
 #define DEBOUNCE 5
@@ -17,6 +17,8 @@ private:
 
     void (*_on_long_press)() = nullptr;
 
+    void (*_on_llong_press)() = nullptr;
+
     void (*_on_press)() = nullptr;
 
     void (*_on_release)() = nullptr;
@@ -29,6 +31,10 @@ public:
     NIButton *on_short_press(void (*_on_pressed)());
 
     NIButton *long_press(long delay);
+
+    NIButton *llong_press(long delay);
+
+    NIButton *on_llong_press(void (*_on_pressed)());
 
     NIButton *on_long_press(void (*_on_pressed)());
 

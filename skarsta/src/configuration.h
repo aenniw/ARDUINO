@@ -31,8 +31,8 @@
 #else
     #define WATCHDOG_TIMEOUT        100
 #endif
-#define WATCHDOG_DEADLOCK_CHANGE    2
-#define WATCHDOG_OTHER_CHANGE       5
+#define WATCHDOG_DEADLOCK_CHANGE    6
+#define WATCHDOG_OTHER_CHANGE       6
 #ifdef __H_BRIDGE_MOTOR__
     #define WATCHDOG_TOLERANCE      5
 #else
