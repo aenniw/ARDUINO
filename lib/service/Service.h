@@ -1,7 +1,6 @@
 #ifndef ARDUINO_PROJECTS_ROOT_SERVICE_H
 #define ARDUINO_PROJECTS_ROOT_SERVICE_H
 
-#include <Arduino.h>
 #include <elapsedMillis.h>
 #ifdef __EEPROM__
 #include <EEPROM.h>

@@ -73,7 +73,7 @@ public:
 
     void dir_ccw();
 
-    void set_end_stop(unsigned int end_stop);
+    void set_end_stop(unsigned int end_stop, unsigned int offset = 0);
 
     unsigned int get_position() const;
 
