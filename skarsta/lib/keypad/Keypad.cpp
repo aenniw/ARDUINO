@@ -26,11 +26,11 @@ Keypad::Keypad(Motor *_motor, Display *_display,
         EEPROM.get(ADDRESS_PRESETS[i], preset_values[i]);
 
 #ifdef __DEBUG__
-        Serial.print("preset ");
+        Serial.print(millis());
+        Serial.print(F("\t| k | preset "));
         Serial.print(i);
-        Serial.print(" ");
-        Serial.print(preset_values[i]);
-        Serial.println();
+        Serial.print(F(" "));
+        Serial.println(preset_values[i]);
 #endif
 #endif
     }
@@ -124,11 +124,11 @@ void Keypad::set_preset(uint8_t i) {
     updateEEPROM(ADDRESS_PRESETS[i], preset_values[i]);
 #endif
 #ifdef __DEBUG__
-    Serial.print("set preset: ");
+    Serial.print(millis());
+    Serial.print(F("\t| k | set preset: "));
     Serial.print(i);
-    Serial.print(" ");
-    Serial.print(preset_values[i]);
-    Serial.println();
+    Serial.print(F(" "));
+    Serial.println(preset_values[i]);
 #endif
 }
 
@@ -136,11 +136,11 @@ void Keypad::goto_preset(uint8_t i) {
     if (motor->get_mode() != CALIBRATED)
         return;
 #ifdef __DEBUG__
-    Serial.print("goto preset: ");
+    Serial.print(millis());
+    Serial.print(F("\t| k | goto preset: "));
     Serial.print(i);
-    Serial.print(" ");
-    Serial.print(preset_values[i]);
-    Serial.println();
+    Serial.print(F(" "));
+    Serial.println(preset_values[i]);
 #endif
     motor->set_position(preset_values[i]);
 }

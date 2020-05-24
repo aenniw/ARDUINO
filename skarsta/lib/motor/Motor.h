@@ -77,7 +77,7 @@ public:
 
     void set_end_stop(unsigned int end_stop);
 
-    unsigned int get_position();
+    unsigned int get_position() const;
 
     unsigned int get_position_change();
 
