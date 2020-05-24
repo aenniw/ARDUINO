@@ -12,22 +12,37 @@ void Watchdog::cycle() {
         MotorState state = motor->get_state();
 
         if (pos_diff <= deadlock_change && state != OFF) {
+#ifdef __DEBUG__
+            Serial.print(millis());
+            Serial.print(F("\t| w | e:"));
+            Serial.print(ERROR_STALL);
+            Serial.print(F(" stop d:"));
+            Serial.print(pos_diff);
+            Serial.print(F(" w ec:"));
+            Serial.println(error_count);
+#endif
             error(ERROR_STALL);
-#ifdef __DEBUG__
-            Serial.print("w-1 stop d:");
-            Serial.println(pos_diff);
-#endif
         } else if (pos_diff > other_change && state == OFF) {
-            error(ERROR_USTART);
+
 #ifdef __DEBUG__
-            Serial.print("w-2 stop d:");
-            Serial.println(pos_diff);
+            Serial.print(millis());
+            Serial.print(F("\t| w | e:"));
+            Serial.print(ERROR_USTART);
+            Serial.print(F(" stop d:"));
+            Serial.print(pos_diff);
+            Serial.print(F(" w ec:"));
+            Serial.println(error_count);
 #endif
+            error(ERROR_USTART);
         } else {
             error_count = 0;
 #ifdef __DEBUG__
-            Serial.print("w d:");
-            Serial.println(pos_diff);
+            if ((pos_diff && state != OFF)) {
+                Serial.print(millis());
+                Serial.print(F("\t| w | d:"));
+                Serial.print(pos_diff);
+                Serial.println(F(" reset"));
+            }
 #endif
         }
 
@@ -37,10 +52,6 @@ void Watchdog::cycle() {
 
 void Watchdog::error(uint8_t cause) {
     if (error_count++ < tolerance - 1) {
-#ifdef __DEBUG__
-        Serial.print("w ec:");
-        Serial.println(error_count);
-#endif
         return;
     }
     motor->disable();

@@ -52,7 +52,8 @@ void NIButton::cycle() {
             this->_on_press();
         }
 #ifdef __DEBUG__
-        Serial.print("b: on: ");
+        Serial.print(millis());
+        Serial.print(F("\t| b |: on: "));
         Serial.print(_gpio);
         Serial.println();
 #endif
@@ -61,7 +62,8 @@ void NIButton::cycle() {
             this->_on_release();
         }
 #ifdef __DEBUG__
-        Serial.print("b: off: ");
+        Serial.print(millis());
+        Serial.print(F("\t| b |: off: "));
         Serial.print(_gpio);
         Serial.println();
 #endif
@@ -72,7 +74,8 @@ void NIButton::cycle() {
     if (_on_short_press && _button.clicked()) {
         this->_on_short_press();
 #ifdef __DEBUG__
-        Serial.print("b: short: ");
+        Serial.print(millis());
+        Serial.print(F("\t| b |: short: "));
         Serial.print(_gpio);
         Serial.println();
 #endif
@@ -82,7 +85,8 @@ void NIButton::cycle() {
             this->_on_long_press();
         }
 #ifdef __DEBUG__
-        Serial.print("b: long: ");
+        Serial.print(millis());
+        Serial.print(F("\t| b |: long: "));
         Serial.print(_gpio);
         Serial.println();
 #endif

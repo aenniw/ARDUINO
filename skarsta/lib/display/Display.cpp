@@ -50,9 +50,9 @@ void Display::set_blink(bool state) {
     if (disabled) return;
 #ifdef __DEBUG__
     if (blink != state) {
-        Serial.print("blink=");
-        Serial.print(state);
-        Serial.println();
+        Serial.print(millis());
+        Serial.print(F("\t| d | blink="));
+        Serial.println(state);
     }
 #endif
     dirty = blink != state && !state;
@@ -73,7 +73,8 @@ void Display::print(unsigned int position) {
 
 #ifdef __DEBUG__
     if (dirty) {
-        Serial.print("print: ");
+        Serial.print(millis());
+        Serial.print(F("\t| d | print: "));
         Serial.println(position);
     }
 #endif
@@ -94,7 +95,8 @@ void Display::print(const char *text) {
 
 #ifdef __DEBUG__
     if (dirty) {
-        Serial.print("print: ");
+        Serial.print(millis());
+        Serial.print(F("\t| d | print: "));
         Serial.println(text);
     }
 #endif
@@ -105,7 +107,8 @@ void Display::set_brightness(uint8_t b) {
         return;
     brightness = b;
 #ifdef __DEBUG__
-    Serial.print("brightness: ");
+    Serial.print(millis());
+    Serial.print(F("\t| d | brightness: "));
     Serial.println(b);
 #endif
     display.set(b);
@@ -123,7 +126,8 @@ void Display::cycle() {
         dirty = false;
         elapsed = 0;
 #ifdef __DEBUG__
-        Serial.println("redraw");
+        Serial.print(millis());
+        Serial.println(F("\t| d | redraw"));
 #endif
     } else if (blink) {
         if (elapsed >= 500) {

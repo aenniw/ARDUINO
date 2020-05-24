@@ -27,7 +27,8 @@ bool eeprom_valid() {
 
 void eeprom_reset() {
 #ifdef __DEBUG__
-    Serial.println("reset eeprom");
+    Serial.print(millis());
+    Serial.println(F("\t|   | reset eeprom"));
 #endif
     for (unsigned int i = 0; i < EEPROM.length(); ++i)
         updateEEPROM(i, 0);
@@ -66,7 +67,8 @@ void setup() {
     services.push_back((Service *) &display);
 
 #ifdef __DEBUG__
-    Serial.println("starting");
+    Serial.print(millis());
+    Serial.println(F("\t|   | started"));
 #endif
 
     bool failed = false;

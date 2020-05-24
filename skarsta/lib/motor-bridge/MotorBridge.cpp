@@ -43,9 +43,9 @@ void MotorBridge::setSpeed(MotorState state, uint8_t speed) {
     this->speed = speed;
 
 #ifdef __DEBUG__
-    Serial.print("m speed ");
-    Serial.print(speed);
-    Serial.println();
+    Serial.print(millis());
+    Serial.print(F("\t| m | speed: "));
+    Serial.println(speed);
 #endif
 
     if (state == CCW) {
