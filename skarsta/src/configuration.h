@@ -8,12 +8,12 @@
 #define DISPLAY_PIN_DIO     5
 #define FADE_TIMEOUT        60000
 
-#define BUTTON_DOWN     A0
-#define BUTTON_UP       A1
-#define BUTTON_P0       A2
-#define BUTTON_P1       A3
-#define BUTTON_P2       A4
-#define BUTTON_RST      A5
+#define BUTTON_DOWN     A0 // -> 14
+#define BUTTON_UP       A1 // -> 15
+#define BUTTON_P0       A2 // -> 16
+#define BUTTON_P1       A3 // -> 17
+#define BUTTON_P2       A4 // -> 18
+#define BUTTON_RST      A5 // -> 19
 
 /**
  * __WATCHDOG__         if watchdog is enabled
@@ -27,7 +27,7 @@
  *                              so if rotation change is greater then WATCHDOG_OTHER_CHANGE for WATCHDOG_TOLERANCE times Error 2 will be trigerred
  */
 #ifdef __USENSOR__
-    #define WATCHDOG_TIMEOUT        250
+    #define WATCHDOG_TIMEOUT        300
 #else
     #define WATCHDOG_TIMEOUT        100
 #endif

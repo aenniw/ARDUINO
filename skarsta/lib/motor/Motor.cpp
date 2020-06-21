@@ -97,18 +97,18 @@ unsigned int Motor::get_position() const {
 
 void Motor::reset_position() {
     if (disabled) return;
-#ifdef __USENSOR__
-    this->end_stop[0] = get_position();
-#else
+#ifndef __USENSOR__
     this->position = 0u;
 #endif
+    this->end_stop[0] = get_position();
 
 #ifdef __EEPROM__
-#ifdef __USENSOR__
     updateEEPROM(ADDRESS_END_STOP_0, this->end_stop[0]);
-#endif
+#ifndef __USENSOR__
     updateEEPROM(ADDRESS_POSITION, position);
 #endif
+#endif
+
 #ifdef __DEBUG__
     Serial.print(millis());
     Serial.println(F("\t| m | rst"));
@@ -197,8 +197,8 @@ void Motor::cycle() {
         const unsigned int cur_position = (unsigned int) measurement_raw * 10,
                 position_diff = position_abs(position, cur_position);
 
-        if ((get_state() == OFF && position_diff > 15) ||
-            (get_state() != OFF && position_diff > 2)) {
+        if ((get_state() == OFF && position_diff > 75) ||
+            (get_state() != OFF && position_diff > 10)) {
             position_change += position_diff;
             position = cur_position;
         }
