@@ -7,13 +7,7 @@ SafetyTrigger::SafetyTrigger(Motor *m, Display *d, ErrorType t, uint8_t to) :
 bool SafetyTrigger::trip(ErrorType t) {
     if (type != t) return false;
     if (error_count++ < tolerance - 1) {
-#ifdef __DEBUG__
-        Serial.print(millis());
-        Serial.print(F("\t| t | t:"));
-        Serial.println(type);
-        Serial.print(F(" ec:"));
-        Serial.println(error_count);
-#endif
+        LOG("t | t:%d ec:%d", type, error_count);
         return false;
     }
 
@@ -23,10 +17,7 @@ bool SafetyTrigger::trip(ErrorType t) {
 }
 
 void SafetyTrigger::reset() {
-#ifdef __DEBUG__
-    Serial.print(millis());
-    Serial.print(F("\t| w | reset"));
-#endif
+    LOG("t | reset");
     error_count = 0;
 }
 
@@ -46,13 +37,7 @@ void Watchdog::cycle() {
         unsigned int pos_diff = motor->get_position_change();
         MotorState state = motor->get_state();
 
-#ifdef __DEBUG__
-        Serial.print(millis());
-        Serial.print(F("\t| w | d:"));
-        Serial.print(pos_diff);
-        Serial.print(F(" s:"));
-        Serial.println(state);
-#endif
+        LOG("w | d:%d s:%d", pos_diff, state);
         if (pos_diff <= deadlock_change && state != OFF) {
             for (auto trigger: triggers)
                 if (trigger->trip(STOPPED))

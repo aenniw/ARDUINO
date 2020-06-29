@@ -8,14 +8,7 @@ Calibrator::Calibrator(Motor *motor) {
     for (uint8_t i = 0; i < 3; i++) {
 #ifdef __EEPROM__
         EEPROM.get(ADDRESS_PRESETS[i], preset_values[i]);
-
-#ifdef __DEBUG__
-        Serial.print(millis());
-        Serial.println(F("\t| c | set preset:"));
-        Serial.print(i);
-        Serial.print(F(" v:"));
-        Serial.println(preset_values[i]);
-#endif
+        LOG("c | set preset:%d v:%d", i, preset_values[i]);
 #endif
     }
 }
@@ -65,10 +58,7 @@ void Calibrator::auto_calibrate() {
     auto_calibrating = true;
     spin_up = millis();
     motor->dir_ccw();
-#ifdef __DEBUG__
-    Serial.print(millis());
-    Serial.println(F("\t| c | down"));
-#endif
+    LOG("c | down");
 #endif
 }
 
@@ -79,13 +69,7 @@ void Calibrator::set_preset(uint8_t i) {
 #ifdef __EEPROM__
     updateEEPROM(ADDRESS_PRESETS[i], preset_values[i]);
 #endif
-#ifdef __DEBUG__
-    Serial.print(millis());
-    Serial.print(F("\t| c | set preset:"));
-    Serial.print(i);
-    Serial.print(F(" v:"));
-    Serial.println(preset_values[i]);
-#endif
+    LOG("c | set preset:%d v:%d", i, preset_values[i]);
 }
 
 unsigned int Calibrator::get_preset(uint8_t i) {
@@ -108,24 +92,15 @@ void Calibrator::cycle() {
                 elapsed = 0;
                 spin_up = true;
                 motor->dir_cw();
-#ifdef __DEBUG__
-                Serial.print(millis());
-                Serial.println(F("\t| c | up"));
-#endif
+                LOG("c | up");
                 break;
             case SEMICALIBRATED:
                 calibrated(END_STOP_OFFSET);
-#ifdef __DEBUG__
-                Serial.print(millis());
-                Serial.println(F("\t| c | offset"));
-#endif
+                LOG("c | offset");
                 break;
             case CALIBRATED:
                 auto_calibrating = false;
-#ifdef __DEBUG__
-                Serial.print(millis());
-                Serial.println(F("\t| c | fin"));
-#endif
+                LOG("c | fin");
                 break;
         }
     }
@@ -137,10 +112,7 @@ bool Calibrator::trip(ErrorType t) {
 
     if (!spin_up) {
         motor->off();
-#ifdef __DEBUG__
-        Serial.print(millis());
-        Serial.println(F("\t| c | trip"));
-#endif
+        LOG("c | trip");
     }
 
     return true;

@@ -48,13 +48,9 @@ bool Display::begin() {
 
 void Display::set_blink(bool state) {
     if (disabled) return;
-#ifdef __DEBUG__
     if (blink != state) {
-        Serial.print(millis());
-        Serial.print(F("\t| d | blink="));
-        Serial.println(state);
+        LOG("d | blink=%d", state);
     }
-#endif
     dirty = blink != state && !state;
     blink = state;
 }
@@ -71,13 +67,9 @@ void Display::print(unsigned int position) {
         disp_buffer[i] = buffer[i];
     }
 
-#ifdef __DEBUG__
     if (dirty) {
-        Serial.print(millis());
-        Serial.print(F("\t| d | print: "));
-        Serial.println(position);
+        LOG("d | print:%d", position);
     }
-#endif
 }
 
 void Display::print(const char *text) {
@@ -93,24 +85,16 @@ void Display::print(const char *text) {
         disp_buffer[i] = buffer[i];
     }
 
-#ifdef __DEBUG__
     if (dirty) {
-        Serial.print(millis());
-        Serial.print(F("\t| d | print: "));
-        Serial.println(text);
+        LOG("d | print:%s", text);
     }
-#endif
 }
 
 void Display::set_brightness(uint8_t b) {
     if (brightness == b)
         return;
     brightness = b;
-#ifdef __DEBUG__
-    Serial.print(millis());
-    Serial.print(F("\t| d | brightness: "));
-    Serial.println(b);
-#endif
+    LOG("d | brightness:%d", brightness);
     display.set(b);
 }
 
@@ -125,10 +109,7 @@ void Display::cycle() {
         display.display(disp_buffer, true);
         dirty = false;
         elapsed = 0;
-#ifdef __DEBUG__
-        Serial.print(millis());
-        Serial.println(F("\t| d | redraw"));
-#endif
+        LOG("d | redraw");
     } else if (blink) {
         if (elapsed >= 500) {
             if (!clear) {
