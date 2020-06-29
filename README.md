@@ -4,13 +4,10 @@
 
 ![](https://i.pinimg.com/originals/e5/59/12/e55912dd26a1663443e5ca532a4ebc60.png)
 
-## Setup environment
+## Setup environment [Platformio](https://platformio.org/install)
 
 ```bash
-sudo pip install platformio
-
-IDE=eclipse ./configure     # for eclipse layout setup
-IDE=clion ./configure       # for clion layout setup
+pip install -r requirements.txt
 ```
 
 ## Build
