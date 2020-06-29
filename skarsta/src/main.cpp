@@ -15,7 +15,7 @@
 #ifdef __EEPROM__
 
 bool eeprom_valid() {
-    for (unsigned int i = ADDRESS_MODE + 4 * sizeof(unsigned int); i < EEPROM.length(); ++i) {
+    for (uint16_t i = ADDRESS_MODE + 4 * sizeof(unsigned int); i < EEPROM.length(); ++i) {
         if (EEPROM[i] != 0) {
             return false;
         }
@@ -24,10 +24,7 @@ bool eeprom_valid() {
 }
 
 void eeprom_reset() {
-#ifdef __DEBUG__
-    Serial.print(millis());
-    Serial.println(F("\t|   | reset eeprom"));
-#endif
+    LOG("reset eeprom");
     for (unsigned int i = 0; i < EEPROM.length(); ++i)
         updateEEPROM(i, 0);
 }
@@ -51,11 +48,8 @@ SafetyTrigger runawayTrigger(&motor, &display, STARTED, WATCHDOG_TOLERANCE);
 #endif
 
 void setup() {
-#ifdef __DEBUG__
-    Serial.begin(9600);
-    Serial.print(millis());
-    Serial.println(F("\t|   | starting"));
-#endif
+    LOG_INIT(Serial.begin(9600), &Serial);
+    LOG("starting");
 #ifdef __EEPROM__
     if (!eeprom_valid())
         eeprom_reset();
@@ -73,10 +67,7 @@ void setup() {
         for (const auto &service: services)
             service->disable(INIT);
     }
-#ifdef __DEBUG__
-    Serial.print(millis());
-    Serial.println(F("\t|   | started"));
-#endif
+    LOG("started");
 }
 
 void loop() {

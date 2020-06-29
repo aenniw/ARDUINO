@@ -24,19 +24,7 @@ bool Motor::begin() {
     EEPROM.get(ADDRESS_END_STOP_1, end_stop[1]);
     EEPROM.get(ADDRESS_MODE, mode);
 #endif
-
-#ifdef __DEBUG__
-    Serial.print(millis());
-    Serial.print(F("\t| m | pos: "));
-    Serial.print(position);
-    Serial.print(F(", end_pos: "));
-    Serial.print(end_stop[0]);
-    Serial.print(F("-"));
-    Serial.print(end_stop[1]);
-    Serial.print(F(", mode:"));
-    Serial.println(mode);
-#endif
-
+    LOG("m | pos:%d end_pos:%d-%d mode:%d", position, end_stop[0], end_stop[1], mode);
 #ifdef __USENSOR__
     double sensor_value = sensor.measureDistanceCm();
     for (uint8_t i = 0; i < 5 && sensor_value < 0; i++) {
@@ -57,13 +45,7 @@ bool Motor::begin() {
 
 void Motor::off() {
     _off();
-#ifdef __DEBUG__
-    Serial.print(millis());
-    Serial.print(F("\t| m | off "));
-    Serial.print(end_stop[0]);
-    Serial.print(F(", "));
-    Serial.println(end_stop[1]);
-#endif
+    LOG("m | off %d,%d", end_stop[0], end_stop[1]);
     state = OFF;
 }
 
@@ -71,11 +53,7 @@ void Motor::dir_cw() {
     if (disabled || (get_position() >= end_stop[1] && mode == CALIBRATED)) {
         return;
     }
-
-#ifdef __DEBUG__
-    Serial.print(millis());
-    Serial.println(F("\t| m | cw"));
-#endif
+    LOG("m | cw");
     _dir_cw();
     state = CW;
 }
@@ -84,11 +62,7 @@ void Motor::dir_ccw() {
     if (disabled || (get_position() <= end_stop[0] && mode != UNCALIBRATED)) {
         return;
     }
-
-#ifdef __DEBUG__
-    Serial.print(millis());
-    Serial.println(F("\t| m | ccw"));
-#endif
+    LOG("m | ccw");
     _dir_ccw();
     state = CCW;
 }
@@ -110,11 +84,7 @@ void Motor::reset_position() {
     updateEEPROM(ADDRESS_POSITION, position);
 #endif
 #endif
-
-#ifdef __DEBUG__
-    Serial.print(millis());
-    Serial.println(F("\t| m | rst"));
-#endif
+    LOG("m | rst");
 }
 
 void Motor::set_position(unsigned int pos) {
@@ -127,11 +97,7 @@ void Motor::set_position(unsigned int pos) {
     } else {
         this->dir_cw();
     }
-#ifdef __DEBUG__
-    Serial.print(millis());
-    Serial.print(F("\t| m | pos:"));
-    Serial.println(pos);
-#endif
+    LOG("m | pos:%d", pos);
 }
 
 #ifndef __USENSOR__
@@ -165,11 +131,7 @@ void Motor::set_mode(MotorMode mode) {
 #ifdef __EEPROM__
     updateEEPROM(ADDRESS_MODE, this->mode);
 #endif
-#ifdef __DEBUG__
-    Serial.print(millis());
-    Serial.print(F("\t| m | mode: "));
-    Serial.println(mode);
-#endif
+    LOG("m | mode:%d", mode);
 }
 
 void Motor::set_end_stop(unsigned int end_stop, unsigned int offset) {
@@ -180,11 +142,7 @@ void Motor::set_end_stop(unsigned int end_stop, unsigned int offset) {
 #ifdef __EEPROM__
     updateEEPROM(ADDRESS_END_STOP_1, this->end_stop[1]);
 #endif
-#ifdef __DEBUG__
-    Serial.print(millis());
-    Serial.print(F("\t| m | end_pos: "));
-    Serial.println(end_stop);
-#endif
+    LOG("m | end_pod:%d", end_stop);
 }
 
 void Motor::initPin(uint8_t pin, uint8_t val) {
