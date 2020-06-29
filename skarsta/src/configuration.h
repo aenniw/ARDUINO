@@ -39,6 +39,9 @@
     #define WATCHDOG_TOLERANCE      3
 #endif
 
+#define STOP_POS_DIFF       1   // Offset distance for preset end stop
+#define MINIMUM_POS_CHANGE  8   // Minimum distance for presets to be invoked
+
 #define R_EN    7
 #define L_EN    8
 #define R_PWM   9
