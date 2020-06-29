@@ -29,9 +29,6 @@ typedef enum {
 #define ADDRESS_MODE (ADDRESS_END_STOP_1 + sizeof(MotorMode))
 #endif
 
-#define STOP_POS_DIFF 1
-#define MINIMUM_POS_CHANGE 8
-
 class Motor : public TimedService {
 private:
 #ifndef __USENSOR__
@@ -40,6 +37,7 @@ private:
     UltraSonicDistanceSensor sensor;
 #endif
     const uint8_t sensor_pin_1 = 0, sensor_pin_2 = 0;
+    const uint8_t pos_diff = 0, min_change = 0;
 
     bool disabled = false;
     long next_position = -1;
@@ -65,7 +63,7 @@ protected:
     virtual void _dir_ccw() = 0;
 
 public:
-    Motor(uint8_t _pin1, uint8_t _pin2);
+    Motor(uint8_t _pin1, uint8_t _pin2, uint8_t stop_diff, uint8_t min_change);
 
     bool begin() override;
 

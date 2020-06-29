@@ -10,8 +10,10 @@ static unsigned int position_abs(unsigned int a, unsigned int b) {
     return a >= b ? a - b : b - a;
 }
 
-Motor::Motor(uint8_t _pin1, uint8_t _pin2) :
-        sensor((char) _pin1, (char) _pin2), sensor_pin_1(_pin1), sensor_pin_2(_pin2) {
+Motor::Motor(uint8_t _pin1, uint8_t _pin2, uint8_t stop_diff, uint8_t min_change) :
+        sensor((char) _pin1, (char) _pin2),
+        sensor_pin_1(_pin1), sensor_pin_2(_pin2),
+        pos_diff(stop_diff), min_change(min_change) {
     motor = this;
 }
 
@@ -116,7 +118,7 @@ void Motor::reset_position() {
 }
 
 void Motor::set_position(unsigned int pos) {
-    if (mode != CALIBRATED || position_abs(pos, get_position()) < MINIMUM_POS_CHANGE) {
+    if (mode != CALIBRATED || position_abs(pos, get_position()) < min_change) {
         return;
     }
     next_position = pos;
@@ -214,9 +216,9 @@ void Motor::cycle() {
     updateEEPROM(ADDRESS_POSITION, position);
 #endif
 
-    if ((get_state() == CCW && get_position() <= end_stop[0] + STOP_POS_DIFF) ||
-        (get_state() == CW && get_position() >= end_stop[1] - STOP_POS_DIFF) ||
-        (next_position >= 0 && position_abs(get_position(), (unsigned int) next_position) <= STOP_POS_DIFF)) {
+    if ((get_state() == CCW && get_position() <= end_stop[0] + pos_diff) ||
+        (get_state() == CW && get_position() >= end_stop[1] - pos_diff) ||
+        (next_position >= 0 && position_abs(get_position(), (unsigned int) next_position) <= pos_diff)) {
         off();
         next_position = -1;
     }
