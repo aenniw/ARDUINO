@@ -117,11 +117,11 @@ void Motor::update_position(const unsigned char result) {
 
 #endif
 
-MotorState Motor::get_state() {
+MotorState Motor::get_state() const {
     return this->state;
 }
 
-MotorMode Motor::get_mode() {
+MotorMode Motor::get_mode() const {
     return this->mode;
 }
 
@@ -150,6 +150,15 @@ void Motor::initPin(uint8_t pin, uint8_t val) {
     digitalWrite(pin, val);
 }
 
+
+bool Motor::check_end_stops(const unsigned int end_stop_down,
+                            const unsigned int end_stop_up) const {
+    const MotorState state = get_state();
+    const unsigned int position = get_position();
+    return (state == CCW && position <= end_stop_down + pos_diff) ||
+           (state == CW && position >= end_stop_up - pos_diff);
+}
+
 void Motor::cycle() {
 #ifdef __USENSOR__
     double measurement_raw;
@@ -176,10 +185,11 @@ void Motor::cycle() {
     updateEEPROM(ADDRESS_POSITION, position);
 #endif
 
-    if ((get_state() == CCW && get_position() <= end_stop[0] + pos_diff) ||
-        (get_state() == CW && get_position() >= end_stop[1] - pos_diff) ||
-        (next_position >= 0 && position_abs(get_position(), (unsigned int) next_position) <= pos_diff)) {
+    if (check_end_stops(end_stop[0], end_stop[1]) ||
+        (next_position >= 0 && check_end_stops((unsigned int) (next_position),
+                                               (unsigned int) (next_position)))) {
         off();
+        LOG("m | s:%d p:%d np:%d", state, position, next_position);
         next_position = -1;
     }
 };

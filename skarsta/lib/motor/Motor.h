@@ -56,6 +56,8 @@ protected:
 
     void initPin(uint8_t pin, uint8_t val = LOW);
 
+    bool check_end_stops(const unsigned int end_stop_down, const unsigned int end_stop_up) const;
+
     virtual void _off() = 0;
 
     virtual void _dir_cw() = 0;
@@ -83,9 +85,9 @@ public:
 
     void set_position(unsigned int pos);
 
-    MotorState get_state();
+    MotorState get_state() const;
 
-    MotorMode get_mode();
+    MotorMode get_mode() const;
 
     void set_mode(MotorMode state);
 
