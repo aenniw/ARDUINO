@@ -77,10 +77,10 @@ After testing quite a few DC motors from Ebay, Aliexpress and Banggood, I stuck 
   </p>
 </details>
 
-#### [Magnetic Hall Encoder](https://www.ebay.com/itm/153185900651)
+#### [Magnetic Hall Encoder - 11PPR](https://www.ebay.com/itm/153185900651) / [Magnetic Hall Encoder - 12PPR](https://www.ebay.com/itm/283429506020)
 
-- hall encoder sensor mount models: [hall-cover.stl](./models/sensor-hall/hall-cover.stl), [hall-mount.stl](./models/sensor-hall/hall-mount.stl), [hall-adapter.stl](./models/sensor-hall/hall-adapter.stl)
-- bearing [6000RS](https://www.aliexpress.com/item/32760906008.html?spm=a2g0o.productlist.0.0.53af1000nMVgbk&algo_pvid=fd319bce-6871-47bd-a9dd-8f37f28e3044&algo_expid=fd319bce-6871-47bd-a9dd-8f37f28e3044-2&btsid=0be3743b15935073142805283ed048&ws_ab_test=searchweb0_0,searchweb201602_,searchweb201603_)
+- hall encoder sensor mount models: [hall-cover-11PPR.stl](./models/sensor-hall/hall-cover-11PPR.stl) / [hall-cover-12PPR.stl](./models/sensor-hall/hall-cover-12PPR.stl), [hall-mount.stl](./models/sensor-hall/hall-mount.stl), [hall-adapter.stl](./models/sensor-hall/hall-adapter.stl)
+- bearing [6000-ZZ](https://www.aliexpress.com/item/33005322641.html?spm=a2g0o.productlist.0.0.225a6895nwCEg2&algo_pvid=b030580a-514e-42d4-858b-f577a04c0637&algo_expid=b030580a-514e-42d4-858b-f577a04c0637-1&btsid=0be3769015959474924671322eaf57&ws_ab_test=searchweb0_0,searchweb201602_,searchweb201603_)
 
   | _Encoder_ | _Arduino - Nano_ |
   | --------- | :--------------: |
