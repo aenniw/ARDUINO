@@ -6,9 +6,9 @@ static Display *display = nullptr;
 static Calibrator *calibrator = nullptr;
 
 #define SET_PRESET_BUTTON(p, on) preset_buttons[p]->long_press(SAVE_BUTTON_TIMEOUT)\
-                                    ->on_short_press([]() { if (!keypad->stop_motor()) keypad->goto_preset(p, calibrator->get_preset(p)); })\
-                                    ->on_long_press([]() { calibrator->set_preset(p); })\
-                                    ->on_press(on)
+                                    .on_short_press([]() { if (!keypad->stop_motor()) keypad->goto_preset(p, calibrator->get_preset(p)); })\
+                                    .on_long_press([]() { calibrator->set_preset(p); })\
+                                    .on_press(on)
 
 Keypad::Keypad(Motor *_motor, Display *_display, Calibrator *_calibrator,
                uint8_t down_pin, uint8_t up_pin, uint8_t rst_pin,
