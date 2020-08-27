@@ -1,64 +1,38 @@
-#ifndef ARDUINO_PROJECTS_DISPLAY_H
-#define ARDUINO_PROJECTS_DISPLAY_H
+#pragma once
 
 #include <SPI.h>
-#include <Adafruit_GFX.h>
-#include <Adafruit_PCD8544.h>
+#include <U8g2lib.h>
 #include <Service.h>
 #include <Configuration.h>
 
-#define SCREEN_WIDTH 128
-#define SCREEN_HEIGHT 32
+#define BACKLITE_MAX 100
 
-class Display : Service {
+class Display : public Service, public Print {
 private:
     LOCALE locale = EN;
-    uint8_t bck, backlight = 255;
-    Adafruit_PCD8544 display;
-protected:
+    uint8_t bck, backlight = BACKLITE_MAX, line = 0;
+    U8G2_ST7565_NHD_C12864_1_4W_HW_SPI display;
+private:
+    size_t write(uint8_t uint8) override;
     void set_backlight(uint8_t v);
-
 public:
-    Display(uint8_t bck, uint8_t sclk, uint8_t din, uint8_t dc, uint8_t cs, uint8_t rst);
+    Display(uint8_t bck, uint8_t cs, uint8_t dc);
 
-    bool begin() override;
-
-    void clear();
-
-    uint8_t *get_backlight();
-
+    uint8_t *get_backlight() const;
     void increase_backlight();
-
     void decrease_backlight();
 
     LOCALE *get_locale() const;
-
     void set_locale(LOCALE locale);
-
     void position(int16_t x, int16_t y);
 
-    void set_size(uint8_t s);
+    void clear();
+    uint8_t width();
+    uint8_t height();
 
-    void print(char c);
+    void firstPage();
+    uint8_t nextPage();
 
-    void print(const __FlashStringHelper *ifsh);
-
-    void println();
-
-    void println(const __FlashStringHelper *ifsh);
-
-    void print(int i, int b = 10);
-
-    void print(long i, int b = 10);
-
-    void print(unsigned int i, int b = 10);
-
-    void print(unsigned long i, int b = 10);
-
-    void print(double i, int d = 2);
-
+    bool begin() override;
     void cycle() override;
 };
-
-
-#endif //ARDUINO_PROJECTS_DISPLAY_H

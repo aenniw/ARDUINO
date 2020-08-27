@@ -1,5 +1,4 @@
-#ifndef ARDUINO_PROJECTS_MOTORMOSFET_H
-#define ARDUINO_PROJECTS_MOTORMOSFET_H
+#pragma once
 
 #include <Arduino.h>
 #include <Motor.h>
@@ -32,63 +31,39 @@ private:
     bool no_spin = true;
 private:
     void stall_detect(unsigned long ms);
-
     void spin_detect(unsigned long ms);
-
     void spin_down(unsigned long ms);
-
     void spin_up(unsigned long ms);
-
 protected:
     unsigned long get_remaining_evolutions() const;
-
     bool is_rotating() const;
-
     void set_speed(uint8_t s);
-
     void set_stall_timeout(uint16_t t);
-
 public:
     MosfetMotor(uint8_t pwm, uint8_t gate);
 
-    uint8_t get_speed() const override;
-
-    MotorState get_state() const override;
-
-    unsigned long get_evolution() const override;
-
     double get_len() const override;
-
+    MotorState get_state() const override;
+    unsigned long get_evolution() const override;
     void reset() override;
-
-    void cycle() override;
-
     void toggle() override;
 
-    void increase_speed() override;
+    bool begin() override;
+    void cycle() override;
 
+    void increase_speed() override;
     void decrease_speed() override;
+    uint8_t get_speed() const override;
 
     void increase_stop_evolution() override;
-
     void decrease_stop_evolution() override;
-
     unsigned long *get_stop_evolution() const override;
 
     void increase_stall_timeout() override;
-
     void decrease_stall_timeout() override;
-
     uint16_t *get_stall_timeout() const override;
 
-    PROFILE *get_profile() const override;
-
     void next_profile() override;
-
     void prev_profile() override;
-
-    ~MosfetMotor();
+    PROFILE *get_profile() const override;
 };
-
-
-#endif //ARDUINO_PROJECTS_MOTORMOSFET_H

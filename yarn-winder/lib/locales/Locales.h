@@ -1,5 +1,4 @@
-#ifndef ARDUINO_PROJECTS_LOCALES_H
-#define ARDUINO_PROJECTS_LOCALES_H
+#pragma once
 
 #include <avr/pgmspace.h>
 
@@ -59,5 +58,3 @@ const char czech[] PROGMEM = {"CZECH"};
 const char auto_wind[] PROGMEM = {"Auto"};
 const char semi_wind[] PROGMEM = {"Semi"};
 const char manual_wind[] PROGMEM = {"Manual"};
-
-#endif //ARDUINO_PROJECTS_LOCALES_H

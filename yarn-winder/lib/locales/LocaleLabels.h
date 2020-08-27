@@ -1,5 +1,4 @@
-#ifndef ARDUINO_PROJECTS_LOCALELABELS_H
-#define ARDUINO_PROJECTS_LOCALELABELS_H
+#pragma once
 
 #include <Locales.h>
 #include <Labels.h>
@@ -24,5 +23,3 @@ const StaticLabel czech_label(czech);
 const StaticLabel auto_wind_label(auto_wind);
 const StaticLabel semi_wind_label(semi_wind);
 const StaticLabel manual_wind_label(manual_wind);
-
-#endif //ARDUINO_PROJECTS_LOCALELABELS_H

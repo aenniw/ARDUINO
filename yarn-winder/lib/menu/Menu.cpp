@@ -1,32 +1,22 @@
 #include "Menu.h"
 
-
-MenuItem::MenuItem(const Label *label, void (*callback)()) {
-    this->label = label;
-    this->callback = callback;
-}
+MenuItem::MenuItem(const Label &label, void (*callback)()) :
+        label(label), callback(callback) {}
 
 void MenuItem::interact() {
     if (callback)
         this->callback();
 }
 
-void MenuItem::print(Display *display, bool nl) const {
-    if (label)
-        label->print(display, nl);
+void MenuItem::print(Display &display, bool nl) const {
+    label.print(display, nl);
 }
 
-Menu::Menu(const Label *label, Item **items, uint8_t item_count, Menu *(*on_active)(Menu *) = nullptr,
-           void(*on_inactive)(Menu *) = nullptr, void (*on_next)() = nullptr, void (*on_prev)() = nullptr,
-           bool (*_enabled)() = nullptr) {
+Menu::Menu(const Label &label, Item **items, uint8_t item_count, Menu *(*on_active)(Menu *),
+           void(*on_inactive)(Menu *), void (*on_next)(), void (*on_prev)(), bool (*_enabled)()) :
+        _label(label), items(items), item_count(item_count), on_active(on_active), on_inactive(on_inactive),
+        on_next(on_next), on_prev(on_prev) {
     this->_enabled = _enabled;
-    this->_label = label;
-    this->items = items;
-    this->item_count = item_count;
-    this->on_active = on_active;
-    this->on_inactive = on_inactive;
-    this->on_next = on_next;
-    this->on_prev = on_prev;
 }
 
 void Menu::next() {
@@ -83,22 +73,23 @@ boolean Menu::is_active() const {
     return active;
 }
 
-void Menu::print_item(uint8_t i, Display *display, bool nl) const {
+void Menu::print_item(uint8_t i, Display &display, bool nl) const {
     if (i >= 0 && i < item_count) {
         if (item_count > 1) {
             if (i == active_item)
-                display->print(F("> "));
+                display.print(F("> "));
             else if (!items[i]->enabled())
-                display->print(F("- "));
+                display.print(F("- "));
+            else
+                display.print(F("  "));
         }
         items[i]->print(display, nl);
     }
 }
 
-void Menu::print(Display *display, bool nl) const {
+void Menu::print(Display &display, bool nl) const {
     if (active && items) {
-        _label->print(display, true);
-        display->println(F("--------------"));
+        _label.print(display, '-', nullptr, nullptr);
 
         const uint8_t last_entry = active_item > MAX_MENU_ITEMS - 1 ? active_item : MAX_MENU_ITEMS - 1;
         const uint8_t first_entry = active_item >= MAX_MENU_ITEMS ? 1 + active_item - MAX_MENU_ITEMS : 0;
@@ -107,13 +98,14 @@ void Menu::print(Display *display, bool nl) const {
         }
 
     } else {
-        _label->print(display, nl);
+        _label.print(display, nl);
     }
 }
 
-void MenuValue::print_item(uint8_t i, Display *display, bool nl) const {
+void MenuValue::print_item(uint8_t i, Display &display, bool nl) const {
     if (i == 0) {
-        items[0]->print(display, nl);
+        display.println();
+        items[0]->print(display, ' ', nullptr, nullptr);
     }
 }
 
@@ -129,7 +121,7 @@ void MenuValue::prev() {
     }
 }
 
-boolean Item::enabled() {
+boolean Item::enabled() const {
     if (_enabled) {
         return _enabled();
     }

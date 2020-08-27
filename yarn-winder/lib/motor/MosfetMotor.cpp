@@ -10,23 +10,27 @@ static unsigned long get_period(const unsigned long last, const unsigned long ne
     return next - last;
 }
 
-MosfetMotor::MosfetMotor(uint8_t pwm, uint8_t gate) {
+MosfetMotor::MosfetMotor(uint8_t pwm, uint8_t gate) : pwm(pwm), gate(gate) {
     motor = this;
 
 #ifdef __EEPROM__
     uint16_t data;
     EEPROM.get(ADDRESS_PROFILE, data);
-    this->profile = (PROFILE) data;
+    this->profile = data >= INVALID_PROFILE ? Manual : (PROFILE) data;
     EEPROM.get(ADDRESS_STALL, data);
-    this->stall_timeout = data;
+    this->stall_timeout = min(data, MAX_STALL);
 #endif
+}
 
-    pinMode((this->pwm = pwm), OUTPUT);
-    pinMode((this->gate = gate), INPUT_PULLUP);
+bool MosfetMotor::begin() {
+    pinMode(pwm, OUTPUT);
+    pinMode(gate, INPUT_PULLUP);
     attachInterrupt(digitalPinToInterrupt(gate), []() {
         if (motor->is_rotating())
             motor->rotary_count++;
     }, IR_TRIGGER);
+
+    return true;
 }
 
 uint8_t MosfetMotor::get_speed() const {
@@ -54,11 +58,6 @@ void MosfetMotor::set_stall_timeout(uint16_t t) {
 void MosfetMotor::reset() {
     set_speed(0);
     rotary_count = 0;
-}
-
-MosfetMotor::~MosfetMotor() {
-    digitalWrite(pwm, 0);
-    detachInterrupt(digitalPinToInterrupt(gate));
 }
 
 void MosfetMotor::toggle() {

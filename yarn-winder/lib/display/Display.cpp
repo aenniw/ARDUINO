@@ -1,55 +1,41 @@
 #include "Display.h"
 #include "Logo.h"
 
-#ifdef __EEPROM__
-#include <Configuration.h>
-#endif
-
-Display::Display(uint8_t bck, uint8_t sclk, uint8_t din, uint8_t dc, uint8_t cs, uint8_t rst) :
-        display(sclk, din, dc, cs, rst) {
-    pinMode((this->bck = bck), OUTPUT);
+Display::Display(uint8_t bck, uint8_t cs, uint8_t dc) :
+        bck(bck), display(U8G2_R2, cs, dc) {
 #ifdef __EEPROM__
     uint8_t data;
     EEPROM.get(ADDRESS_BRIGHTNESS, data);
-    this->backlight = data;
+    this->backlight = data > BACKLITE_MAX ? BACKLITE_MAX : data;
     EEPROM.get(ADDRESS_LOCALE, data);
-    this->locale = (LOCALE) data;
+    this->locale = data >= INVALID_LOCALE ? this->locale : (LOCALE) data;
 #endif
-    this->set_backlight(backlight);
 }
 
 bool Display::begin() {
+    pinMode(bck, OUTPUT);
+    set_backlight(backlight);
     display.begin();
-    display.setRotation(2);
-    display.setTextColor(BLACK);
-    display.setContrast(50);
-    display.setTextSize(1);
-
-    display.clearDisplay();
-    display.drawBitmap(0, 0, logo_bitmap, logo_width, logo_height, BLACK);
-    display.display();
-    delay(1500);
-
-    display.clearDisplay();
-    display.display();
-
+    display.setContrast(150);
+    display.setFont(u8g_font_7x13B);
+    clear();
     return true;
 }
 
 void Display::clear() {
-    display.setCursor(0, 0);
-    display.clearDisplay();
+    line = display.getMaxCharHeight() - 4;
+    display.setCursor(0, line);
 }
 
 void Display::set_backlight(uint8_t v) {
-    analogWrite(bck, 255 - (uint8_t) (2.55f * (this->backlight = v)));
+    analogWrite(bck, (uint8_t) (2.55 * (this->backlight = v)));
 #ifdef __EEPROM__
     eeprom_set(ADDRESS_BRIGHTNESS, (uint8_t) this->backlight);
 #endif
 }
 
 void Display::increase_backlight() {
-    if (backlight < 100) {
+    if (backlight < BACKLITE_MAX) {
         set_backlight(backlight + 1);
     }
 }
@@ -60,7 +46,7 @@ void Display::decrease_backlight() {
     }
 }
 
-uint8_t *Display::get_backlight() {
+uint8_t *Display::get_backlight() const {
     return &backlight;
 }
 
@@ -76,49 +62,32 @@ void Display::set_locale(LOCALE locale) {
 }
 
 void Display::position(int16_t x, int16_t y) {
-    display.setCursor(x, y);
+    line += y;
+    display.setCursor(x, line);
 }
 
-void Display::set_size(uint8_t s) {
-    display.setTextSize(s);
+void Display::firstPage() {
+    display.firstPage();
 }
 
-void Display::print(const char c) {
-    display.print(c);
+uint8_t Display::nextPage() {
+    return display.nextPage();
 }
 
-void Display::print(const __FlashStringHelper *ifsh) {
-    display.print(ifsh);
+void Display::cycle() {}
+
+uint8_t Display::width() {
+    return (display.getDisplayWidth() / display.getMaxCharWidth()) - 3;
 }
 
-void Display::println() {
-    display.println();
+uint8_t Display::height() {
+    return (display.getDisplayHeight() / display.getMaxCharHeight()) - 3;
 }
 
-void Display::println(const __FlashStringHelper *ifsh) {
-    display.println(ifsh);
-}
-
-void Display::print(int i, int b) {
-    display.print(i, b);
-}
-
-void Display::print(long i, int b) {
-    display.print(i, b);
-}
-
-void Display::print(unsigned int i, int b) {
-    display.print(i, b);
-}
-
-void Display::print(unsigned long i, int b) {
-    display.print(i, b);
-}
-
-void Display::print(double i, int d) {
-    display.print(i, d);
-}
-
-void Display::cycle() {
-    display.display();
+size_t Display::write(uint8_t v) {
+    if (v == '\n') {
+        line += display.getMaxCharHeight();
+        display.setCursor(0, line);
+    }
+    return display.write(v);
 }

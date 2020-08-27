@@ -1,19 +1,18 @@
-#ifndef ARDUINO_PROJECTS_CONFIGURATION_H
-#define ARDUINO_PROJECTS_CONFIGURATION_H
-
-#ifdef __EEPROM__
-#include <EEPROM.h>
-#endif
+#pragma once
 
 typedef enum {
-    Manual, Semi, Auto
+    Manual, Semi, Auto,
+    INVALID_PROFILE
 } PROFILE;
 
 typedef enum {
-    EN, CS
+    EN, CS,
+    INVALID_LOCALE
 } LOCALE;
 
 #ifdef __EEPROM__
+
+#include <EEPROM.h>
 
 const int ADDRESS_PROFILE = EEPROM.begin();
 const int ADDRESS_LOCALE = ADDRESS_PROFILE + sizeof(uint8_t);
@@ -32,5 +31,3 @@ const T &eeprom_set(int idx, const T &t) {
 }
 
 #endif
-
-#endif //ARDUINO_PROJECTS_CONFIGURATION_H
