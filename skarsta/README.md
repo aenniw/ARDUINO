@@ -52,43 +52,8 @@ After testing quite a few DC motors from Ebay, Aliexpress and Banggood, I stuck 
 
 ### Alternative sensors
 
-#### [HC-SR04](https://www.ebay.com/itm/Ultrasonic-Module-HC-SR04-Distance-Measuring-Transducer-Sensor-for-Arduino/271107439777?hash=item3f1f433ca1:g:g10AAOxyFrNRxF5k)
-
-- ultrasonic absolute position sensor mount moels: [sonar-cap.stl](./models/sensor-sonar/sonar-cap.stl), [sonar-mount.stl](./models/sensor-sonar/sonar-mount.stl)
-
-  | _HC_SR04_ | _Arduino - Nano_ |
-  | --------- | :--------------: |
-  | VCC       |        5V        |
-  | TRIG      |      GPIO2       |
-  | ECHO      |      GPIO3       |
-  | GND       |       GND        |
-
-<details>
-  <summary>bridge wiring diagram</summary>
-  <p align="center">
-    <img src="docs/img/case_bridge-v1/uwiring.png"/>
-  </p>
-</details>
-
-<details>
-  <summary>relays wiring diagram</summary>
-  <p align="center">
-    <img src="docs/img/case_relays-v1/uwiring.png"/>
-  </p>
-</details>
-
-#### [Magnetic Hall Encoder - 11PPR](https://www.ebay.com/itm/153185900651) / [Magnetic Hall Encoder - 12PPR](https://www.ebay.com/itm/283429506020)
-
-- hall encoder sensor mount models: [hall-cover-11PPR.stl](./models/sensor-hall/hall-cover-11PPR.stl) / [hall-cover-12PPR.stl](./models/sensor-hall/hall-cover-12PPR.stl), [hall-mount.stl](./models/sensor-hall/hall-mount.stl), [hall-adapter.stl](./models/sensor-hall/hall-adapter.stl)
-- bearing [6000-ZZ](https://www.aliexpress.com/item/33005322641.html?spm=a2g0o.productlist.0.0.225a6895nwCEg2&algo_pvid=b030580a-514e-42d4-858b-f577a04c0637&algo_expid=b030580a-514e-42d4-858b-f577a04c0637-1&btsid=0be3769015959474924671322eaf57&ws_ab_test=searchweb0_0,searchweb201602_,searchweb201603_)
-
-  | _Encoder_ | _Arduino - Nano_ |
-  | --------- | :--------------: |
-  | VCC       |        5V        |
-  | A         |      GPIO2       |
-  | B         |      GPIO3       |
-  | GND       |       GND        |
-
+- [sensor-hall](./docs/sensor-hall.md) - relative position
+- [sensor-sonar](./docs/sensor-sonar.md) - absolute position
 
 ### Error codes && handling
 
