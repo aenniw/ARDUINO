@@ -22,9 +22,10 @@
  *                      so the reaction time will be (WATCHDOG_TIMEOUT * WATCHDOG_TOLERANCE) ms
  *
  * WATCHDOG_DEADLOCK_CHANGE     represents rotation steps threshold for detecting if motor is stuck and cannot move
- *                              so if rotation change is greater then WATCHDOG_DEADLOCK_CHANGE for WATCHDOG_TOLERANCE times Error 1 will be trigerred
+ *                              so if rotation change is greater then WATCHDOG_DEADLOCK_CHANGE for WATCHDOG_TOLERANCE times Error 1 will be triggered
  * WATCHDOG_OTHER_CHANGE        represents rotation steps threshold for detecting if motor was started mainly due to programing errors,
- *                              so if rotation change is greater then WATCHDOG_OTHER_CHANGE for WATCHDOG_TOLERANCE times Error 2 will be trigerred
+ *                              so if rotation change is greater then WATCHDOG_OTHER_CHANGE for WATCHDOG_TOLERANCE times Error 2 will be triggered
+ * WATCHDOG_OTHER_SLEEP         represents timeout in seconds after which Error 2 check is not performed, 0 value no timeout is applied
  */
 #ifdef __USENSOR__
     #define WATCHDOG_TIMEOUT        300
@@ -33,6 +34,9 @@
 #endif
 #define WATCHDOG_DEADLOCK_CHANGE    6
 #define WATCHDOG_OTHER_CHANGE       6
+#ifndef WATCHDOG_OTHER_SLEEP
+    #define WATCHDOG_OTHER_SLEEP    0
+#endif
 #ifdef __H_BRIDGE_MOTOR__
     #define WATCHDOG_TOLERANCE      5
 #else
