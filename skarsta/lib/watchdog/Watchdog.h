@@ -26,12 +26,13 @@ public:
 class Watchdog : public TimedService {
 private:
     Motor *motor = nullptr;
+    elapsedSeconds lastRotation = 0;
     std::vector<Trigger *> triggers;
 
-    const uint16_t timeout;
+    const uint16_t timeout, other_sleep;
     const uint8_t deadlock_change, other_change;
 public:
-    Watchdog(Motor *m, uint16_t timeout, uint8_t deadlock_change, uint8_t other_change);
+    Watchdog(Motor *m, uint16_t timeout, uint8_t deadlock_change, uint8_t other_change, uint16_t other_sleep);
 
     Watchdog &add_trigger(Trigger *t);
 
