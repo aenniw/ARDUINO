@@ -50,8 +50,9 @@ After testing quite a few DC motors from Ebay, Aliexpress and Banggood, I stuck 
 - [panel-v1](./docs/panel-v1.md)
 - [panel-v2](./docs/panel-v2.md)
 
-### Alternative sensors
+### Sensors cases
 
+- [sensor-rot](./docs/sensor-rot.md) - relative position
 - [sensor-hall](./docs/sensor-hall.md) - relative position
 - [sensor-sonar](./docs/sensor-sonar.md) - absolute position
 

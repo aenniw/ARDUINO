@@ -1,7 +1,7 @@
 ## Overview
 
 <p align="center">
-  <img src="./img/sensor-hall/sensor.png"/>
+  <img src="./img/sensor-hall/sensor.jpg"/>
 </p>
 
 ## Printing
@@ -23,32 +23,32 @@
 
 - Fix encoder disk on `hall-adapter` with M2x6mm screw or glue
   <details>
-    <summary>adapter & bearing</summary>
+    <summary>Adapter & bearing</summary>
     <p align="center">
-      <img src="./img/sensor-hall/bearing.png"/>
+      <img src="./img/sensor-hall/bearing.jpg"/>
     </p>
   </details>
 - Insert the bearing into `hall-mount`
   <details>
     <summary>Mounted bearing</summary>
     <p align="center">
-      <img src="./img/sensor-hall/mount.png"/>
+      <img src="./img/sensor-hall/mount.jpg"/>
     </p>
   </details>
 - Insert encoder circuit to `hall-cover` and fix it with glue
   <details>
     <summary>Mounted circuit</summary>
     <p align="center">
-      <img src="./img/sensor-hall/cover.png"/>
+      <img src="./img/sensor-hall/cover.jpg"/>
     </p>
   </details>
 - Insert the `hall-mount` with bearing and `hall-adapter` on the shaft from the oposite side of the motor
 - Secure it with 2 wood screws to the top of the table
-- Cover it with `hall-cover` with circuit board and secure it with 2 M3x15mm screws
+- Cover it with `hall-cover` with circuit board and secure it with 2 M3x10mm screws
   <details>
     <summary>Mounted sensor</summary>
     <p align="center">
-      <img src="./img/sensor-hall/mounted.png"/>
+      <img src="./img/sensor-hall/mounted.jpg"/>
     </p>
   </details>
 
