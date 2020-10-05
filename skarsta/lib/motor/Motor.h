@@ -1,5 +1,4 @@
-#ifndef ARDUINO_PROJECTS_ROOT_MOTOR_H
-#define ARDUINO_PROJECTS_ROOT_MOTOR_H
+#pragma once
 
 #include <Arduino.h>
 #include <Service.h>
@@ -48,10 +47,10 @@ private:
     volatile unsigned int position = 0u, position_change = 0u;
 
 protected:
+    bool reverse = false;
+
 #ifndef __USENSOR__
-
     void update_position(unsigned char result);
-
 #endif
 
     void initPin(uint8_t pin, uint8_t val = LOW);
@@ -65,7 +64,7 @@ protected:
     virtual void _dir_ccw() = 0;
 
 public:
-    Motor(uint8_t _pin1, uint8_t _pin2, uint8_t stop_diff, uint8_t min_change);
+    Motor(uint8_t _pin1, uint8_t _pin2, uint8_t stop_diff, uint8_t min_change, bool reverse);
 
     bool begin() override;
 
@@ -95,5 +94,3 @@ public:
 
     void cycle() override;
 };
-
-#endif //ARDUINO_PROJECTS_ROOT_MOTOR_H

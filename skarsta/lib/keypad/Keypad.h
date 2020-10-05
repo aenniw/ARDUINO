@@ -1,5 +1,4 @@
-#ifndef ARDUINO_PROJECTS_ROOT_KEYPAD_H
-#define ARDUINO_PROJECTS_ROOT_KEYPAD_H
+#pragma once
 
 #include <Arduino.h>
 #include <Service.h>
@@ -33,5 +32,3 @@ public:
 
     void cycle() override;
 };
-
-#endif //ARDUINO_PROJECTS_ROOT_KEYPAD_H

@@ -1,5 +1,4 @@
-#ifndef SKARSTA_TRIGGER_H
-#define SKARSTA_TRIGGER_H
+#pragma once
 
 typedef enum {
     STOPPED = 1, STARTED = 2, INIT = 3
@@ -11,5 +10,3 @@ public:
 
     virtual void reset() = 0;
 };
-
-#endif
