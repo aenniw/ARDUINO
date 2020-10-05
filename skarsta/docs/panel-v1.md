@@ -15,9 +15,9 @@
 |                                                                                                                                                   Item |  Price  |
 | -----------------------------------------------------------------------------------------------------------------------------------------------------: | :-----: |
 | [0.56'' TM1637 - 7 Segment display](https://www.ebay.com/itm/0-56-TM1637-4Bit-Digital-LED-7-Segment-Clock-Tube-Display-For-Arduino-White/172971714554) | ~$1.69  |
-|   [Tactile switches - 12x12x7.3mm](https://www.ebay.com/itm/20-500Pcs-Square-Cap-12mm-Tactile-Momentary-Push-Button-Switches-12x12x7-3mm/183319341164) | ~$1.04  |
-|                                                                                                                                                    SUM | ~$2.73  |
-|                                                                                                                                           Weighted SUM | ~$2.002 |
+|   [Tactile switches - 12x12x7.3mm](https://www.ebay.com/itm/20PCS-TC-1212T-12x12x7-3-mm-Tact-Tactile-Push-Button-Momentary-Switch-PNDHAH/303636919207) | ~$1.83  |
+|                                                                                                                                                    SUM | ~$3.52  |
+|                                                                                                                                           Weighted SUM | ~$2.24  |
 
 ## Assembly
 
