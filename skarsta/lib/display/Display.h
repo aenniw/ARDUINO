@@ -1,5 +1,4 @@
-#ifndef ARDUINO_PROJECTS_ROOT_DISPLAY_H
-#define ARDUINO_PROJECTS_ROOT_DISPLAY_H
+#pragma once
 
 #include <Arduino.h>
 #include <Service.h>
@@ -33,5 +32,3 @@ public:
 
     void disable(uint8_t cause) override;
 };
-
-#endif //ARDUINO_PROJECTS_ROOT_DISPLAY_H

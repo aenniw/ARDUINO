@@ -8,7 +8,7 @@ bool MotorBridge::begin() {
     initPin(l_enable);
     initPin(r_pwm);
     initPin(l_pwm);
-    this->enable();
+    _off();
 
     return true;
 }
@@ -43,13 +43,9 @@ void MotorBridge::setSpeed(MotorState state, uint8_t speed) {
     this->speed = speed;
     LOG("m | speed:%d", speed);
 
-    if (state == CCW) {
-        analogWrite(l_pwm, 0);
-        analogWrite(r_pwm, speed);
-    } else if (state == CW) {
-        analogWrite(r_pwm, 0);
-        analogWrite(l_pwm, speed);
-    }
+    const bool dir = state == (reverse ? CW : CCW);
+    analogWrite(l_pwm, dir ? 0 : speed);
+    analogWrite(r_pwm, dir ? speed : 0);
 }
 
 void MotorBridge::cycle() {

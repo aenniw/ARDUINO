@@ -56,7 +56,7 @@ After testing quite a few DC motors from Ebay, Aliexpress and Banggood, I stuck 
 - [sensor-hall](./docs/sensor-hall.md) - relative position
 - [sensor-sonar](./docs/sensor-sonar.md) - absolute position
 
-### Error codes && handling
+### FAQ
 
 - if any Error message bellow is showed on display it is needed to manually power down/up table to be able to operate once again,
   after any of error pops out it is advised to closely inspect table if the problem reoccurs if so open an issue
@@ -66,6 +66,8 @@ After testing quite a few DC motors from Ebay, Aliexpress and Banggood, I stuck 
   | Err 1        | Motor stuck and cannot rotate |
   | Err 2        |  Motor started unexpectedly   |
   | Err 3        |         Wiring issue          |
+
+- in case of reversed polarity on motor update `#define REVERSE_POLARITY   false` to `true` in [configuration.h](./src/configuration.h) 
 
 ### Library Credentials
 

@@ -1,5 +1,4 @@
-#ifndef SKARSTA_CALIBRATION_H
-#define SKARSTA_CALIBRATION_H
+#pragma once
 
 #include <Service.h>
 #include <Motor.h>
@@ -45,5 +44,3 @@ public:
 
     void reset() override;
 };
-
-#endif

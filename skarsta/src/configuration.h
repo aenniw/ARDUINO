@@ -1,5 +1,4 @@
-#ifndef SKARSTA_CONFIGURATION_H
-#define SKARSTA_CONFIGURATION_H
+#pragma once
 
 #define SENSOR_PIN0 2
 #define SENSOR_PIN1 3
@@ -51,7 +50,6 @@
 #define R_PWM   9
 #define L_PWM   10
 
+#define REVERSE_POLARITY   false
 #define DIRECTION_RELAY     6
 #define POWER_RELAY         7
-
-#endif

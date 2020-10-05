@@ -10,10 +10,10 @@ static unsigned int position_abs(unsigned int a, unsigned int b) {
     return a >= b ? a - b : b - a;
 }
 
-Motor::Motor(uint8_t _pin1, uint8_t _pin2, uint8_t stop_diff, uint8_t min_change) :
+Motor::Motor(uint8_t _pin1, uint8_t _pin2, uint8_t stop_diff, uint8_t min_change, bool reverse) :
         sensor((char) _pin1, (char) _pin2),
         sensor_pin_1(_pin1), sensor_pin_2(_pin2),
-        pos_diff(stop_diff), min_change(min_change) {
+        pos_diff(stop_diff), min_change(min_change), reverse(reverse) {
     motor = this;
 }
 

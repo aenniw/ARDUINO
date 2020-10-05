@@ -1,5 +1,4 @@
-#ifndef ARDUINO_PROJECTS_ROOT_WATCHDOG_H
-#define ARDUINO_PROJECTS_ROOT_WATCHDOG_H
+#pragma once
 
 #include <vector>
 #include <Service.h>
@@ -38,6 +37,3 @@ public:
 
     void cycle() override;
 };
-
-
-#endif //ARDUINO_PROJECTS_ROOT_WATCHDOG_H
