@@ -32,10 +32,11 @@
 |                       [PSU 12V5A - recommended](https://www.meanwell-web.com/en-gb/ac-dc-industrial-desktop-adaptor-with-3-pin-iec320-gs60a12--p1j) | ~$18,78 |
 |                                                                                      [Fuse-mount](https://www.aliexpress.com/item/32897554363.html) | ~$0.85  |
 | [Fuse 3A/4A](https://www.aliexpress.com/item/10PCS-5-20mm-Fast-Quick-Blow-Glass-Tube-Fuse-Assorted-Kit-Fast-Blow-Glass-Fuses-250V/32881363210.html) | ~$0.69  |
-|                   [M4-16mm](https://www.ebay.com/itm/10-20-50-100x-M2-M3-M4-M5-Stainless-Steel-Hex-Bolt-Socket-Cap-Screws-Head-DIN912/173028404303) | ~$1.54  |
-|                   [M3-20mm](https://www.ebay.com/itm/10-20-50-100x-M2-M3-M4-M5-Stainless-Steel-Hex-Bolt-Socket-Cap-Screws-Head-DIN912/173028404303) | ~$1.62  |
+|              [M4 - wood screw](https://www.ebay.com/itm/Self-Drilling-Drywall-Wood-Screws-M4-Bugle-Head-Coarse-Thread-Zinc-Plated/273011742134) x 7 | ~$1.10  |
+|               [M3-16mm](https://www.ebay.com/itm/10-20-50-100x-M2-M3-M4-M5-Stainless-Steel-Hex-Bolt-Socket-Cap-Screws-Head-DIN912/173028404303) x 8 | ~$1.54  |
+|               [M3-10mm](https://www.ebay.com/itm/10-20-50-100x-M2-M3-M4-M5-Stainless-Steel-Hex-Bolt-Socket-Cap-Screws-Head-DIN912/173028404303) x 8 | ~$1.62  |
 |                                                                                                                                                 SUM | ~$51,45 |
-|                                                                                                                                        Weighted SUM | ~$50,97 |
+|                                                                                                                                        Weighted SUM | ~$52,07 |
 
 ## Assembly
 
