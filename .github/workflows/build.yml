@@ -32,11 +32,6 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           path: target/*
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v2
-        if: contains(github.ref, 'master') == false
-        with:
-          path: ./android/app/build/outputs/apk/*/*.apk
 
       - name: Link artifacts in PR
         env:
@@ -45,7 +40,9 @@ jobs:
           COMMENT_URL: ${{ github.event.issue.comments_url }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          SUITE_ID=$(curl -s ${SUITE_URL} | jq -r '.check_suite_id')
+          env
+          echo ${SUITE_URL}
+          SUITE_ID=$(curl -s ${SUITE_URL} | jq -r .check_suite_id)
           ARTIFACTS=$(curl ${API_URL} -H "Authorization: token ${GITHUB_TOKEN}" | \
                       jq .artifacts[].id | \
                       awk "{ print \"https://github.com/${{ github.repository }}/suites/${SUITE_ID}/artifacts/\"$1 }")
