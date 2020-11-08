@@ -40,13 +40,11 @@ jobs:
           COMMENT_URL: ${{ github.event.issue.comments_url }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          env
-          echo ${SUITE_URL}
-          SUITE_ID=$(curl -s ${SUITE_URL} | jq -r .check_suite_id)
           ARTIFACTS=$(curl ${API_URL} -H "Authorization: token ${GITHUB_TOKEN}" | \
                       jq .artifacts[].id | \
                       awk "{ print \"https://github.com/${{ github.repository }}/suites/${SUITE_ID}/artifacts/\"$1 }")
-
+          SUITE_ID=$(curl -s ${SUITE_URL} | jq -r .check_suite_id)
+          
           curl -X POST ${COMMENT_URL} -H "Authorization: token ${GITHUB_TOKEN}" \
             -H "Content-Type: application/json" \
             --data "{ \"body\": \"${ARTIFACTS}\" }""
