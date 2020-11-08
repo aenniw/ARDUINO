@@ -42,8 +42,7 @@ jobs:
         run: |
           curl -s ${SUITE_URL} | jq '.check_suite_id'
           curl -s ${API_URL} -H "Authorization: token ${GITHUB_TOKEN}" | \
-                      jq '.artifacts[].id' | \
-                      awk "{ print \"https://github.com/${{ github.repository }}/suites/${SUITE_ID}/artifacts/\"$1 }"
+                      jq '.artifacts[].id'
           echo ok
           SUITE_ID=$(curl -s ${SUITE_URL} | jq '.check_suite_id')
           ARTIFACTS=$(curl -s ${API_URL} -H "Authorization: token ${GITHUB_TOKEN}" | \
