@@ -39,16 +39,12 @@ jobs:
           API_URL: https://api.github.com/repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/artifacts
           COMMENT_URL: ${{ github.event.issue.comments_url }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          curl -s ${SUITE_URL} | jq '.check_suite_id'
-          echo ok
-          curl -s ${API_URL}
-          echo ok
-          curl -s ${API_URL} | jq '.artifacts[].id'
+        run: |          
+          curl -s ${API_URL} -H "Authorization: token ${GITHUB_TOKEN}"
+          curl -s -u admin:${GITHUB_TOKEN} ${API_URL}
           echo ok
           
           SUITE_ID=$(curl -s ${SUITE_URL} | jq '.check_suite_id')
-          echo "ok ${SUITE_ID}"
           ARTIFACTS=$(curl -s ${API_URL} -H "Authorization: token ${GITHUB_TOKEN}" | \
                       jq '.artifacts[].id' | \
                       awk "{ print \"https://github.com/${{ github.repository }}/suites/${SUITE_ID}/artifacts/\"$1 }")
