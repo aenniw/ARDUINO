@@ -41,7 +41,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |          
           curl -s ${API_URL} -H "Authorization: token ${GITHUB_TOKEN}"
-          curl -s -u admin:${GITHUB_TOKEN} ${API_URL}
+          curl -s -u admin:${GITHUB_TOKEN} https://api.github.com/repos/aenniw/ARDUINO/actions/artifacts
           echo ok
           
           SUITE_ID=$(curl -s ${SUITE_URL} | jq '.check_suite_id')
