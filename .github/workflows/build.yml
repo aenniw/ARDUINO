@@ -24,6 +24,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
+          echo "${{ github.run_id }}"
       - name: Build
         run: ./make
       - name: Package
@@ -44,6 +45,10 @@ jobs:
           COMMENT_URL: ${{ github.event.issue.comments_url }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |    
+          curl \
+            -H "Accept: application/vnd.github.v3+json" \
+            https://api.github.com/repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/artifacts
+          curl -s https://api.github.com/repos/${{ github.repository }}/actions/workflows/${{ github.run_id }}/runs
           curl -s ${API_URL} -H "Authorization: token ${GITHUB_TOKEN}"
           curl -s -u admin:${GITHUB_TOKEN} https://api.github.com/repos/aenniw/ARDUINO/actions/artifacts
           echo ok
