@@ -45,20 +45,11 @@ jobs:
           API_URL: https://api.github.com/repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/artifacts
           COMMENT_URL: ${{ github.event.issue.comments_url }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |    
-          curl \
-            -H "Accept: application/vnd.github.v3+json" \
-            https://api.github.com/repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/artifacts
-          curl -s https://api.github.com/repos/${{ github.repository }}/actions/workflows/${{ github.run_id }}/runs
-          curl -s ${API_URL} -H "Authorization: token ${GITHUB_TOKEN}"
-          curl -s -u admin:${GITHUB_TOKEN} https://api.github.com/repos/aenniw/ARDUINO/actions/artifacts
-          echo ok
-          
+        run: |
           SUITE_ID=$(curl -s ${SUITE_URL} | jq '.check_suite_id')
-          ARTIFACTS=$(curl -s ${API_URL} -H "Authorization: token ${GITHUB_TOKEN}" | \
-                      jq '.artifacts[].id' | \
+          ARTIFACTS=$(curl ${API_URL} -H "Authorization: token ${GITHUB_TOKEN}" | \
+                      jq -r  '.artifacts[] | select( .name | contains("${{ github.run_id }}") ) | .id' | \
                       awk "{ print \"https://github.com/${{ github.repository }}/suites/${SUITE_ID}/artifacts/\"$1 }")
-          echo ok
           
           curl -X POST ${COMMENT_URL} -H "Authorization: token ${GITHUB_TOKEN}" \
             -H "Content-Type: application/json" \
