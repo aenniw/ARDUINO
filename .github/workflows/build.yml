@@ -33,6 +33,10 @@ jobs:
         with:
           path: target/*
 
+  artifacts:
+    runs-on: ubuntu-latest
+    needs: [build]
+    steps:
       - name: Link artifacts in PR
         env:
           SUITE_URL: https://api.github.com/repos/${{ github.repository }}/actions/runs/${{ github.run_id }}
@@ -40,7 +44,6 @@ jobs:
           COMMENT_URL: ${{ github.event.issue.comments_url }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |    
-          echo ${API_URL}      
           curl -s ${API_URL} -H "Authorization: token ${GITHUB_TOKEN}"
           curl -s -u admin:${GITHUB_TOKEN} https://api.github.com/repos/aenniw/ARDUINO/actions/artifacts
           echo ok
