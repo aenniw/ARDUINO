@@ -39,7 +39,8 @@ jobs:
           API_URL: https://api.github.com/repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/artifacts
           COMMENT_URL: ${{ github.event.issue.comments_url }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |          
+        run: |    
+          echo ${API_URL}      
           curl -s ${API_URL} -H "Authorization: token ${GITHUB_TOKEN}"
           curl -s -u admin:${GITHUB_TOKEN} https://api.github.com/repos/aenniw/ARDUINO/actions/artifacts
           echo ok
