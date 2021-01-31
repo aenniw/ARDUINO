@@ -24,7 +24,7 @@
 |                 [Relay 1ch](https://www.ebay.com/itm/1-2-5-10PCS-5V-One-1-Channel-Relay-Module-Board-Shield-For-Arduino-PIC-AVR-ARM-M/302126861988) | ~$0,89  |
 |                   [Relay 2ch](https://www.ebay.com/itm/5V-Two-2-Channel-Relay-Module-With-optocoupler-For-PIC-AVR-DSP-ARM-Arduino-NEW/281683101414) | ~$1.42  |
 |                                                                                  [GT2 160mm belt](https://www.aliexpress.com/item/32883539514.html) | ~$3.77  |
-|              [Switch-On/Off](https://www.ebay.com/itm/10Pcs-12V-2-Pin-Car-Boat-Round-Dot-Light-ON-OFF-Rocker-Toggle-Switch-Tool-Black/382170389677) | ~$1,54  |
+|                                                                                              [Switch-On/Off](https://www.ebay.com/itm/124808977402) | ~$1,54  |
 |                      [PSU-Jack](https://www.ebay.com/itm/10x-DC-005-Power-Supply-Jack-Socket-Female-PCB-Mount-Connector-5-5x2-1mm-Kit/383385876253) | ~$0,94  |
 |          [LM2596-step-down](https://www.ebay.com/itm/LM2596-Step-Down-Module-DC-3V-40V-to1-5v-35V-3-3V-5V-12V-3A-Voltage-Regulator-US/162648939028) | ~$1.44  |
 |                                 [DC motor - 12V](https://www.banggood.com/DC-12V-180RPM-Geared-Motor-High-Torque-Gear-Reducer-Motor-p-1068573.html) | ~$14,29 |

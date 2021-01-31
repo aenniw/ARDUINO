@@ -23,7 +23,7 @@
 
 - Insert `hall-adapter` into bearing
   <details>
-    <summary>Sdapter & bearing</summary>
+    <summary>Adapter & bearing</summary>
     <p align="center">
       <img src="./img/sensor-rot/bearing.jpg"/>
     </p>
@@ -45,6 +45,12 @@
 - Insert the `hall-mount` with bearing and `hall-adapter` on the shaft from the oposite side of the motor
 - Secure it with 2 wood screws to the top of the table
 - Cover it with `hall-cover` with circuit board and secure it with 2 M3x10mm screws
+  <details>
+    <summary>Mounted sensor</summary>
+    <p align="center">
+      <img src="./img/sensor-rot/mounted.jpg"/>
+    </p>
+  </details>
 
 ### Wiring
 

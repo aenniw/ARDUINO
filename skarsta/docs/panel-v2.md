@@ -22,7 +22,7 @@
 
 ## Assembly
 
-- Solder wires to to tactile switches and insert button caps on them
+- Solder wires to the tactile switches and insert button caps on them
   <details>
     <summary>Tactile switches</summary>
     <p align="center">
@@ -31,7 +31,7 @@
   </details>
 
 - Insert them to top panel part and test if buttons clicks without any issue (cleanup holes if needed)
-- Add super glue underneath each switch for stability
+- Add superglue underneath each switch for stability
   <details>
     <summary>Front case panel</summary>
     <p align="center">
@@ -41,8 +41,8 @@
 
 - Insert 7-segment display to top panel part
 - Wire up all the buttons and display with connector
-- Add super glue to connector and fix it to panel back hole
-- Fix top and bottom case parts with 3*M3x15mm + 3*M3x10mm screws
+- Add superglue to connector and fix it to panel back hole
+- Fix top and bottom case parts with `3xM3-15mm` + `3xM3-10mm` screws
   <details>
     <summary>Panel - screwed</summary>
     <p align="center">
