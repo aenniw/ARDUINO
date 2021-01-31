@@ -23,9 +23,9 @@
 | --------------------------------------------------------------------------------------------------------------------------------------------------: | :-----: |
 |                [Arduino-Nano](https://www.ebay.com/itm/2-5-10PCS-USB-Nano-V3-0-ATmega328-16M-5V-Micro-controller-CH340G-Board-Arduino/173636038739) | ~$2,57  |
 |                          [Rotary encoder](https://www.ebay.com/itm/KY-040-360-Rotary-Encoder-Module-For-AVR-PIC-Easy-to-V2P4-Use-H9B0/323888195480) | ~$1,11  |
-|                        [H-Bridge](https://www.ebay.com/p/Double-Bts7960b-DC-43a-Stepper-Motor-Driver-H-bridge-PWM-for-Arduino-Smart-Car/1062875951) | ~$7,9   |
+|                                                                                                   [H-Bridge](https://www.ebay.com/itm/292529636989) | ~$7,9   |
 |                                                                                  [GT2 160mm belt](https://www.aliexpress.com/item/32883539514.html) | ~$3.77  |
-|              [Switch-On/Off](https://www.ebay.com/itm/10Pcs-12V-2-Pin-Car-Boat-Round-Dot-Light-ON-OFF-Rocker-Toggle-Switch-Tool-Black/382170389677) | ~$1,54  |
+|                                                                                              [Switch-On/Off](https://www.ebay.com/itm/124808977402) | ~$1,54  |
 |                      [PSU-Jack](https://www.ebay.com/itm/10x-DC-005-Power-Supply-Jack-Socket-Female-PCB-Mount-Connector-5-5x2-1mm-Kit/383385876253) | ~$0,94  |
 |          [LM2596-step-down](https://www.ebay.com/itm/LM2596-Step-Down-Module-DC-3V-40V-to1-5v-35V-3-3V-5V-12V-3A-Voltage-Regulator-US/162648939028) | ~$1.44  |
 |                                 [DC motor - 12V](https://www.banggood.com/DC-12V-180RPM-Geared-Motor-High-Torque-Gear-Reducer-Motor-p-1068573.html) | ~$14,29 |
@@ -42,7 +42,8 @@
 ## Assembly
 
 - Add Arduino-Nano, buck converter and h-bridge to case cover plate and fix them with screws, if needed use `screw-spacer.stl` for buck converter
-- Wire all components on case cover plate together based on wiring diagram (optionally 2 [Female 8-pin sockets](https://www.ebay.com/itm/10pcs-8-Pin-Female-Tall-Stackable-Header-Connector-Socket-For-Arduino-Shield-kn/373209884238) can be inserted cover plate slot for _GND_ and _V5_)
+- Wire all components on case cover plate together based on wiring diagram 
+  - optionally bridge pins on 2 [Female 8-pin sockets](https://www.ebay.com/itm/10pcs-8-Pin-Female-Tall-Stackable-Header-Connector-Socket-For-Arduino-Shield-kn/373209884238) and insert them to cover plate slot for _GND_ and _V5_
   <details>
     <summary>Mounted case cover plate</summary>
     <p align="center">

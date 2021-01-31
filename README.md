@@ -18,4 +18,4 @@ pip install -r requirements.txt
 
 ## SubProjects
 
-[Skartsta](skarsta/README.md) | [Yarn-Winder](yarn-winder/README.md)
+[Skarsta](skarsta/README.md) | [Yarn-Winder](yarn-winder/README.md)
