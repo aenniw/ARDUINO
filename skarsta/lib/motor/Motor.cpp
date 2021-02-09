@@ -163,13 +163,13 @@ void Motor::cycle() {
 #ifdef __USENSOR__
     double measurement_raw;
 
-    if ((elapsed > 125 || position == 0) &&
+    if ((elapsed > SENSOR_TIMEOUT || position == 0) &&
         (measurement_raw = sensor.measureDistanceCm()) >= 0) {
         const unsigned int cur_position = (unsigned int) measurement_raw * 10,
                 position_diff = position_abs(position, cur_position);
 
-        if ((get_state() == OFF && position_diff > 75) ||
-            (get_state() != OFF && position_diff > 10)) {
+        if ((get_state() == OFF && position_diff > SENSOR_DELTA_OFF) ||
+            (get_state() != OFF && position_diff > SENSOR_DELTA_ON)) {
             position_change += position_diff;
             position = cur_position;
         }
