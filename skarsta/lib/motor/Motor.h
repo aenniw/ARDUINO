@@ -28,6 +28,12 @@ typedef enum {
 #define ADDRESS_MODE (ADDRESS_END_STOP_1 + sizeof(MotorMode))
 #endif
 
+#ifdef __USENSOR__
+#define SENSOR_TIMEOUT          125      // USensor sample rate in milliseconds
+#define SENSOR_DELTA_ON     10       // USensor min change when ON in millimeters
+#define SENSOR_DELTA_OFF    75       // USensor min change when OFF in millimeters
+#endif
+
 class Motor : public TimedService {
 private:
 #ifndef __USENSOR__
