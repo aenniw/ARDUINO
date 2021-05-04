@@ -3,6 +3,7 @@
 #include <Display.h>
 #include <Calibrator.h>
 #include <Keypad.h>
+#include <SerialCom.h>
 #include <configuration.h>
 #include <Watchdog.h>
 
@@ -41,8 +42,9 @@ MotorRelay motor(SENSOR_PIN0, SENSOR_PIN1, POWER_RELAY, DIRECTION_RELAY, STOP_PO
 Display display(DISPLAY_PIN_CLK, DISPLAY_PIN_DIO, FADE_TIMEOUT);
 Watchdog watchdog(&motor, WATCHDOG_TIMEOUT, WATCHDOG_DEADLOCK_CHANGE, WATCHDOG_OTHER_CHANGE, WATCHDOG_OTHER_SLEEP);
 Calibrator calibrator(&motor);
+SerialCom serialCom(&motor, &calibrator, SERIAL_RX_PIN, SERIAL_TX_PIN);
 Keypad keypad(&motor, &display, &calibrator, BUTTON_DOWN, BUTTON_UP, BUTTON_RST, BUTTON_P0, BUTTON_P1, BUTTON_P2);
-std::vector<Service *> services = {&calibrator, &watchdog, &keypad, &motor, &display};
+std::vector<Service *> services = {&calibrator, &watchdog, &keypad, &motor, &display, &serialCom};
 
 #ifdef __WATCHDOG__
 SafetyTrigger stallTrigger(&motor, &display, STOPPED, WATCHDOG_TOLERANCE);

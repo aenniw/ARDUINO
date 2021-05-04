@@ -204,3 +204,15 @@ unsigned int Motor::get_position_change() {
     position_change = 0;
     return cur_change;
 }
+
+unsigned int Motor::get_end_stop_low() {
+    return end_stop[0];
+}
+
+unsigned int Motor::get_end_stop_high() {
+    return end_stop[1];
+}
+
+long Motor::get_next_position() {
+    return next_position;
+}
