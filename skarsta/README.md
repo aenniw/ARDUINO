@@ -38,23 +38,29 @@ After testing quite a few DC motors from Ebay, Aliexpress and Banggood, I stuck 
 ### How-to
 
 - **_NOTE_** your table needs to be leveled and manual adjustment shouldn't feel jerky, as it may influence on _mod_ functionality
-- cut off 100mm from the end of Skarsta handle or use [Hex-Key 6mm](https://www.ebay.com/itm/1-5mm-24mm-ALLEN-BALL-POINT-END-LONG-ARM-HEX-KEY-WRENCH-METRIC-ALLEN-KEY/182563068986) which will be used to connect motor to table
 
 #### Electronic cases
 
-- [case_bridge-v1](./docs/case_bridge-v1.md)
-- [case_relays-v1](./docs/case_relays-v1.md)
+- All in one designs (deprecated)
+  - [case_bridge-v1](./docs/case_bridge-v1.md)
+  - [case_relays-v1](./docs/case_relays-v1.md)
+  - for shaft cut off 100mm from the end of `Skarsta` handle or use [Hex-Key 6mm](https://www.ebay.com/itm/1-5mm-24mm-ALLEN-BALL-POINT-END-LONG-ARM-HEX-KEY-WRENCH-METRIC-ALLEN-KEY/182563068986) which will be used to connect motor to table (deprecated)
+
+- Modullar designs
+  - Electronics
+    - [case_bridge-v2](./docs/case_bridge-v2.md)
+    - [case_relays-v2](./docs/case_relays-v2.md)
+  - Motor
+    - [case_motor-v2](./docs/case_motor-v2.md)
+  - Sensors
+    - [sensor-rot](./docs/sensor-rot.md) - relative position
+    - [sensor-hall](./docs/sensor-hall.md) - relative position
+    - [sensor-sonar](./docs/sensor-sonar.md) - absolute position
 
 #### Display + Keypad cases
 
 - [panel-v1](./docs/panel-v1.md)
 - [panel-v2](./docs/panel-v2.md)
-
-### Sensors cases
-
-- [sensor-rot](./docs/sensor-rot.md) - relative position
-- [sensor-hall](./docs/sensor-hall.md) - relative position
-- [sensor-sonar](./docs/sensor-sonar.md) - absolute position
 
 ### FAQ
 
@@ -71,9 +77,10 @@ After testing quite a few DC motors from Ebay, Aliexpress and Banggood, I stuck 
 
 ### Library Credentials
 
-[ENCODER](https://github.com/buxtronix/arduino/tree/master/libraries/Rotary)
+[Rotary](https://github.com/brianlow/Rotary)
+[HC-SR04](https://github.com/Martinsos/arduino-lib-hc-sr04)
 [TM1637](https://github.com/Seeed-Studio/Grove_4Digital_Display)
-[PolymorphicButtons](https://github.com/JCWentzel/PolymorphicButtons.git)
+[PolymorphicButtons](https://github.com/JCWentzel/PolymorphicButtons)
 
 ### Thanks to
 
