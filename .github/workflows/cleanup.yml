@@ -1,14 +1,15 @@
 name: Clean artifacts
 
 on:
+  workflow_dispatch:
   schedule:
     - cron: "0 0 * * *"
 
 jobs:
-  clean:
+  delete-artifacts:
     runs-on: ubuntu-latest
     steps:
-      - name: cleanup
-        uses: glassechidna/artifact-cleaner@master
+      - uses: kolpav/purge-artifacts-action@v1
         with:
-          minimumAge: 86400
+          token: ${{ secrets.GITHUB_TOKEN }}
+          expire-in: 7days
