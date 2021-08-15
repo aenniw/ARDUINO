@@ -14,6 +14,7 @@ After testing quite a few DC motors from Ebay, Aliexpress and Banggood, I stuck 
 - display showing current position and feedback
 - 3 customizable height positions with auto home
 - calibration of MIN and MAX table position to avoid destroying mechanism and limiting travel range of table
+- [ESPHome](https://esphome.io/) / [Home Assistant](https://www.home-assistant.io/) integration via [serial-control](./docs/serial-control.md)
 
 <p align="center">
     <a href="https://www.youtube.com/watch?v=pk-jIIXeZvs">
@@ -77,4 +78,5 @@ After testing quite a few DC motors from Ebay, Aliexpress and Banggood, I stuck 
 
 ### Thanks to
 
-[iLLiac4](https://github.com/iLLiac4), See his mods on [Thingiverse](https://www.thingiverse.com/thing:3227567)
+- [iLLiac4](https://github.com/iLLiac4), See his mods on [Thingiverse](https://www.thingiverse.com/thing:3227567)
+- [p0thi](https://github.com/p0thi), for ESPHome integration

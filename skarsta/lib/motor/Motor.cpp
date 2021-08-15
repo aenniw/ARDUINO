@@ -212,7 +212,3 @@ unsigned int Motor::get_end_stop_low() {
 unsigned int Motor::get_end_stop_high() {
     return end_stop[1];
 }
-
-long Motor::get_next_position() {
-    return next_position;
-}

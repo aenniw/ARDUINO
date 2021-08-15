@@ -54,5 +54,6 @@
 #define DIRECTION_RELAY     6
 #define POWER_RELAY         7
 
-#define SERIAL_TX_PIN 11
-#define SERIAL_RX_PIN 12
+#define SERIAL_COM_RX   12      // Ignored if HW serial is used
+#define SERIAL_COM_TX   11      // Ignored if HW serial is used
+#define SERIAL_COM_BAUD 9600

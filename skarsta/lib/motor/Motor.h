@@ -95,8 +95,8 @@ public:
     MotorMode get_mode() const;
 
     unsigned int get_end_stop_low();
+
     unsigned int get_end_stop_high();
-    long get_next_position();
 
     void set_mode(MotorMode state);
 
