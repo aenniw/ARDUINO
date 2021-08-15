@@ -2,45 +2,35 @@
 
 #include <Arduino.h>
 #include <Service.h>
-#include <Motor.h>
-#include <Display.h>
 #include <Calibrator.h>
-
+#ifndef __SERIAL_COM_HW__
 #include <SoftwareSerial.h>
+#endif
 
-const byte ixPin = 11;
-const byte txPin = 12;
-
-class SerialCom : public Service {
+class SerialCom : public TimedService {
 private:
-    bool disabled = false;
-    unsigned int pos_watch = 0;
-    unsigned long last_update = 0;
-    String readString = "";
+#ifdef __SERIAL_COM_HW__
+    HardwareSerial &serial;
+#else
+    SoftwareSerial serial;
+#endif
     Motor *motor = nullptr;
-    Display *display = nullptr;
     Calibrator *calibrator = nullptr;
-    uint8_t ixPin;
-    uint8_t txPin;
-
-
-    SoftwareSerial *mySerial;
-
-    void goto_preset(unsigned int preset);
-
-    void send_motor_position();
-    void SerialCom::set_motor(unsigned int pos);
-
-    String read_line();
+    unsigned long baud;
 protected:
+    unsigned int send_motor_position();
 
+    String get_command_line();
 
 public:
-    SerialCom(Motor *motor, Calibrator *calibrator, uint8_t ixPin, uint8_t txPin);
+    SerialCom(Motor *motor, Calibrator *calibrator, unsigned long baud, uint8_t rx, uint8_t tx) :
+#ifdef __SERIAL_COM_HW__
+        serial(Serial), motor(motor), calibrator(calibrator), baud(baud) {}
+#else
+        serial(rx, tx), motor(motor), calibrator(calibrator), baud(baud) {};
+#endif
 
     bool begin() override;
-
-    void disable() override;
 
     void cycle() override;
 };
