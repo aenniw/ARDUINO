@@ -21,7 +21,7 @@
 | [PSH08-02P / PFH08-02P](https://www.aliexpress.com/item/32885777326.html)                                                                           | ~$5,94  |
 | [Shaft coupler 6mm-10mm](https://www.ebay.com/itm/Coupling-Shaft-Motor-Coupler-4mm-5mm-6mm-7mm-8mm-10mm-45-steel-Connector-/322250560957)           | ~$2.69  |
 | [M4 - wood screw](https://www.ebay.com/itm/Self-Drilling-Drywall-Wood-Screws-M4-Bugle-Head-Coarse-Thread-Zinc-Plated/273011742134) x 4              | ~$1.50  |
-| [M3-6mm](https://www.ebay.com/itm/10-20-50-100x-M2-M3-M4-M5-Stainless-Steel-Hex-Bolt-Socket-Cap-Screws-Head-DIN912/173028404303) x 4                | ~$1.62  |
+| [M3-6mm](https://www.ebay.com/itm/10-20-50-100x-M2-M3-M4-M5-Stainless-Steel-Hex-Bolt-Socket-Cap-Screws-Head-DIN912/173028404303) x 12               | ~$1.62  |
 | SUM                                                                                                                                                 | ~$26,04 |
 | Weighted SUM                                                                                                                                        | ~$26,04 |
 
